@@ -1,0 +1,1 @@
+Folder for source code. The package name is 'outbreak_probabilities'. 
