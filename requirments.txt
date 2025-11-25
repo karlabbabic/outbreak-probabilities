@@ -1,3 +1,4 @@
+# Add version numbers as well
 matplotlib
 numpy
 pandas
