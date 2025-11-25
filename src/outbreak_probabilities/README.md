@@ -1,1 +1,1 @@
-Folder for source code. The package name is 'outbreak_probabilities'. 
+This directory holds the package 'outbreak_probabilities'.
