@@ -14,7 +14,7 @@ def get_version():
     import os
     import sys
 
-    sys.path.append(os.path.abspath('x_model'))
+    sys.path.append(os.path.abspath('src.outbreak_probabilities'))
     from version_info import VERSION as version
     sys.path.pop()
 
@@ -52,7 +52,7 @@ setup(
     url='',
 
     # Packages to include
-    packages=find_packages(include=('x_model', 'x_model.*')),
+    packages=find_packages(include=('src.outbreak_probabilities', 'src.outbreak_probabilities.*')),
 
     # List of dependencies
     install_requires=[
