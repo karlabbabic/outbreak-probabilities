@@ -46,8 +46,8 @@ setup(
 
     maintainer='Salma Amin, Gemma Marshall, Rayne Alexander, Aniekeme George, Oliver Staples',
 
-    maintainer_email='.@gtc.ox.ac.uk, , ' \
-                     ',
+    maintainer_email='salma.amin.@dtc.ox.ac.uk', 
+     
 
     url='',
 
