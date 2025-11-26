@@ -14,7 +14,7 @@ def get_version():
     import os
     import sys
 
-    sys.path.append(os.path.abspath('X_model'))
+    sys.path.append(os.path.abspath('x_model'))
     from version_info import VERSION as version
     sys.path.pop()
 
