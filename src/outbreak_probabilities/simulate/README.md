@@ -1,5 +1,5 @@
-**The purpose of this file is to simulate trajectories for disease cases. 
-**
+**The purpose of this file is to simulate trajectories for disease cases. **
+
 There should be three files: one to calculate the serial weights (with the triangular kernel), one to generate single-trajectory paths, and another file that does the batch processing 
 
 There should be at least these public APIs, i.e. functions that can be called outside of their own .py files. 
@@ -28,7 +28,7 @@ Functions:
   - Input: user-specified range, e.g. `[0,5]` for `[R_min, R_max]`.
   - Output: `R`, an integer; the basic reproduction number.
  
-3. batch_processing.py
+**3. batch_processing.py**
 
 Purpose: this file will call `generate_single_trajectory` as many times as needed to simulate a user-defined number of tracks. It should also write these results to a .csv or a Python `tempfile`.
 
