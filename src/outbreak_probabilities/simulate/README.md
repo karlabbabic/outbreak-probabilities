@@ -6,7 +6,8 @@ There should be at least these public APIs, i.e. functions that can be called ou
 
 ```
 batch_process(N, w, max_days, R)
-    returns (array shape (N, max_days), csv_path)
+
+return (array shape (N, max_days), csv_path)
 ```
 
 **1. calculate_serial_weights.py**
