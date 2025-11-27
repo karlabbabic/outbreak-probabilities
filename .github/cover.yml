@@ -29,7 +29,7 @@ jobs:
 
     - name: Run coverage
       run: |
-        coverage run abm_model/run_tests.py --unit
+        coverage run src/outbreak_probabilities/run_tests.py --unit
 
     - name: Upload coverage reports to Codecov
       if: success()
