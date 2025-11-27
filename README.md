@@ -44,12 +44,12 @@ What to do:
     
 ### Method 2: Trajectory Matching
 Input: 
-- the first `k` days worth of simulated infection data from `simulated_cases.csv`.
+- the first `k` days worth of simulated infection data from `simulated_cases.csv`
 - an array containing an observed input sequence of early cases count e.g. `data = [1,2,6] = k[0:3]`
   
 Output: 
 - any trajectory of cases where the first `k` days of simulated data match the observed
-- outbreak probability: the number of these cases where the last entry is greater than 100.
+- outbreak probability: the number of these cases where the last entry is greater than 100
 
 ### Method 3: Machine Learning
 
@@ -59,6 +59,6 @@ Input:
 
 
 Output:
-- ML-predicted random forest likely trees based on `data`.
+- ML-predicted random forest likely trees based on `data`
 - outbreak probability: average of outbreaks across all trees
 
