@@ -13,6 +13,7 @@ return (array shape (N, max_days), csv_path)
 **1. calculate_serial_weights.py**
 
 Purpose: this will compute discrete-time serial interval weights w_k from a continuous gamma distribution g(u) 
+
 Functions: 
 - `compute_serial_weights()`
   
@@ -37,7 +38,6 @@ Functions:
 **3. batch_processing.py**
 
 Purpose: this file will call `generate_single_trajectory` as many times as needed to simulate a user-defined number of tracks. It should also write these results to a .csv or a Python `tempfile`. It should write to a CSV with headers day_1,...,day_max; may also include R.
-
 
 Functions:
 - `batch_process()`
