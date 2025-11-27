@@ -37,7 +37,7 @@ Functions:
  
 **3. batch_processing.py**
 
-Purpose: this file will call `generate_single_trajectory` as many times as needed to simulate a user-defined number of tracks. It should also write these results to a .csv or a Python `tempfile`. It should write to a CSV with headers day_1,...,day_max; may also include R.
+Purpose: this file will call `generate_single_trajectory` as many times as needed to simulate a user-defined number of tracks. It should also write these results to a .csv or a Python `tempfile`. It should write to a CSV with headers day_1,...,day_max (day_10, day_50, etc); may also include R on the last column.
 
 Functions:
 - `batch_process()`
