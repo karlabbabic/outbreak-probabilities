@@ -1,4 +1,4 @@
-**The purpose of this file is to simulate trajectories for disease cases. **
+**The purpose of this file is to simulate trajectories for disease cases.**
 
 There should be three files: one to calculate the serial weights (with the triangular kernel), one to generate single-trajectory paths, and another file that does the batch processing 
 
