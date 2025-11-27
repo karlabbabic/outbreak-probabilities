@@ -1,4 +1,4 @@
-This directory holds the package `outbreak_probabilities`.
+This directory is the source of the package `outbreak_probabilities`.
 
 It holds the following:
 
