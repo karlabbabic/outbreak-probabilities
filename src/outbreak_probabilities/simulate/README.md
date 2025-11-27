@@ -5,7 +5,7 @@ There should be three files: one to calculate the serial weights (with the trian
 There should be at least these public APIs, i.e. functions that can be called outside of their own .py files. This is so that we can run the lines of code from elsewhere, for example from `cli.py` like this:
 
 ```
-batch_process(N, w, max_days, R)
+batch_process(N, w, max_days, R):
 
 return (array shape (N, max_days), csv_path)
 ```
