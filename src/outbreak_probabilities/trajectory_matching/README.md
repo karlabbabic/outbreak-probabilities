@@ -9,10 +9,10 @@ Purpose: this file will calculate probablities of a major outbreak given an arra
 
 Functions:
 
-- `CSV_to_array`
+- `CSV_to_array()`
 - `calculate_posterior()`
 - `calculate_conditional()`
-- `calculate_q`
+- `calculate_q()`
 - `calculate_overall_PMO()`
   
   - Input: filepath to CSV with the weights `w`. The `R` value (should be in the CSV).
