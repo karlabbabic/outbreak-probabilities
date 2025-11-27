@@ -56,6 +56,8 @@ Output:
 Input: 
 - an array containing an observed input sequence of early cases count e.g. `data = [1,2,6] = k[0:3]`
 - ML method to be trained beforehand?
+
+
 Output:
 - ML-predicted random forest likely trees based on `data`.
 - outbreak probability: average of outbreaks across all trees
