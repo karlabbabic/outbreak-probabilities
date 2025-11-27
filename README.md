@@ -21,9 +21,16 @@ Output: a CSV file `simulated_cases.csv` with case number entries, columns are d
   - Consider using the `tempfile` method in Python rather than saving to the user's directory every time?
 
 ### Method 1: Analytic Solution
-Input: the first `k` days worth of simulated infection data from `simulated_cases.csv`.
+Input: 
+- the first `k` days worth of simulated infection data from `simulated_cases.csv`.
+- estimated range for the reproduction number
 
 Output: 
+- The conditional probability `P([I1,I2,I3]|R)`
+- Outbreak probability given first three cases `P(PMO | [I1,I2,I3)]`
+- Outbreak probability given reproduction number `P(PMO | R]`
+- Overall outbreak probability: `(conditional probability) x (outbreak probability given reproduction number)`
+  
 
 What to do:
 1. Numerically compute the integral for the serial interval distribution $w_{k}=\int_{k-1}{k+1}(1-|u-k|)g(u)du$
