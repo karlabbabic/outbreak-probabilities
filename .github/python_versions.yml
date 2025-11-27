@@ -31,4 +31,4 @@ jobs:
         python -m pip install .[dev]
     - name: Run unit tests
       run: |
-        python abm_model/run_tests.py --unit
+        python src/outbreak_probabilities/run_tests.py --unit
