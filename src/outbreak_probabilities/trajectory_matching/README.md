@@ -23,7 +23,7 @@ Functions:
 - `calculate_q():`
 - `calculate_overall_PMO():`
   
-  - Input: filepath to CSV with the weights `w`. The `R` value (should be in the CSV).
+  - Input: filepath to CSV with the weights `w`. The `R` value (should be in the CSV) (to compare against the range of vals?).
   - Output: arrays containing the posterior, conditional, and overall PMO. 
 
 **2. runner.py**
