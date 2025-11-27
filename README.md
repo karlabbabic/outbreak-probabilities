@@ -42,9 +42,14 @@ Input:
   
 Output: 
 - any trajectory of cases where the first `k` days of simulated data match the observed
-- the number of these cases where the last entry is greater than 100.
+- outbreak probability: the number of these cases where the last entry is greater than 100.
 
 ### Method 3: Machine Learning
-- Needs to be trained beforehand?
-Input: the first `k` days worth of simulated infection data from `simulated_cases.csv`.
+
+Input: 
+- an array containing an observed input sequence of early cases count e.g. `data = [1,2,6] = k[0:3]`
+- ML method to be trained beforehand?
+Output:
+- ML-predicted random forest likely trees based on `data`.
+- outbreak probability: average of outbreaks across all trees
 
