@@ -1,6 +1,6 @@
 This directory is the source of the package `outbreak_probabilities`.
 
-It holds the following:
+It holds the following folders:
 
 `simulate`: simulate synthetic data using epidemiological model
 
