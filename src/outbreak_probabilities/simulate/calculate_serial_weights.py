@@ -1,4 +1,4 @@
-# ###
+# stc/outbreak_probabilities
 # 1. calculate_serial_weights.py
 
 # Purpose: this will compute discrete-time serial interval weights w_k from a continuous gamma distribution g(u) 
@@ -17,7 +17,19 @@ from numpy.polynomial.legendre import leggauss
 # Use 64 leggauss nodes
 @lru_cache(maxsize=64)
 def compute_serial_weights(mean, std, k_max, nquad=32, step = 7.0):
+    """Does....
+
+    This function does....
+
+    Args:
+        mean(float): observed average for Ebola infections
+
+    Returns:
+
+    Raises:
+        
     
+    """
     # Raise some errors
     if k_max < 1:
         raise ValueError("k_max must be > 1")
