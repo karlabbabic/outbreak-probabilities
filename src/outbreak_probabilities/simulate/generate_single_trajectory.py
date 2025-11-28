@@ -46,7 +46,6 @@ def detect_is_extinct(trajectory, window):
 def simulate_trajectory(w, max_days,R,R_range,rng,initial_cases,extinction_window,major_threshold):
     """Simulate a single trajectory with the renewal method
 
-
     result : dict with keys:
         - "trajectory" : np.ndarray shape (max_days,), daily counts I_t
         - "R"          : float, reproduction number used
@@ -54,7 +53,6 @@ def simulate_trajectory(w, max_days,R,R_range,rng,initial_cases,extinction_windo
         - "status"     : str, one of {"minor", "major", "ongoing"}
         - "PMO"        : int, 1 if status=="major", otherwise 0
     """
-
 
     # Max days check
     if max_days < 1:

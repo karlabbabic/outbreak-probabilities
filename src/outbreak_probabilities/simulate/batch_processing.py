@@ -18,8 +18,8 @@ from numpy.random import default_rng
 from pathlib import Path
 
 # Import APIs from other files in folder
-from generate_single_trajectory import simulate_trajectory, calculate_R
-from calculate_serial_weights import compute_serial_weights
+from .generate_single_trajectory import simulate_trajectory, calculate_R
+from .calculate_serial_weights import compute_serial_weights
 
 def default_csv_path(use_tempfile = True):
     """Define the filepath of csv
@@ -45,13 +45,15 @@ def generate_batch(
     out_path=None,
     use_tempfile=True,
     seed=None,
-    rng = None
 ):
     """Simulate N individual trajectories
     """
+    rng = default_rng(seed)
     
     # Change rng if specified
     if rng == None:
+        rng = default_rng(seed)
+    else:
         rng = default_rng(seed)
 
     # Do file pathing

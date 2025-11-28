@@ -32,13 +32,11 @@ def slow_reference_weights(mean, std, k_max, step=7.0):
     w /= w.sum()
     return w
 
-
 def test_weights_sum_to_one():
     w = compute_serial_weights(mean=15.3, std=9.3, k_max=30, nquad=32, step=7.0)
     assert w.shape == (30,)
     assert np.all(w >= 0)
     assert abs(w.sum() - 1.0) < 1e-12
-
 
 def test_weights_match_reference():
     mean = 15.3
