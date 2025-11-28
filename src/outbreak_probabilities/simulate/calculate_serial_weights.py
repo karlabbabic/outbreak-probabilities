@@ -99,4 +99,4 @@ def compute_serial_weights(mean, std, k_max, nquad=32, step = 7.0):
     w = w / total
     return w
 
-print(compute_serial_weights(1,2,3))
+# print(compute_serial_weights(1,2,3))
