@@ -1,0 +1,5 @@
+# Add version numbers as well
+matplotlib
+numpy
+pandas
+sphinx_rtd_theme
