@@ -1,1 +1,3 @@
 This folder is supposed to hold the simulated trajectories called simulated_cases.csv. Be careful not to upload the .csv to GitHub as it might take up a lot of space. 
+
+.

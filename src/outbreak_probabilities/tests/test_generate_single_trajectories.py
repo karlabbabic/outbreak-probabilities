@@ -14,12 +14,12 @@ def test_default_initial_cases_is_one():
     - subsequent days can be zero if R=0
     """
     w = [1.0]                # simplest serial interval: all weight at lag 1
-    max_days = 5
+    max_weeks = 5
     R = 0.0                  # no new infections after initial
 
     res = simulate_trajectory(
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R=R,
         R_range=None,
         initial_cases=None,  # <- this is what we are testing
@@ -29,7 +29,7 @@ def test_default_initial_cases_is_one():
     )
 
     traj = res["trajectory"]
-    assert traj.shape == (max_days,)
+    assert traj.shape == (max_weeks,)
     # default initial_cases must seed exactly one case on day 1
     assert traj[0] == 1
     # with R=0, all subsequent days should be zero
@@ -43,17 +43,17 @@ def test_default_initial_cases_is_one():
 
 def test_custom_initial_cases_used_correctly():
     """
-    If initial_cases is provided, it should be used as-is (up to max_days),
+    If initial_cases is provided, it should be used as-is (up to max_weeks),
     and not mutated by the simulator.
     """
     w = [1.0]
-    max_days = 5
+    max_weeks = 5
     R = 0.0
     initial = [5, 2, 0]
 
     res = simulate_trajectory(
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R=R,
         R_range=None,
         initial_cases=initial,
@@ -78,13 +78,13 @@ def test_major_threshold_triggered_by_initial_cases():
     If the initial cases alone exceed the major_threshold, we should immediately get status='major' and PMO=1.
     """
     w = [1.0]
-    max_days = 5
+    max_weeks = 5
     R = 0.0
     initial_cases = [2]   # cumulative=2
 
     res = simulate_trajectory(
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R=R,
         R_range=None,
         initial_cases=initial_cases,
@@ -104,12 +104,12 @@ def test_R_range_when_R_is_none():
     Using R_range=(c,c) gives deterministic R=c.
     """
     w = [1.0]
-    max_days = 3
+    max_weeks = 3
     R_range = (0.5, 0.5)
 
     res = simulate_trajectory(
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R=None,
         R_range=R_range,
         initial_cases=None,
@@ -129,7 +129,7 @@ def test_missing_R_and_R_range_raises():
     with pytest.raises(ValueError):
         simulate_trajectory(
             w=w,
-            max_days=5,
+            max_weeks=5,
             R=None,
             R_range=None,
             initial_cases=None,

@@ -37,7 +37,7 @@ def default_csv_path(use_tempfile = True):
 def generate_batch(
     N,
     w,
-    max_days,
+    max_weeks,
     R_range,
     initial_cases=None,
     extinction_window=None,
@@ -64,13 +64,13 @@ def generate_batch(
     csv_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Setup csv headers
-    header = ["sim_id", "R_draw"] + [f"day_{d}" for d in range(1, max_days + 1)] + [
+    header = ["sim_id", "R_draw"] + [f"week_{d}" for d in range(1, max_weeks + 1)] + [
         "cumulative_cases",
         "status",
         "PMO",
     ]
     # define ND array for all trajectories
-    trajectories = np.zeros((N, max_days), dtype=int)
+    trajectories = np.zeros((N, max_weeks), dtype=int)
 
     with csv_path.open("w", newline="") as fh:
         writer = csv.writer(fh)
@@ -82,7 +82,7 @@ def generate_batch(
 
             result = simulate_trajectory(
                 w=w,
-                max_days=max_days,
+                max_weeks=max_weeks,
                 R=R,
                 R_range=None,
                 initial_cases=initial_cases,
@@ -98,6 +98,7 @@ def generate_batch(
 
             trajectories[sim_id - 1, :] = traj
 
+            # weeks
             row = [sim_id, float(R), *traj.tolist(), cumulative, status, pmo_flag]
             writer.writerow(row)
 

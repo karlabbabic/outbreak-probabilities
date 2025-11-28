@@ -9,14 +9,14 @@ from simulate.generate_single_trajectory import simulate_trajectory
 def test_generate_batch_shapes_and_csv(tmp_path):
     """
     Basic integration test for generate_batch:
-    - trajectories array has shape (N, max_days)
+    - trajectories array has shape (N, max_weeks)
     - CSV is created with N rows + header
     - PMO flag is present and consistent with status
     """
     # Simple weights: w_1 = 1, others implicitly zero
     w = [1.0]
     N = 5
-    max_days = 4
+    max_weeks = 4
     R_range = (0.0, 0.0)  # R=0, no new infections after initial
     initial_cases = [1]
 
@@ -25,7 +25,7 @@ def test_generate_batch_shapes_and_csv(tmp_path):
     trajectories, csv_path = generate_batch(
         N=N,
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R_range=R_range,
         initial_cases=initial_cases,
         extinction_window=None,
@@ -36,7 +36,7 @@ def test_generate_batch_shapes_and_csv(tmp_path):
     )
 
     # Array properties
-    assert trajectories.shape == (N, max_days)
+    assert trajectories.shape == (N, max_weeks)
     # For R=0 and initial [1], every trajectory should be [1, 0, 0, 0]
     expected_row = np.array([1, 0, 0, 0])
     for i in range(N):
@@ -83,7 +83,7 @@ def test_generate_batch_extinction_window(tmp_path):
     """
     w = [1.0]
     N = 1
-    max_days = 5
+    max_weeks = 5
     R_range = (0.0, 0.0)
     initial_cases = [1]
 
@@ -92,7 +92,7 @@ def test_generate_batch_extinction_window(tmp_path):
     trajectories, csv_path = generate_batch(
         N=N,
         w=w,
-        max_days=max_days,
+        max_weeks=max_weeks,
         R_range=R_range,
         initial_cases=initial_cases,
         extinction_window=1,  # one zero day at the end triggers extinction
@@ -103,7 +103,7 @@ def test_generate_batch_extinction_window(tmp_path):
     )
 
     # Trajectory itself: [1,0,0,0,0]
-    assert trajectories.shape == (1, max_days)
+    assert trajectories.shape == (1, max_weeks)
     assert np.array_equal(trajectories[0], np.array([1, 0, 0, 0, 0]))
 
     # CSV row status should be 'minor' with PMO=0
