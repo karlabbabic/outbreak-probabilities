@@ -208,3 +208,6 @@ __marimo__/
 
 # Don't ignore top level tests foler
 !/tests/
+
+# Ignore data files
+*.csv
