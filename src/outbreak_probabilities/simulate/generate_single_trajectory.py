@@ -43,11 +43,11 @@ def detect_is_extinct(trajectory, window):
         return False
     return bool(np.all(trajectory[-window:] == 0))
 
-# def simulate_trajectory(w, max_days,R,R_range,rng,initial_cases,extinction_window,major_threshold):
+# def simulate_trajectory(w, max_weeks,R,R_range,rng,initial_cases,extinction_window,major_threshold):
 #     """Simulate a single trajectory with the renewal method
 
 #     result : dict with keys:
-#         - "trajectory" : np.ndarray shape (max_days,), daily counts I_t
+#         - "trajectory" : np.ndarray shape (max_weeks,), daily counts I_t
 #         - "R"          : float, reproduction number used
 #         - "cumulative" : int, total cases across the trajectory
 #         - "status"     : str, one of {"minor", "major", "ongoing"}
@@ -55,8 +55,8 @@ def detect_is_extinct(trajectory, window):
 #     """
 
 #     # Max days check
-#     if max_days < 1:
-#         raise ValueError("Max days must be >= 1")
+#     if max_weeks < 1:
+#         raise ValueError("Max weeks must be >= 1")
 
 #     # Convert weights to array
 #     w_arr = np.asarray(w, dtype=float)
@@ -86,10 +86,10 @@ def detect_is_extinct(trajectory, window):
 #         # Check that the first case is 1
 
 #     # Define trajectory array
-#     trajectory = np.zeros(max_days, dtype=int)
+#     trajectory = np.zeros(max_weeks, dtype=int)
 
 #     # Populate initial cases
-#     L = min(len(initial), max_days)
+#     L = min(len(initial), max_weeks)
 #     trajectory[:L] = np.asarray(initial[:L], dtype=int)
 
 #     # Find cumulative case count 
@@ -105,8 +105,8 @@ def detect_is_extinct(trajectory, window):
 #             "PMO": 1,
 #         }
     
-#     # Simulate from day L+1 to max_days
-#     for t in range(L, max_days):
+#     # Simulate from day L+1 to max_weeks
+#     for t in range(L, max_weeks):
 #         max_lag = min(k_support, t)
 #         if max_lag == 0:
 #             lam_base = 0.0
@@ -141,7 +141,7 @@ def detect_is_extinct(trajectory, window):
 #                 "PMO": 0,
 #             }
 
-#     # If we get here, the process neither hit major_threshold nor extinct by max_days
+#     # If we get here, the process neither hit major_threshold nor extinct by max_weeks
 #     # Treat as ongoing with PMO = 0 at the trajectory level (you may handle separately later).
 #     return {
 #         "trajectory": trajectory,
@@ -154,7 +154,6 @@ def detect_is_extinct(trajectory, window):
 from typing import Optional, Sequence, Dict, Any
 import numpy as np
 from numpy.random import Generator, default_rng
-
 
 def calculate_R(R_range: Sequence[float], rng: Optional[Generator] = None) -> float:
     if rng is None:
@@ -183,7 +182,7 @@ def _is_extinct_window(trajectory: np.ndarray, window: int) -> bool:
 
 def simulate_trajectory(
     w: Sequence[float],
-    max_days: int,
+    max_weeks: int,
     R: Optional[float] = None,
     R_range: Optional[Sequence[float]] = None,
     initial_cases: Optional[Sequence[int]] = None,
@@ -195,7 +194,7 @@ def simulate_trajectory(
     Simulate a single trajectory under the Poisson renewal model.
 
     IMPORTANT:
-    - We ALWAYS simulate out to max_days.
+    - We ALWAYS simulate out to max_weeks.
     - major_threshold is ONLY used to classify the trajectory as 'major' (PMO=1)
       if cumulative >= major_threshold at any time.
     - We do NOT stop simulating when the threshold is reached.
@@ -208,8 +207,8 @@ def simulate_trajectory(
         raise ValueError("w must be a 1-D sequence of serial weights")
     k_support = w_arr.size
 
-    if max_days < 1:
-        raise ValueError("max_days must be >= 1")
+    if max_weeks < 1:
+        raise ValueError("max_weeks must be >= 1")
 
     # Choose R
     if R is None:
@@ -224,8 +223,8 @@ def simulate_trajectory(
     else:
         initial = list(initial_cases)
 
-    trajectory = np.zeros(max_days, dtype=int)
-    L = min(len(initial), max_days)
+    trajectory = np.zeros(max_weeks, dtype=int)
+    L = min(len(initial), max_weeks)
     trajectory[:L] = np.asarray(initial[:L], dtype=int)
 
     cumulative = int(trajectory[:L].sum())
@@ -234,8 +233,8 @@ def simulate_trajectory(
     major_flag = cumulative >= major_threshold
     extinct_flag = False
 
-    # Simulate days L+1 .. max_days
-    for t in range(L, max_days):
+    # Simulate days L+1 .. max_weeks
+    for t in range(L, max_weeks):
         max_lag = min(k_support, t)
         if max_lag == 0:
             lam_base = 0.0
