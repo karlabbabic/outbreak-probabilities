@@ -19,146 +19,15 @@
 import numpy as np
 from numpy.random import Generator, default_rng
 
-def calculate_R(R_range, rng=None):
-    """Sample R from uniform range
+def calculate_R(R_range, rng = None):
+    """ Calculates R using rng from [R_min, R_max]
     
     """
-    rmin, rmax = float(R_range[0]), float(R_range[1])
-
-    if rmin > rmax:
-        raise ValueError("R_range minimum must be <= maximum")
-
-    if rmin == rmax:
-        return rmin
-
-    return float(rng.uniform(rmin, rmax))
-
-def detect_is_extinct(trajectory, window):
-    """Check if cases = 0
-    
-    """
-    if window is None or window <= 0:
-        return False
-    if trajectory.size < window:
-        return False
-    return bool(np.all(trajectory[-window:] == 0))
-
-# def simulate_trajectory(w, max_weeks,R,R_range,rng,initial_cases,extinction_window,major_threshold):
-#     """Simulate a single trajectory with the renewal method
-
-#     result : dict with keys:
-#         - "trajectory" : np.ndarray shape (max_weeks,), daily counts I_t
-#         - "R"          : float, reproduction number used
-#         - "cumulative" : int, total cases across the trajectory
-#         - "status"     : str, one of {"minor", "major", "ongoing"}
-#         - "PMO"        : int, 1 if status=="major", otherwise 0
-#     """
-
-#     # Max days check
-#     if max_weeks < 1:
-#         raise ValueError("Max weeks must be >= 1")
-
-#     # Convert weights to array
-#     w_arr = np.asarray(w, dtype=float)
-
-#     if w_arr.ndim != 1:
-#         raise ValueError("w is not a 1D sequqnece of weights")
-    
-#     # Extract dimension of array
-#     k_support = w_arr.size
-
-#     # Select rng from np.random
-#     if rng is None:
-#         rng = default_rng()
-
-#     # Choose reproduction number
-#     if R is None:
-#         if R_range is None:
-#             raise ValueError("Either R or R_range must be provided")
-#         R = calculate_R(R_range)
-#     R = float(R)
-
-#     # Set up initial cases
-#     if initial_cases is None:
-#         initial = [1]
-#     else:
-#         initial = list(initial_cases)
-#         # Check that the first case is 1
-
-#     # Define trajectory array
-#     trajectory = np.zeros(max_weeks, dtype=int)
-
-#     # Populate initial cases
-#     L = min(len(initial), max_weeks)
-#     trajectory[:L] = np.asarray(initial[:L], dtype=int)
-
-#     # Find cumulative case count 
-#     cumulative = int(trajectory[:L].sum())
-
-#     # Early major check
-#     if cumulative >= major_threshold:
-#         return {
-#             "trajectory": trajectory,
-#             "R": R,
-#             "cumulative": cumulative,
-#             "status": "major",
-#             "PMO": 1,
-#         }
-    
-#     # Simulate from day L+1 to max_weeks
-#     for t in range(L, max_weeks):
-#         max_lag = min(k_support, t)
-#         if max_lag == 0:
-#             lam_base = 0.0
-#         else:
-#             past = trajectory[t - max_lag : t]      # I_{t-max_lag}..I_{t-1}
-#             ws = w_arr[:max_lag]                   # w_1..w_maxlag
-#             lam_base = float(np.dot(ws, past[::-1]))  # align w_s with I_{t-s}
-
-#         lam = R * lam_base
-#         new_cases = int(rng.poisson(lam)) if lam > 0.0 else 0
-
-#         trajectory[t] = new_cases
-#         cumulative += new_cases
-
-#         # Major outbreak: cumulative >= threshold
-#         if cumulative >= major_threshold:
-#             return {
-#                 "trajectory": trajectory,
-#                 "R": R,
-#                 "cumulative": cumulative,
-#                 "status": "major",
-#                 "PMO": 1,
-#             }
-
-#         # Extinction: last `extinction_window` days are all zero
-#         if extinction_window is not None and detect_is_extinct(trajectory[: t + 1], extinction_window):
-#             return {
-#                 "trajectory": trajectory,
-#                 "R": R,
-#                 "cumulative": cumulative,
-#                 "status": "minor",
-#                 "PMO": 0,
-#             }
-
-#     # If we get here, the process neither hit major_threshold nor extinct by max_weeks
-#     # Treat as ongoing with PMO = 0 at the trajectory level (you may handle separately later).
-#     return {
-#         "trajectory": trajectory,
-#         "R": R,
-#         "cumulative": cumulative,
-#         "status": "ongoing",
-#         "PMO": 0,
-#     }
-
-from typing import Optional, Sequence, Dict, Any
-import numpy as np
-from numpy.random import Generator, default_rng
-
-def calculate_R(R_range: Sequence[float], rng: Optional[Generator] = None) -> float:
+    # Could implement different rng if necessary
     if rng is None:
         rng = default_rng()
 
+    # Checking R values
     if len(R_range) != 2:
         raise ValueError("R_range must be a length-2 sequence (R_min, R_max)")
 
@@ -171,8 +40,8 @@ def calculate_R(R_range: Sequence[float], rng: Optional[Generator] = None) -> fl
 
     return float(rng.uniform(rmin, rmax))
 
-
-def _is_extinct_window(trajectory: np.ndarray, window: int) -> bool:
+# Sliding window check for extinction
+def _is_extinct_window(trajectory, window):
     if window is None or window <= 0:
         return False
     if trajectory.size < window:
@@ -181,43 +50,44 @@ def _is_extinct_window(trajectory: np.ndarray, window: int) -> bool:
 
 
 def simulate_trajectory(
-    w: Sequence[float],
-    max_weeks: int,
-    R: Optional[float] = None,
-    R_range: Optional[Sequence[float]] = None,
-    initial_cases: Optional[Sequence[int]] = None,
-    rng: Optional[Generator] = None,
-    extinction_window: Optional[int] = None,
-    major_threshold: int = 100,
-) -> Dict[str, Any]:
+    w,
+    max_weeks,
+    R = None,
+    R_range = None,
+    initial_cases = None,
+    rng = None,
+    extinction_window = None,
+    major_threshold = 100,
+):
     """
     Simulate a single trajectory under the Poisson renewal model.
-
-    IMPORTANT:
-    - We ALWAYS simulate out to max_weeks.
-    - major_threshold is ONLY used to classify the trajectory as 'major' (PMO=1)
-      if cumulative >= major_threshold at any time.
-    - We do NOT stop simulating when the threshold is reached.
+    - This will always simulate out to max_weeks, even after the threshold for outbreak / extinction met
+    - Use user specified major_threshold to classify traj. as 'major' (PMO=1) if cumulative cases > major_threshold
     """
+
+    # When drawing from a single Poission distribution RNG should be the same key, but user may specify
     if rng is None:
         rng = default_rng()
 
+    # Initialize weights array
     w_arr = np.asarray(w, dtype=float)
     if w_arr.ndim != 1:
         raise ValueError("w must be a 1-D sequence of serial weights")
-    k_support = w_arr.size
-
+    
+    # Do some error checking
     if max_weeks < 1:
         raise ValueError("max_weeks must be >= 1")
 
-    # Choose R
+    # Add some other basic checking for input variables, even those by default = None. 
+
+    # Select R, either user specified constant or randomly from a distribution 
     if R is None:
         if R_range is None:
             raise ValueError("Either R or R_range must be provided")
         R = calculate_R(R_range, rng=rng)
     R = float(R)
 
-    # Initial cases
+    # Define initial cases if specified, otherwise start with I_1 = 1.
     if initial_cases is None:
         initial = [1]
     else:
@@ -227,6 +97,7 @@ def simulate_trajectory(
     L = min(len(initial), max_weeks)
     trajectory[:L] = np.asarray(initial[:L], dtype=int)
 
+    # Define cumulative case counts
     cumulative = int(trajectory[:L].sum())
 
     # Flags we track over the full run
@@ -235,17 +106,15 @@ def simulate_trajectory(
 
     # Simulate days L+1 .. max_weeks
     for t in range(L, max_weeks):
-        max_lag = min(k_support, t)
+        max_lag = min(w_arr.size, t)
         if max_lag == 0:
             lam_base = 0.0
         else:
-            past = trajectory[t - max_lag : t]        # I_{t-max_lag}..I_{t-1}
-            ws = w_arr[:max_lag]                     # w_1..w_maxlag
-            lam_base = float(np.dot(ws, past[::-1])) # align w_s with I_{t-s}
-
+            past = trajectory[t - max_lag : t]
+            ws = w_arr[:max_lag]
+            lam_base = float(np.dot(ws, past[::-1]))
         lam = R * lam_base
         new_cases = int(rng.poisson(lam)) if lam > 0.0 else 0
-
         trajectory[t] = new_cases
         cumulative += new_cases
 
@@ -255,14 +124,11 @@ def simulate_trajectory(
 
         if extinction_window is not None and _is_extinct_window(trajectory[: t + 1], extinction_window):
             extinct_flag = True
-            # Once extinct, future intensity is 0 anyway.
-            # You can break and fill zeros (already zeros) or just continue; we'll break for speed.
-            # Fill remaining days with zeros (already default) and break.
+            # Once extinct populate break, because trajectory[] is already filled with zeros. 
+            # Note that if something fails it will return zeros. 
             break
 
-    # If we broke early for extinction, the tail of trajectory is already zeros (default).
-
-    # Classify at the END of simulation window
+    # Classify at the end of simulation window
     if major_flag:
         status = "major"
         pmo = 1
