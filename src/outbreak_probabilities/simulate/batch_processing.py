@@ -68,7 +68,6 @@ def generate_batch(
         "PMO",
     ]
 
-    # define ND array for all trajectories
     trajectories = np.zeros((N, max_weeks), dtype=int)
 
     # Ensure CSV is empty before writing
@@ -77,15 +76,25 @@ def generate_batch(
     with csv_path.open("w", newline="") as fh:
         writer = csv.writer(fh)
 
-        # Write metadata rows at the top
-        writer.writerow(["w", *w])
-        writer.writerow(["R_range", *R_range])
+        header_len = len(header)
 
-        # Write header
+        # --- metadata rows (aligned with columns) ---
+
+        w_list = list(w)
+        row_w = ["", "w"] + w_list
+        row_w += [""] * (header_len - len(row_w))
+        row_w = row_w[:header_len]
+
+        R_list = list(R_range)
+        row_R = ["", "R_range"] + R_list
+        row_R += [""] * (header_len - len(row_R))
+        row_R = row_R[:header_len]
+
+        writer.writerow(row_w)
+        writer.writerow(row_R)
         writer.writerow(header)
 
         for sim_id in range(1, N + 1):
-            # Draw R via calculate_R using the same rng for reproducibility
             R = calculate_R(R_range, rng=rng)
 
             result = simulate_trajectory(
