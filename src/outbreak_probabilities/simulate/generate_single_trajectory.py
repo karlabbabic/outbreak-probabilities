@@ -38,6 +38,7 @@ def calculate_R(R_range, rng = None):
     if rmin == rmax:
         return rmin
 
+    # random value of R selected from the range
     return float(rng.uniform(rmin, rmax))
 
 # Sliding window check for extinction
@@ -58,6 +59,7 @@ def simulate_trajectory(
     rng = None,
     extinction_window = None,
     major_threshold = 100,
+    # = is default values
 ):
     """
     Simulate a single trajectory under the Poisson renewal model.
@@ -118,7 +120,7 @@ def simulate_trajectory(
         trajectory[t] = new_cases
         cumulative += new_cases
 
-        # Update flags but DO NOT stop the simulation
+        # Update flags, stop the simulation is cumulative >= threshold
         if cumulative >= major_threshold:
             major_flag = True
             break
@@ -137,6 +139,7 @@ def simulate_trajectory(
         status = "minor"
         pmo = 0
     else:
+        # ongoing trajectories are interesting but are not outbreaks yet
         status = "ongoing"
         pmo = 0
 

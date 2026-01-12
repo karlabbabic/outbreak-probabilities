@@ -11,7 +11,7 @@ w = compute_serial_weights(mean=15.3, std=9.3, k_max=10, nquad=32, step=7.0)
 
 # 2. Generate a batch of 500 trajectories of length 50 days
 trajectories, csv_path = generate_batch(
-    N=500,
+    N=1000000,
     w=w,
     max_weeks=10,
     R_range=(0, 10.0),

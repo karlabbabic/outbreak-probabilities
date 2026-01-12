@@ -26,24 +26,10 @@ def run_benchmarks():
     # Define a wider set of scenarios to benchmark.
     scenarios = [
         {
-            "label": "Subcritical R=0.8, N=20000, 40 weeks",
+            "label": "Subcritical R=0.8, N=20000, 10 weeks",
             "N": 20000,
-            "max_weeks": 40,
+            "max_weeks": 10,
             "R_range": (0.8, 0.8),
-            "extinction_window": 4,
-        },
-        {
-            "label": "Subcritical R=0.8, N=200000, 40 weeks",
-            "N": 200000,
-            "max_weeks": 40,
-            "R_range": (0.8, 0.8),
-            "extinction_window": 4,
-        },
-        {
-            "label": "R between 0,5, N=200000, 40 weeks",
-            "N": 200000,
-            "max_weeks": 40,
-            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
@@ -53,54 +39,69 @@ def run_benchmarks():
             "R_range": (0,5),
             "extinction_window": 4,
         },
-        {    "label": "Subcritical R=0.8, N=2000000, 40 weeks",
-            "N": 200000,
-            "max_weeks": 40,
+        {
+            "label": "R between 0,5, N=1000000, 10 weeks",
+            "N": 1000000,
+            "max_weeks": 10,
             "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "Subcritical R=0.8, N=500, 40 weeks",
-            "N": 500,
-            "max_weeks": 40,
-            "R_range": (0.8, 0.8),
+            "label": "R between 0,5, N=2000000, 10 weeks",
+            "N": 2000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "Critical R=1.0, N=1000, 40 weeks",
-            "N": 1000,
-            "max_weeks": 40,
-            "R_range": (1.0, 1.0),
+            "label": "R between 0,5, N=3000000, 10 weeks",
+            "N": 3000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "Mildly supercritical R=1.2, N=1000, 50 weeks",
-            "N": 1000,
-            "max_weeks": 50,
-            "R_range": (1.2, 1.2),
+            "label": "R between 0,5, N=5000000, 10 weeks",
+            "N": 5000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "R uniform [0.8, 1.5], N=1200, 50 weeks",
-            "N": 1200,
-            "max_weeks": 50,
-            "R_range": (0.8, 1.5),
+            "label": "R between 0,10, N=200000, 10 weeks",
+            "N": 200000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "R uniform [1.0, 2.0], N=1500, 50 weeks",
-            "N": 1500,
-            "max_weeks": 50,
-            "R_range": (1.0, 2.0),
+            "label": "R between 0,10, N=1000000, 10 weeks",
+            "N": 1000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
         {
-            "label": "R uniform [1.5, 3.0], N=800, 60 weeks",
-            "N": 800,
-            "max_weeks": 60,
-            "R_range": (1.5, 3.0),
+            "label": "R between 0,10, N=2000000, 10 weeks",
+            "N": 2000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
             "extinction_window": 4,
         },
+        {
+            "label": "R between 0,10, N=3000000, 10 weeks",
+            "N": 3000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
+            "extinction_window": 4,
+        },
+        {
+            "label": "R between 0,10, N=5000000, 10 weeks",
+            "N": 5000000,
+            "max_weeks": 10,
+            "R_range": (0,5),
+            "extinction_window": 4,
+        }
     ]
 
     out_dir = Path("data")
@@ -145,7 +146,19 @@ def run_benchmarks():
         median_R = np.nan
 
         try:
-            df = pd.read_csv(csv_path)
+            # The CSV now includes two metadata rows at the top:
+            # row 0 = weights (w), row 1 = R_range, row 2 = header
+            # Use header=2 so pandas uses the third row as the column names.
+            df = pd.read_csv(csv_path, header=2)
+
+            # If that doesn't produce the expected columns (e.g. older CSV without metadata),
+            # fall back to the default behavior and try header=0.
+            if "PMO" not in df.columns or "R_draw" not in df.columns:
+                df_alt = pd.read_csv(csv_path, header=0)
+                # prefer the header=2 read if it has more of the expected columns, otherwise use the fallback
+                if ("PMO" in df_alt.columns and "R_draw" in df_alt.columns) and ("PMO" not in df.columns or "R_draw" not in df.columns):
+                    df = df_alt
+
             if "PMO" in df.columns:
                 pmo_estimate = df["PMO"].mean()
                 n_major = int(df["PMO"].sum())
