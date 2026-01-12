@@ -23,8 +23,6 @@ from calculate_serial_weights import compute_serial_weights
 
 def default_csv_path(use_tempfile = True):
     """Define the filepath of csv
-    
-    
     """
     if use_tempfile:
         tf = tempfile.NamedTemporaryFile(prefix="simulated_cases_",suffix=".csv")
@@ -69,11 +67,21 @@ def generate_batch(
         "status",
         "PMO",
     ]
+
     # define ND array for all trajectories
     trajectories = np.zeros((N, max_weeks), dtype=int)
 
+    # Ensure CSV is empty before writing
+    csv_path.write_text("")
+
     with csv_path.open("w", newline="") as fh:
         writer = csv.writer(fh)
+
+        # Write metadata rows at the top
+        writer.writerow(["w", *w])
+        writer.writerow(["R_range", *R_range])
+
+        # Write header
         writer.writerow(header)
 
         for sim_id in range(1, N + 1):
@@ -98,7 +106,6 @@ def generate_batch(
 
             trajectories[sim_id - 1, :] = traj
 
-            # weeks
             row = [sim_id, float(R), *traj.tolist(), cumulative, status, pmo_flag]
             writer.writerow(row)
 

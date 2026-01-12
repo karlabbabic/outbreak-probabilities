@@ -118,6 +118,7 @@ def plot_weekly_cases(
     plt.xlabel("Week")
     plt.ylabel("Cases per week")
     plt.title("Weekly case trajectories (colored by status) with mean/median and 10–90% spread")
+    plt.text(2,0,csv_path.replace("data/","",1))
     plt.xticks(weeks)
     plt.tight_layout()
     plt.show()
@@ -174,6 +175,7 @@ def plot_weekly_area_all(
     plt.xlabel("Week")
     plt.ylabel("Cases per week")
     plt.title("Weekly cases (ALL simulations): area + mean")
+    plt.text(2,0,csv_path.replace("data/","",1))
     plt.xticks(weeks)
     plt.legend()
     plt.tight_layout()
@@ -226,6 +228,7 @@ def plot_weekly_area_outbreaks(
     plt.xlabel("Week")
     plt.ylabel("Cases per week")
     plt.title("Weekly cases (OUTBREAKS only): area + mean")
+    plt.text(2,0,csv_path.replace("data/","",1))
     plt.xticks(weeks)
     plt.legend()
     plt.tight_layout()
@@ -279,24 +282,23 @@ def plot_weekly_area_non_outbreaks(
 
     plt.xlabel("Week")
     plt.ylabel("Cases per week")
-    plt.title("Weekly cases (NON-OUTBREAKS): area + mean")
+    plt.title("Weekly cases (NON-OUTBREAKS): area + mean for ")
     plt.xticks(weeks)
+    plt.text(2,0,csv_path.replace("data/","",1))
     plt.legend()
     plt.tight_layout()
     plt.show()
 
+csv_path = "data/simulated_cases_135.csv"
 
-
-csv_path = "data/simulated_cases.csv"
-
-# Original full plot: trajectories + everything
+# all trajectories 
 plot_weekly_cases(csv_path, max_weeks=10, n_traj=200)
 
-# NEW: area + mean (all sims)
+# area + mean 
 plot_weekly_area_all(csv_path, max_weeks=10)
 
-# NEW: outbreaks only
+# trajectories for outbreaks only
 plot_weekly_area_outbreaks(csv_path, max_weeks=10)
 
-# NEW: non-outbreaks (status != 'major')
+# trajectories for extinctions only
 plot_weekly_area_non_outbreaks(csv_path, max_weeks=10)
