@@ -23,7 +23,7 @@ w = compute_serial_weights(
 
 # 2. Generate a batch of trajectories
 trajectories, csv_path = generate_batch(
-    N=100,
+    N=10000,
     w=w,
     max_weeks=10,
     R_range=(0.0, 10.0),
