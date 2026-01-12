@@ -1,7 +1,29 @@
 # outbreak-probabilities
 DTC Sandpit Challenge: methods for estimating the probability of a major outbreak
 
+# outbreak-probabilities
+DTC Sandpit Challenge: methods for estimating the probability of a major outbreak
+
+## Table of Contents
+- [To-Do](#to-do)
+- [Set-up](#set-up)
+  - [Continuous Integration](#continuous-integration)
+  - [Testing](#testing)
+  - [Simulation of Trajectories](#simulation-of-trajectories)
+- [Methods](#methods)
+  - [Method 1: Analytic Solution](#method-1-analytic-solution)
+  - [Method 2: Trajectory Matching](#method-2-trajectory-matching)
+  - [Method 3: Machine Learning](#method-3-machine-learning)
+
+<!-- To-Do -->      
 ## To-Do
+- Simulate – done 
+- Analytic – Upload the cell in rough work collab to github without the sliders (input params)
+- ML – write code that uses the simulated data and include plots (train 4 separate classifiers and save the models)
+- Writing up unit tests (ask Matthew) to cover as many lines as you can 
+
+ 
+## Set-up
 ### Continuous Integration
 - Create CI workflow in github/workflows/ci.yml
   - GitHub Actions
@@ -19,7 +41,7 @@ Input: first `k` weeks of infectious cases, e.g. `k[0:3]` of `k=[1,2,6,8,...]`.
 
 Output: a CSV file `simulated_cases.csv` with case number entries, columns are days, e.g. '`day_1'`,'`day_2'`,'`day_3'`,....
   - Consider using the `tempfile` method in Python rather than saving to the user's directory every time?
-
+## Methods
 ### Method 1: Analytic Solution
 Input: 
 - the first `k` days worth of simulated infection data from `simulated_cases.csv`.
