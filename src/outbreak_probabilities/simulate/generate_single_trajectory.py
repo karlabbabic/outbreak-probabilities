@@ -121,6 +121,7 @@ def simulate_trajectory(
         # Update flags but DO NOT stop the simulation
         if cumulative >= major_threshold:
             major_flag = True
+            break
 
         if extinction_window is not None and _is_extinct_window(trajectory[: t + 1], extinction_window):
             extinct_flag = True
