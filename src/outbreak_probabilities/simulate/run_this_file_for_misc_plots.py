@@ -1,4 +1,6 @@
 """
+Depreciated since changing trajectory simulation to cut off when the cumulative cases >= threshold
+
 interpret_weekly_data.py
 
 Creative interpretation & visualisation of weekly outbreak simulations.
