@@ -120,12 +120,10 @@ def trajectory_match_pmo(
         out["matches_df"] = matches_df
 
     return out
-
-
-# Example small usage (not executed on import):
-if __name__ == "__main__":  # pragma: no cover
-    # example observed first 3 weekly counts
-    observed = [1,2,3,4,5]
-    csv = "data/test_simulations.csv"
-    res = trajectory_match_pmo(observed, csv, header_rows=3, return_matches_df=False)
-    print("Matches:", res["n_matches"], "Major among matches:", res["n_major"], "PMO fraction:", res["pmo_fraction"])
+# # Example small usage (not executed on import):
+# if __name__ == "__main__":  # pragma: no cover
+#     # example observed first 3 weekly counts
+#     observed = [1,2,0]
+#     csv = "data/test_simulations.csv"
+#     res = trajectory_match_pmo(observed, csv, header_rows=3, return_matches_df=False)
+#     print("Matches:", res["n_matches"], "Major among matches:", res["n_major"], "PMO fraction:", res["pmo_fraction"])

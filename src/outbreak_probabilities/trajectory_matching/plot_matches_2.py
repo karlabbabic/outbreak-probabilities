@@ -16,6 +16,7 @@ from typing import Dict, List, Tuple, Optional
 import numpy as np
 import pandas as pd
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, AutoMinorLocator
@@ -32,7 +33,12 @@ HEADER_ROWS: int = 3                       # number of metadata rows in CSV
 WEEK_PREFIX: str = "week_"
 MAJOR_THRESHOLD: int = 100
 OUT_PNG: str = "figs/matched_trajectories.png"
-MAX_PLOT: Optional[int] = 200              # set an int to limit plotted matches for readability (e.g. 200)
+
+# Sampling: choose a strategy and sample size for plotting the matched set.
+# If SAMPLE_SIZE is None (default), we will fall back to MAX_PLOT behavior (if set) or plot all matches.
+SAMPLE_STRATEGY: str = "highest_peak"            # "random","highest_cumulative","highest_peak","highest_R","hybrid"
+SAMPLE_SIZE: Optional[int] = 200           # how many matched trajectories to plot (None => use MAX_PLOT / all)
+MAX_PLOT: Optional[int] = 200              # legacy limit (kept for compatibility)
 FIGSIZE: Tuple[int, int] = (9, 6)
 BLUE: str = "tab:blue"
 GRAY: str = "dimgray"
@@ -42,7 +48,7 @@ LINEWIDTH: float = 1.0
 
 
 def load_matches(sim_csv: str, observed: List[int], header_rows: int, week_prefix: str) -> Dict:
-    """Call trajectory_match_pmo and return the result dictionary (expecting keys 'n_matches', 'pmo_fraction', 'matches_df')."""
+    """Call trajectory_match_pmo and return the result dictionary."""
     return trajectory_match_pmo(
         observed_weeks=observed,
         simulated_csv=sim_csv,
@@ -51,6 +57,7 @@ def load_matches(sim_csv: str, observed: List[int], header_rows: int, week_prefi
         return_matches_df=True,
     )
 
+
 def get_week_columns(df: pd.DataFrame, week_prefix: str) -> List[str]:
     """Return sorted week_* columns (numerical order)."""
     week_cols = [c for c in df.columns if c.startswith(week_prefix)]
@@ -58,8 +65,65 @@ def get_week_columns(df: pd.DataFrame, week_prefix: str) -> List[str]:
     week_cols = sorted(week_cols, key=lambda s: int(s.split(week_prefix)[1]))
     return week_cols
 
+
+# ----- sampling helper (from plot_traj) -----
+def select_indices(df: pd.DataFrame, week_cols: List[str], strategy: str, sample_size: Optional[int],
+                   hybrid_k: int = 25, random_seed: Optional[int] = None) -> np.ndarray:
+    """
+    Return array of indices to plot according to strategy.
+    Strategies:
+      - random
+      - highest_cumulative
+      - highest_peak
+      - highest_R
+      - hybrid (includes extremes + random remainder)
+    If sample_size is None or >= n, returns all indices.
+    """
+    n = len(df)
+    rng = np.random.default_rng(random_seed)
+
+    if sample_size is None or sample_size >= n:
+        return np.arange(n)
+
+    if strategy == "random":
+        return rng.choice(n, size=sample_size, replace=False)
+
+    # compute extremes
+    cumulative = df[week_cols].sum(axis=1).values
+    peak = df[week_cols].max(axis=1).values
+    Rdraw = df["R_draw"].values if "R_draw" in df.columns else np.zeros(n)
+
+    if strategy == "highest_cumulative":
+        return np.argsort(-cumulative)[:sample_size]
+
+    if strategy == "highest_peak":
+        return np.argsort(-peak)[:sample_size]
+
+    if strategy == "highest_R":
+        return np.argsort(-Rdraw)[:sample_size]
+
+    if strategy == "hybrid":
+        # include top extremes then random fill
+        k = min(hybrid_k, max(1, sample_size // 4))
+        top_c = list(np.argsort(-cumulative)[:k])
+        top_p = list(np.argsort(-peak)[:k])
+        top_r = list(np.argsort(-Rdraw)[:k])
+        idx_set = set(top_c + top_p + top_r)
+        remaining = sample_size - len(idx_set)
+        if remaining > 0:
+            pool = np.setdiff1d(np.arange(n), np.fromiter(idx_set, int))
+            if remaining >= pool.size:
+                choice = pool
+            else:
+                choice = rng.choice(pool, size=remaining, replace=False)
+            idx_set.update(choice.tolist())
+        return np.fromiter(sorted(idx_set), dtype=int)
+
+    raise ValueError(f"Unknown sampling strategy: {strategy}")
+
+
 def prepare_plot_data(matches_df: pd.DataFrame, week_cols: List[str], max_plot: Optional[int], major_threshold: int):
-    """Return arrays needed for plotting: arr, pmo_flags, cumul, reached, hit_idx, n_weeks."""
+    """Return arrays needed for plotting: arr, pmo_flags, cumul, reached, hit_idx, n_weeks, plotted."""
     if "PMO" not in matches_df.columns:
         raise SystemExit("Matched dataframe missing 'PMO' column.")
 
@@ -68,8 +132,8 @@ def prepare_plot_data(matches_df: pd.DataFrame, week_cols: List[str], max_plot: 
 
     # apply MAX_PLOT (optional)
     if max_plot is not None and max_plot < arr.shape[0]:
-        arr = arr[:max_plot, :]
-        pmo_flags = pmo_flags[:max_plot]
+        arr = arr[:max_plot, :].copy()
+        pmo_flags = pmo_flags[:max_plot].copy()
         plotted = arr.shape[0]
     else:
         plotted = arr.shape[0]
@@ -82,6 +146,7 @@ def prepare_plot_data(matches_df: pd.DataFrame, week_cols: List[str], max_plot: 
 
     n_weeks = arr.shape[1]
     return arr, pmo_flags, cumul, reached, hit_idx, n_weeks, plotted
+
 
 def plot_matches(
     arr: np.ndarray,
@@ -131,12 +196,17 @@ def plot_matches(
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.xaxis.set_minor_locator(AutoMinorLocator(2))
 
-    ax.set_ylim(0,max(ys)+1)
+    # set y-limit so last red dot is visible (preserve original logic)
+    if reached.any():
+        ax.set_ylim(0, max(arr[reached, :].max(), 1) + 1)
+    else:
+        ax.set_ylim(0, max(arr.max(), 1) + 1)
+
     ax.set_xlabel("Week")
     ax.set_ylabel("Cases per week")
     ax.set_title(
         f"Matched trajectories (plotted {plotted} out of {n_matches}/{n_total} matches.)\n"
-        f"Initial Cases: {OBSERVED} \nCutoff: cumulative ≥ {major_threshold}"
+        f"Initial Cases: {OBSERVED}, Cutoff: cumulative ≥ {major_threshold} \nStrategy used: {SAMPLE_STRATEGY}"
     )
     ax.grid(alpha=0.2)
     ax.legend(frameon=False, fontsize=9, loc="upper left")
@@ -176,19 +246,33 @@ def main():
     # total number of simulated trajectories (for title)
     n_total = len(pd.read_csv(SIM_CSV, header=HEADER_ROWS))
 
-    # 2) prepare week columns and numeric array
+    # 2) prepare week columns
     week_cols = get_week_columns(matches_df, WEEK_PREFIX)
     if not week_cols:
         raise SystemExit("No week_* columns found in matched dataframe.")
 
+    # 2b) sampling: decide which matched indices to keep for plotting
+    # prioritize SAMPLE_SIZE if set; otherwise fall back to MAX_PLOT; if neither set -> plot all matches
+    n_matches_total = len(matches_df)
+    sample_size = SAMPLE_SIZE if SAMPLE_SIZE is not None else MAX_PLOT
+    if sample_size is None or sample_size >= n_matches_total:
+        sampled_df = matches_df.copy()
+        plotted_limit = None
+    else:
+        sel_idx = select_indices(matches_df, week_cols, strategy=SAMPLE_STRATEGY, sample_size=sample_size, random_seed=42)
+        sel_idx = np.unique(sel_idx)  # ensure uniqueness and sorted order
+        sampled_df = matches_df.iloc[sel_idx].reset_index(drop=True)
+        plotted_limit = sampled_df.shape[0]
+
+    # 3) prepare numeric arrays from sampled_df
     arr, pmo_flags, cumul, reached, hit_idx, n_weeks, plotted = prepare_plot_data(
-        matches_df=matches_df,
+        matches_df=sampled_df,
         week_cols=week_cols,
-        max_plot=MAX_PLOT,
+        max_plot=None,   # we already sampled above
         major_threshold=MAJOR_THRESHOLD,
     )
 
-    # 3) plot and save
+    # 4) plot and save
     plot_matches(
         arr=arr,
         pmo_flags=pmo_flags,
@@ -197,7 +281,7 @@ def main():
         hit_idx=hit_idx,
         n_weeks=n_weeks,
         plotted=plotted,
-        n_matches=n_matches,
+        n_matches=n_matches_total,
         n_total=n_total,
         pmo_fraction=pmo_fraction,
         major_threshold=MAJOR_THRESHOLD,

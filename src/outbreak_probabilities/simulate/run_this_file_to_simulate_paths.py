@@ -23,12 +23,12 @@ w = compute_serial_weights(
 
 # 2. Generate a batch of trajectories
 trajectories, csv_path = generate_batch(
-    N=10000,
+    N=5000000,
     w=w,
-    max_weeks=10,
+    max_weeks=15,
     R_range=(0.0, 10.0),
     initial_cases=[1],
-    extinction_window=5,
+    extinction_window=10,
     major_threshold=100,
     seed=42,                 # master seed (scenario-level)
     R_dist="uniform",        # default, but explicit is good
