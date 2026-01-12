@@ -209,5 +209,8 @@ __marimo__/
 # Don't ignore top level tests foler
 !/tests/
 
-# Ignore data files
+# Ignore data files and image files
 *.csv
+!simulated_cases_and_serial_interval_and_weights.csv
+*.png
+*.jpg

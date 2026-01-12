@@ -23,8 +23,6 @@ from calculate_serial_weights import compute_serial_weights
 
 def default_csv_path(use_tempfile = True):
     """Define the filepath of csv
-    
-    
     """
     if use_tempfile:
         tf = tempfile.NamedTemporaryFile(prefix="simulated_cases_",suffix=".csv")
@@ -69,15 +67,34 @@ def generate_batch(
         "status",
         "PMO",
     ]
-    # define ND array for all trajectories
+
     trajectories = np.zeros((N, max_weeks), dtype=int)
+
+    # Ensure CSV is empty before writing
+    csv_path.write_text("")
 
     with csv_path.open("w", newline="") as fh:
         writer = csv.writer(fh)
+
+        header_len = len(header)
+
+        # --- metadata rows (aligned with columns) ---
+
+        w_list = list(w)
+        row_w = ["", "w"] + w_list
+        row_w += [""] * (header_len - len(row_w))
+        row_w = row_w[:header_len]
+
+        R_list = list(R_range)
+        row_R = ["", "R_range"] + R_list
+        row_R += [""] * (header_len - len(row_R))
+        row_R = row_R[:header_len]
+
+        writer.writerow(row_w)
+        writer.writerow(row_R)
         writer.writerow(header)
 
         for sim_id in range(1, N + 1):
-            # Draw R via calculate_R using the same rng for reproducibility
             R = calculate_R(R_range, rng=rng)
 
             result = simulate_trajectory(
@@ -98,7 +115,6 @@ def generate_batch(
 
             trajectories[sim_id - 1, :] = traj
 
-            # weeks
             row = [sim_id, float(R), *traj.tolist(), cumulative, status, pmo_flag]
             writer.writerow(row)
 
