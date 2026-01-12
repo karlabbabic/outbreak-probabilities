@@ -1,4 +1,5 @@
 """
+Depreciated since changing trajectory simulation to cut off when the cumulative cases >= threshold
 plot_weekly_cases.py
 
 Plot simulated outbreak trajectories BY WEEK using matplotlib.

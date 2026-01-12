@@ -19,15 +19,20 @@
 import numpy as np
 from numpy.random import Generator, default_rng
 
-def calculate_R(R_range, rng = None):
-    """ Calculates R using rng from [R_min, R_max]
-    
+# generate_single_trajectory.py (replace calculate_R)
+import numpy as np
+from numpy.random import Generator, default_rng
+
+def calculate_R(R_range, rng=None, dist="uniform", dist_params=None):
     """
-    # Could implement different rng if necessary
+    Draw a single R value using rng.
+    - R_range: (R_min, R_max) primary bounds used by many dists.
+    - dist: "uniform" | "normal" | "lognormal"
+    - dist_params: optional dict for extra parameters (e.g. {"mean":..., "sd":...})
+    """
     if rng is None:
         rng = default_rng()
 
-    # Checking R values
     if len(R_range) != 2:
         raise ValueError("R_range must be a length-2 sequence (R_min, R_max)")
 
@@ -38,7 +43,28 @@ def calculate_R(R_range, rng = None):
     if rmin == rmax:
         return rmin
 
-    return float(rng.uniform(rmin, rmax))
+    # Choose distribution
+    if dist == "uniform":
+        return float(rng.uniform(rmin, rmax))
+    elif dist == "normal":
+        # default: center at midpoint, sd = (rmax-rmin)/4 unless provided
+        params = {} if dist_params is None else dict(dist_params)
+        mu = params.get("mean", 0.5 * (rmin + rmax))
+        sd = params.get("sd", (rmax - rmin) / 4.0)
+        val = rng.normal(loc=mu, scale=sd)
+        # clamp to [rmin, rmax]
+        return float(max(rmin, min(rmax, val)))
+    elif dist == "lognormal":
+        # interpret R_range as bounding percentiles; by default sample lognormal with mean at midpoint in linear scale
+        params = {} if dist_params is None else dict(dist_params)
+        # simplest: draw on log-scale between log(rmin) and log(rmax)
+        if rmin <= 0:
+            raise ValueError("R_range lower bound must be > 0 for lognormal")
+        log_min = np.log(rmin)
+        log_max = np.log(rmax)
+        return float(np.exp(rng.uniform(log_min, log_max)))
+    else:
+        raise ValueError(f"Unknown dist '{dist}' for calculate_R")
 
 # Sliding window check for extinction
 def _is_extinct_window(trajectory, window):
@@ -58,6 +84,7 @@ def simulate_trajectory(
     rng = None,
     extinction_window = None,
     major_threshold = 100,
+    # = is default values
 ):
     """
     Simulate a single trajectory under the Poisson renewal model.
@@ -118,7 +145,7 @@ def simulate_trajectory(
         trajectory[t] = new_cases
         cumulative += new_cases
 
-        # Update flags but DO NOT stop the simulation
+        # Update flags, stop the simulation is cumulative >= threshold
         if cumulative >= major_threshold:
             major_flag = True
             break
@@ -137,6 +164,7 @@ def simulate_trajectory(
         status = "minor"
         pmo = 0
     else:
+        # ongoing trajectories are interesting but are not outbreaks yet
         status = "ongoing"
         pmo = 0
 
