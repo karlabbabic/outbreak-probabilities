@@ -53,9 +53,9 @@ data = data.iloc[1:].reset_index(drop=True)
 data.columns = data.iloc[0]
 data = data.iloc[1:].reset_index(drop=True)
 
-data = data[["week_1", "week_2", "week_3", "week_4", "week_5", "PMO"]]
+data = data[["week_1", "week_2", "PMO"]]
 
-X = data[["week_1", "week_2", "week_3", "week_4", "week_5"]].astype(float)
+X = data[["week_1", "week_2"]].astype(float)
 y = data["PMO"].astype(int)
 
 # train and evaluate models
@@ -89,11 +89,6 @@ for model_name, clf in models.items():
     y_pred = calibrated_clf.predict(X_test_scaled)
     y_proba = calibrated_clf.predict_proba(X_test_scaled)[:, 1]
 
-    print("Sample calibrated probabilities:", y_proba[:10])
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
-    print("\nClassification Report:")
-    print(classification_report(y_test, y_pred))
 
     # save model + scaler
     joblib.dump(
@@ -136,3 +131,39 @@ for model_name in models.keys():
         model_name,
         output_dir=plots_dir,
     )
+    
+    
+# TEST THE MODEL on 2 weeks data (2 and 1)
+
+def predict_pmo(model_name, week_1, week_2, threshold=0.5):
+    model_path = model_dir / f"ML_5weeks_{model_name}_calibrated.pkl"
+    scaler_path = model_dir / f"ML_5weeks_{model_name}_scaler.pkl"
+
+    if not model_path.exists():
+        raise FileNotFoundError(f"Model not found: {model_path}")
+    if not scaler_path.exists():
+        raise FileNotFoundError(f"Scaler not found: {scaler_path}")
+
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
+
+    X_new = np.array([[float(week_1), float(week_2)]])
+    X_new_scaled = scaler.transform(X_new)
+
+    proba = model.predict_proba(X_new_scaled)[:, 1][0]
+    pred = int(proba >= threshold)
+    # add major or minor in the return if pred == 1 else minor
+    if pred == 1:
+        pred_label = "major"
+    else:
+        pred_label = "minor"
+    
+    return {
+        "model": model_name,
+        "probability": float(proba),
+        "PMO": pred,
+        "predicted_label": pred_label
+    }
+# Example usage
+result = predict_pmo("GB", week_1=2, week_2=1)
+print(result)
