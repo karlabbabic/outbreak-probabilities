@@ -7,7 +7,7 @@ def get_version():
     Load version string from version.py without importing the package.
     """
     version_ns = {}
-    with open('src/outbreak_probabilities/version.py') as f:
+    with open('src/outbreak_probabilities/version_info.py') as f:
         exec(f.read(), {}, version_ns)
     return version_ns['__version__']
 
