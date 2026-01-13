@@ -1,12 +1,4 @@
 #!/usr/bin/env python3
-"""
-Package-level PMO CLI using importlib.resources for packaged model assets.
-
-Run examples:
-  PYTHONPATH=src python -m outbreak_probabilities.predict --list
-  PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4
-  PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv
-"""
 
 import argparse
 import json
