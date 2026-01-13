@@ -24,9 +24,7 @@ from matplotlib.ticker import MultipleLocator, AutoMinorLocator
 # relative import for intra-package usage
 from .trajectory import trajectory_match_pmo
 
-# ----------------------
-# Default configuration (can be overridden by run_plot_matches)
-# ----------------------
+# Defaults
 SIM_CSV: str = "data/test_simulations.csv"
 OBSERVED: List[int] = [1, 2, 0]
 HEADER_ROWS: int = 3
@@ -261,7 +259,9 @@ def run_plot_matches(
 ):
     """
     Top-level function to be called from the runner.
-    It returns the path to the saved PNG.
+    It returns the path to the saved PNG and also writes two auxiliary CSVs:
+      - <out_stem>_match_indices.csv  (single column: match_index)
+      - <out_stem>_sampled_matches.csv (full sampled dataframe with match_index)
     """
     # 1) find matches
     res = load_matches(sim_csv=sim_csv, observed=observed, header_rows=header_rows, week_prefix=week_prefix)
@@ -275,6 +275,10 @@ def run_plot_matches(
     if matches_df is None:
         raise SystemExit("trajectory_match_pmo did not return 'matches_df'.")
 
+    # add a persistent identifier for each matched row so callers can reuse selections later
+    matches_df = matches_df.copy()
+    matches_df["match_index"] = matches_df.index.astype(int)
+
     # total number of simulated trajectories (for title)
     n_total = len(pd.read_csv(sim_csv, header=header_rows))
 
@@ -287,9 +291,12 @@ def run_plot_matches(
     n_matches_total = len(matches_df)
     effective_sample_size = sample_size if sample_size is not None else max_plot
     if effective_sample_size is None or effective_sample_size >= n_matches_total:
+        # use all matches
         sampled_df = matches_df.copy()
-        plotted_limit = None
+        sel_idx = np.arange(n_matches_total)
+        plotted_limit = sampled_df.shape[0]
     else:
+        # select indices relative to matches_df
         sel_idx = select_indices(matches_df, week_cols, strategy=sample_strategy, sample_size=effective_sample_size, random_seed=42)
         sel_idx = np.unique(sel_idx)
         sampled_df = matches_df.iloc[sel_idx].reset_index(drop=True)
@@ -321,8 +328,25 @@ def run_plot_matches(
         figsize=figsize,
     )
 
-    return out_png
+    # Save indices + sampled dataframe for later reuse.
+    out_path = Path(out_png)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    stem = out_path.stem
+    idx_path = out_path.parent / f"{stem}_match_indices.csv"
+    sampled_matches_path = out_path.parent / f"{stem}_sampled_matches.csv"
 
+    # Save the original match indices (one column). Use int dtype so it's easy to read back.
+    pd.DataFrame({"match_index": sampled_df["match_index"].astype(int)}).to_csv(idx_path, index=False)
+
+    # Save sampled rows (including the match_index column and any other metadata like PMO, R_draw, week_*)
+    sampled_df.to_csv(sampled_matches_path, index=False)
+
+    # Print where we saved them
+    print(f"Saved sampled matches dataframe to: {sampled_matches_path}")
+    print(f"Saved sampled match indices to: {idx_path}")
+
+    # Return the main PNG path and the two auxiliary paths in case caller wants them
+    return out_png, str(sampled_matches_path), str(idx_path)
 
 def main():
     # uses module-level defaults unless overridden by editing this file
