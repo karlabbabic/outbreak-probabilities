@@ -1,7 +1,6 @@
 #
 from setuptools import setup, find_packages
 
-
 def get_version():
     """
     Get version number from the abm_model module.
