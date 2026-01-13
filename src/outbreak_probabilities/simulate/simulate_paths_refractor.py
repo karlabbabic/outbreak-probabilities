@@ -35,6 +35,8 @@ class SimConfig:
     R_dist_params: Optional[dict] = None
     out_path: str = "data/test_simulations.csv"
     use_tempfile: bool = False
+    generate_full: bool = False
+    write_weeks: int = 5
 
 
 def prepare_serial_weights(
@@ -80,6 +82,8 @@ def simulate_batch(cfg: SimConfig):
         R_dist_params=cfg.R_dist_params,
         out_path=str(out_path),
         use_tempfile=cfg.use_tempfile,
+        generate_full=cfg.generate_full,
+        write_weeks=cfg.write_weeks,
     )
 
     logger.info("Simulated trajectories shape: %s", getattr(trajectories, "shape", repr(trajectories)))
@@ -88,14 +92,13 @@ def simulate_batch(cfg: SimConfig):
 
 
 def main(argv=None):
-    """Very small script-style entrypoint (keeps it importable)."""
+    """Use this part to check file"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Run a test batch of simulated trajectories.")
     parser.add_argument("--N", type=int, default=1000, help="Number of trajectories to simulate")
     parser.add_argument("--seed", type=int, default=42, help="Master/random seed")
     parser.add_argument("--out", type=str, default="data/test_simulations.csv", help="Output CSV path")
-    parser.add_argument("--use-tempfile", action="store_true", help="Use temporary file writing")
     args = parser.parse_args(argv)
 
     cfg = SimConfig(N=args.N, seed=args.seed, out_path=args.out, use_tempfile=args.use_tempfile)

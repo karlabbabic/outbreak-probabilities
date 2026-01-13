@@ -35,11 +35,11 @@ def default_csv_path(use_tempfile=True):
         return Path("simulated_cases.csv")
 
 def generate_batch(
-    N,
-    w,
-    max_weeks,
-    R_range,
-    initial_cases=None,
+    N, # no of trajectories
+    w, # weights
+    max_weeks, # simulate up to 
+    R_range, # R values drawn from [R_min, R_max]
+    initial_cases=None, # [1]
     extinction_window=None,
     major_threshold=100,
     out_path=None,
@@ -47,6 +47,8 @@ def generate_batch(
     seed=None,
     R_dist="uniform",
     R_dist_params=None,
+    generate_full=False,
+    write_weeks=5
 ):
     """
     Simulate N trajectories.
@@ -69,15 +71,22 @@ def generate_batch(
         csv_path = Path(out_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Number of weeks to store in the CSV, by default 5
+    N_WRITE_WEEKS = write_weeks
+
     # Header includes sim_seed and R_draw
-    header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, max_weeks + 1)] + [
+    header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, N_WRITE_WEEKS+1)] + [
         "cumulative_cases",
         "status",
         "PMO",
     ]
 
-    # Number of weeks to store in the CSV
-    N_WRITE_WEEKS = 15
+    # # Header includes sim_seed and R_draw
+    # header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, max_weeks + 1)] + [
+    #     "cumulative_cases",
+    #     "status",
+    #     "PMO",
+    # ]
 
     trajectories = np.zeros((N, max_weeks), dtype=int)
     csv_path.write_text("")
@@ -127,7 +136,12 @@ def generate_batch(
                 major_threshold=major_threshold,
             )
 
-            traj = result["trajectory"]
+            # By default only write the first N_WRITE_WEEKS to the csv
+            if generate_full==True:
+                traj = result["trajectory"]
+            else:
+                traj = result["trajectory"][0:N_WRITE_WEEKS]
+
             cumulative = int(result["cumulative"])
             status = result["status"]
             pmo_flag = int(result["PMO"])
