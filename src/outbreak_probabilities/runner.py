@@ -31,7 +31,7 @@ def main():
 
     # ---------- simulate ----------
     sim_p = sub.add_parser("simulate", help="Generate simulated outbreak trajectories")
-    sim_p.add_argument("-N", "--num", dest="N", type=int, default=1000,
+    sim_p.add_argument("--N", "--num", dest="N", type=int, default=1000,
                     metavar="N",
                     help="Number of outbreaks to create (default: 1000)")
     sim_p.add_argument("--seed", type=int, default=42,
@@ -52,9 +52,9 @@ def main():
     sim_p.add_argument("--major-threshold", type=int, default=100,
                     metavar="THRESH",
                     help="Cumulative cases considered a major outbreak (default: 100)")
-    sim_p.add_argument("--r-min", type=float, default=0.0, metavar="R_MIN",
+    sim_p.add_argument("--R-min", type=float, default=0.0, metavar="R_MIN",
                     help="Minimum R value (default: 0.0)")
-    sim_p.add_argument("--r-max", type=float, default=10.0, metavar="R_MAX",
+    sim_p.add_argument("--R-max", type=float, default=10.0, metavar="R_MAX",
                     help="Maximum R value (default: 10.0)")
     sim_p.add_argument("--generate-full", action="store_true",
                     help="Store full weekly cases to CSV (may conflict with --write-weeks)")
