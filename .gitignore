@@ -217,8 +217,5 @@ __marimo__/
 
 
 
-# ignore models for now
-models/*.pkl
-# Keep folder, ignore contents
-model_outputs/plots/*
-!model_outputs/plots/.gitkeep
+
+
