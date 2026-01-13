@@ -3,3 +3,6 @@ matplotlib
 numpy
 pandas
 sphinx_rtd_theme
+logging
+sys
+scipy
