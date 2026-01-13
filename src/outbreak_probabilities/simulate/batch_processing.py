@@ -23,7 +23,7 @@ import numpy as np
 import csv
 import tempfile
 
-from generate_single_trajectory import simulate_trajectory, calculate_R
+from .generate_single_trajectory import simulate_trajectory, calculate_R
 
 def default_csv_path(use_tempfile=True):
     if use_tempfile:

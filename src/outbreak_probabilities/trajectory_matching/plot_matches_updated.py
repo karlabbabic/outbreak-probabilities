@@ -194,7 +194,8 @@ def plot_matches(
     ax.set_xticks(np.arange(1, n_weeks + 1, 1))
     ax.minorticks_on()
     ax.xaxis.set_major_locator(MultipleLocator(1))
-    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
+    ax.xaxis.set_minor_locator(AutoMinorLocator(1))
+    plt.tick_params(axis='x', which='minor', bottom=False, top=False, labelbottom=False)
 
     # set y-limit so last red dot is visible (preserve original logic)
     if reached.any():
@@ -208,7 +209,7 @@ def plot_matches(
         f"Matched trajectories (plotted {plotted} out of {n_matches}/{n_total} matches.)\n"
         f"Initial Cases: {OBSERVED}, Cutoff: cumulative ≥ {major_threshold} \nStrategy used: {SAMPLE_STRATEGY}"
     )
-    ax.grid(alpha=0.2)
+
     ax.legend(frameon=False, fontsize=9, loc="upper left")
 
     # keep the same spine visibility behavior as the original
@@ -220,9 +221,25 @@ def plot_matches(
     # ensure formatter behavior matches original intent
     plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
 
-    # set minor ticks/gridline cadence and thin minor gridlines
+    ax.grid(
+    which="major",
+    color="0.65",      # gray
+    linewidth=1.2,
+    alpha=0.6
+)
+
+    # Minor ticks halfway between majors (but hidden)
+    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
     ax.yaxis.set_minor_locator(AutoMinorLocator(2))
-    ax.grid(which='minor', linewidth=0.6)
+
+    # Minor gridlines: lighter gray, thinner
+    ax.grid(
+        which="minor",
+        color="0.85",      # lighter gray
+        linewidth=0.6,
+        alpha=0.8
+    )
+
 
     # save
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
