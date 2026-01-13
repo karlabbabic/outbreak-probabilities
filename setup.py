@@ -12,8 +12,11 @@ def get_version():
     """
     import os
     import sys
+    # it should be in src/outbreak_probabilities/version_info.py
+    # so we add src/outbreak_probabilities to the path
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'outbreak_probabilities'))
     
-    from version_info import VERSION as version
+    from src.outbreak_probabilities.version_info import VERSION as version
     sys.path.pop()
 
     return version
