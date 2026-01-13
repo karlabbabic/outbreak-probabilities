@@ -31,7 +31,7 @@ def main():
 
     # ---------- simulate ----------
     sim_p = sub.add_parser("simulate", help="Generate simulated outbreak trajectories")
-    sim_p.add_argument("-N", "--num", dest="N", type=int, default=1000,
+    sim_p.add_argument("--N", "--num", dest="N", type=int, default=1000,
                     metavar="N",
                     help="Number of outbreaks to create (default: 1000)")
     sim_p.add_argument("--seed", type=int, default=42,
