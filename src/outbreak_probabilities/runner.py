@@ -5,12 +5,13 @@ import argparse
 import re
 import time
 from typing import List, Optional, Tuple
+from pathlib import Path
 
 # Make sure imports are correct for running from source
 from .simulate import simulate_paths_refractor as sim
 from .simulate import plot_traj_refractor as plot
 from .trajectory_matching import plot_matches_refractor as tm
-from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r 
+from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r
 
 # Parser for initial cases like 1,2,3
 def parse_int_list(s: Optional[str]) -> List[int]:
@@ -62,7 +63,6 @@ def main():
     # sim_p.add_argument("--use-tempfile", action="store_true", help="Write to tempfile instead of out path")
 
     # ---------- plot ----------
-   # ---------- plot ----------
     plot_p = sub.add_parser("plot", help="Plot simulated outbreak trajectories")
     plot_p.add_argument("--csv", default="data/test_simulations.csv",
                         help="Input simulations CSV (default: data/test_simulations.csv)")
@@ -81,10 +81,6 @@ def main():
     plot_p.add_argument("--random-seed", type=int, default=42,
                         help="Random seed for sampling (default: 42)")
 
-    # plot_p.add_argument("--header-rows", type=int, default=3)
-    # plot_p.add_argument("--out-pmo", default="figs/pmo_vs_r.png")
-    # plot_p.add_argument("--out-traj", default="figs/weekly_trajectories.png")
-
     # ---------- match ----------
     match_p = sub.add_parser("match")
     match_p.add_argument("--sim-csv", default="data/test_simulations.csv", help = "Input csv filepath (default:data/test_simulations.csv)")
@@ -95,7 +91,7 @@ def main():
     match_p.add_argument("--figsize", type=str, default=None, help="Size of the figure (default: )")
     # match_p.add_argument("--header-rows", type=int, default=3)
     # match_p.add_argument("--week-prefix", default="week_")
-    match_p.add_argument("--major-threshold", type=int, default=100, help="Cumulative cases defining a major outbreak (default: 100")
+    match_p.add_argument("--major-threshold", type=int, default=100, help="Cumulative cases defining a major outbreak (default: 100)")
     match_p.add_argument("--sample-strategy", default="highest_peak", help="Sampling strategy: random, highest_cumulative (default), highest_R, hybrid")
     match_p.add_argument("--random-seed", type=int, default=42, help="Seed for RNG reproucibility (default: 42)")
 
@@ -111,7 +107,9 @@ def main():
     pmo_p.add_argument("--header-rows", type=int, default=3, help="CSV header rows for simulate output")
     pmo_p.add_argument("--week-prefix", type=str, default="week_", help="Week column prefix in CSV")
     pmo_p.add_argument("--random-seed", type=int, default=42, help="Random seed for sampling")
-    pmo_p.add_argument("--max-plot", type=int, default=None)  
+    pmo_p.add_argument("--max-plot", type=int, default=None)
+    pmo_p.add_argument("--full-index", action="store_true", help="Plot cumulative PMO over full sim index (1..N_total) with updates only at matched indices")
+    pmo_p.add_argument("--events-out", default=None, help="Optional path to write events CSV when using --full-index (default: next to PNG)")
 
     args = p.parse_args()
     t0 = time.perf_counter()
@@ -170,8 +168,9 @@ def main():
     elif args.cmd == "pmo_vs_r":
         init = parse_int_list(args.initial_cases)
         figsize = parse_figsize(args.figsize)
-        # call the new function
-        pmo_r.run_pmo_vs_r_refractor(
+
+        # call the new function (supports full_index mode)
+        result = pmo_r.run_pmo_vs_r_refractor(
             sim_csv=args.sim_csv,
             observed=init,
             header_rows=args.header_rows,
@@ -182,8 +181,25 @@ def main():
             sort_by=args.sort_by,
             figsize=figsize if figsize is not None else None,
             random_seed=args.random_seed,
+            full_index=args.full_index,
         )
-        print("PMO vs r plot ->", args.out)
+
+        # result may be (out_path, None) or (out_path, events_df)
+        if isinstance(result, tuple):
+            out_path, meta = result
+            print(f"PMO vs r plot -> {out_path}")
+            if meta is not None:
+                # meta is a DataFrame of events; save if requested or report where function saved
+                if args.full_index:
+                    if args.events_out:
+                        meta.to_csv(args.events_out, index=False)
+                        print(f"Events CSV written to: {args.events_out}")
+                    else:
+                        # function already saved events CSV next to PNG; report that file path
+                        events_csv = Path(out_path).with_name(Path(out_path).stem + "_events.csv")
+                        print(f"Events CSV (auto) -> {events_csv}")
+        else:
+            print(f"PMO vs r plot -> {result}")
 
     print(f"Done in {time.perf_counter() - t0:.2f}s")
 

@@ -21,7 +21,10 @@ PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --see
 PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations.csv --sample-strategy random
 
 3. Match trajectories
-PYTHONPATH=src python -m outbreak_probabilities.runner match --sim-csv data/test_simulations.csv --initial-cases 1,2,3,4
+PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,3,4
 
-4. Plot PMO vs R
-PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --sim-csv data/test_simulations.csv --initial-cases 1,0 --sample-size 1000 --sample-strategy random --sort-by sample-order
+4. Plot PMO of matched trajectories
+PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r 
+
+(Over the full simulation index)
+PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --full-index --initial-cases 1,2,0 --sim-csv data/test_simulations_1M.csv --sample-size 200
