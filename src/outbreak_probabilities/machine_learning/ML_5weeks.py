@@ -4,14 +4,14 @@ from pathlib import Path
 import joblib
 import argparse
 import numpy as np
-import pandas as pd
+import pandas as pd 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
 # Set Path
 BASE_DIR = Path(__file__).resolve().parents[3]
 data_path = BASE_DIR / "data" / "test_simulations.csv"
-model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_4weeks"
+model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_5weeks"
 model_dir.mkdir(parents=True, exist_ok=True)
 
 # load data
