@@ -15,11 +15,13 @@ It holds the following folders:
 `gui`: a simple graphical user interface 
 
 1. Simulate
-PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --seed 42 --out data/test_simulations_2.csv
+PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --seed 42 --out data/test_simulations.csv
 
 2. Plot
-PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations_2.csv --sample-strategy random
+PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations.csv --sample-strategy random
 
 3. Match trajectories
-PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,3,4
-#
+PYTHONPATH=src python -m outbreak_probabilities.runner match --sim-csv data/test_simulations.csv --initial-cases 1,2,3,4
+
+4. Plot PMO vs R
+PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --sim-csv data/test_simulations.csv --initial-cases 1,0 --sample-size 1000 --sample-strategy random --sort-by sample-order
