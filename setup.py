@@ -9,7 +9,9 @@ def get_version():
     version_ns = {}
     with open('src/outbreak_probabilities/version_info.py') as f:
         exec(f.read(), {}, version_ns)
-    return version_ns['__version__']
+    version = version_ns['__version__']
+    # KeyError: '__version__'
+    return version
 
 def get_readme():
     """
