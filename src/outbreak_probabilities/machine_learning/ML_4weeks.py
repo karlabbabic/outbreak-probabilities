@@ -23,7 +23,7 @@ data = data.iloc[1:].reset_index(drop=True)
 data.columns = data.iloc[0]
 data = data.iloc[1:].reset_index(drop=True)
 
-data = data[["week_1", "week_2", "week_3", "week_4" "PMO"]]
+data = data[["week_1", "week_2", "week_3", "week_4", "PMO"]]
 X = data[["week_1", "week_2", "week_3", "week_4"]].astype(float)
 y = data["PMO"].astype(int)
 
