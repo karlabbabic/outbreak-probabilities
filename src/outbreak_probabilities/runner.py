@@ -1,31 +1,16 @@
 #!/usr/bin/env python3
-# src/outbreak_probabilities/runner.py
-import argparse
-import time
-
-# adjust names if your modules are spelled differently
-from .simulate import simulate_paths_refractor as sim
-from .simulate import plot_traj_refractor as plot
-
-"""
-1. Simulate
-PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --seed 42 --out data/test_simulations_2.csv
-
-2. Plot
-PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations_2.csv --sample-strategy random
-
-3. Match trajectories
-PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,3,4
-"""
-#!/usr/bin/env python3
 # src/outbreak_probabilities/runner.py — concise runner (with commented CLI options)
 
-import argparse, re, time
+import argparse
+import re
+import time
 from typing import List, Optional, Tuple
 
 from .simulate import simulate_paths_refractor as sim
 from .simulate import plot_traj_refractor as plot
 from .trajectory_matching import plot_matches_refractor as tm
+from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r  # new import
+
 
 def parse_int_list(s: Optional[str]) -> List[int]:
     if not s:
@@ -67,9 +52,9 @@ def main():
     # plot_p.add_argument("--header-rows", type=int, default=3)
     # plot_p.add_argument("--out-pmo", default="figs/pmo_vs_r.png")
     # plot_p.add_argument("--out-traj", default="figs/weekly_trajectories.png")
-    # plot_p.add_argument("--bins", type=int, default=20)
-    # plot_p.add_argument("--major-threshold", type=int, default=100)
-    # plot_p.add_argument("--random-seed", type=int, default=42)
+    plot_p.add_argument("--bins", type=int, default=20)
+    plot_p.add_argument("--major-threshold", type=int, default=100)
+    plot_p.add_argument("--random-seed", type=int, default=42)
 
     # ---------- match ----------
     match_p = sub.add_parser("match")
@@ -81,9 +66,23 @@ def main():
     match_p.add_argument("--figsize", type=str, default=None)
     # match_p.add_argument("--header-rows", type=int, default=3)
     # match_p.add_argument("--week-prefix", default="week_")
-    # match_p.add_argument("--major-threshold", type=int, default=100)
+    match_p.add_argument("--major-threshold", type=int, default=100)
     match_p.add_argument("--sample-strategy", default="highest_peak")
-    # match_p.add_argument("--random-seed", type=int, default=42)
+    match_p.add_argument("--random-seed", type=int, default=42)
+
+    # ---------- pmo_vs_r (new) ----------
+    pmo_p = sub.add_parser("pmo_vs_r", help="Plot PMO fraction as a function of sampled matched trajectories (r=1..R)")
+    pmo_p.add_argument("--sim-csv", default="data/test_simulations.csv", help="Simulations CSV used for matching")
+    pmo_p.add_argument("--out", default="figs/pmo_vs_r.png", help="Output PNG path")
+    pmo_p.add_argument("--initial-cases", type=str, default="1,2,3", help="Observed initial cases (comma or space separated)")
+    pmo_p.add_argument("--sample-size", type=int, default=200)
+    pmo_p.add_argument("--sample-strategy", default="random", help="Sampling strategy (random, highest_peak, highest_cumulative, highest_R, hybrid)")
+    pmo_p.add_argument("--sort-by", default="sample_order", help="Sorting of sampled matches before computing PMO(r): sample_order, by_cumulative, by_peak, by_R, by_PMO")
+    pmo_p.add_argument("--figsize", type=str, default=None, help="Figure size 'width,height' (optional)")
+    pmo_p.add_argument("--header-rows", type=int, default=3, help="CSV header rows for simulate output")
+    pmo_p.add_argument("--week-prefix", type=str, default="week_", help="Week column prefix in CSV")
+    pmo_p.add_argument("--random-seed", type=int, default=42, help="Random seed for sampling")
+    pmo_p.add_argument("--max-plot", type=int, default=None)  # we rely on sample-size and module MAX_PLOT if needed
 
     args = p.parse_args()
     t0 = time.perf_counter()
@@ -95,9 +94,9 @@ def main():
             seed=args.seed,
             out_path=args.out,
             initial_cases=init,
-            # max_weeks=args.max_weeks,
-            # major_threshold=args.major_threshold,
-            # R_range=(args.R_min, args.R_max),
+            max_weeks=args.max_weeks,
+            major_threshold=args.major_threshold,
+            R_range=(args.R_min, args.R_max),
             # R_dist=args.R_dist,
         )
         sim.simulate_batch(cfg)
@@ -112,11 +111,11 @@ def main():
             overlay_mean=args.overlay_mean,
             overlay_quantiles=overlay_q,
             # header_rows=args.header_rows,
-            # out_pmo=args.out_pmo,
-            # out_traj=args.out_traj,
-            # bins=args.bins,
-            # major_threshold=args.major_threshold,
-            # random_seed=args.random_seed,
+            out_pmo=args.out_pmo,
+            out_traj=args.out_traj,
+            bins=args.bins,
+            major_threshold=args.major_threshold,
+            random_seed=args.random_seed,
         )
         print("Plots written")
 
@@ -131,11 +130,29 @@ def main():
             out_png=args.out,
             figsize=figsize,
             # header_rows=args.header_rows,
-            # week_prefix=args.week_prefix,
-            # major_threshold=args.major_threshold,
-            # sample_strategy=args.sample_strategy,
+            week_prefix=args.week_prefix,
+            major_threshold=args.major_threshold,
+            sample_strategy=args.sample_strategy,
         )
         print("Matched plot ->", args.out)
+
+    elif args.cmd == "pmo_vs_r":
+        init = parse_int_list(args.initial_cases)
+        figsize = parse_figsize(args.figsize)
+        # call the new function
+        pmo_r.run_pmo_vs_r_refractor(
+            sim_csv=args.sim_csv,
+            observed=init,
+            header_rows=args.header_rows,
+            week_prefix=args.week_prefix,
+            out_png=args.out,
+            sample_strategy=args.sample_strategy,
+            sample_size=args.sample_size,
+            sort_by=args.sort_by,
+            figsize=figsize if figsize is not None else None,
+            random_seed=args.random_seed,
+        )
+        print("PMO vs r plot ->", args.out)
 
     print(f"Done in {time.perf_counter() - t0:.2f}s")
 
