@@ -22,3 +22,4 @@ PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simu
 
 3. Match trajectories
 PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,3,4
+#
