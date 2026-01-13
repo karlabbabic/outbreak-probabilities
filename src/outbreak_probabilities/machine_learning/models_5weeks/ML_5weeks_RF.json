@@ -30,5 +30,5 @@
     "verbose": 0,
     "warm_start": false
   },
-  "notes": "Trained on simulated_cases_and_serial_interval_and_weights1.csv"
+  "notes": "test_simulations.csv"
 }

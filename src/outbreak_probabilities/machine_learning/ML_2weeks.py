@@ -66,7 +66,7 @@ for model_name, clf in models.items():
         "feature_names": feature_names,
         "saved_at": datetime.utcnow().isoformat() + "Z",
         "hyperparams": clf.get_params(),
-        "notes": "Trained on simulated_cases_and_serial_interval_and_weights1.csv",
+        "notes": "Trained on test_simulations.csv",
     }
     # write JSON and a joblib copy
     with open(meta_json_path, "w") as fh:
