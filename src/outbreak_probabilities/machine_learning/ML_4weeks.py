@@ -5,13 +5,12 @@ import joblib
 import argparse
 import numpy as np
 import pandas as pd
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
 # Set Path
 BASE_DIR = Path(__file__).resolve().parents[3]
-data_path = BASE_DIR / "data" / "simulated_cases_and_serial_interval_and_weights1.csv"
+data_path = BASE_DIR / "data" / "test_simulations.csv"
 model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_4weeks"
 model_dir.mkdir(parents=True, exist_ok=True)
 
@@ -19,11 +18,11 @@ model_dir.mkdir(parents=True, exist_ok=True)
 data = pd.read_csv(data_path)
 
 # remove first two rows
-data = data.iloc[1:].reset_index(drop=True)
+data = data.iloc[2:].reset_index(drop=True)
 data.columns = data.iloc[0]
 data = data.iloc[1:].reset_index(drop=True)
 
-data = data[["week_1", "week_2", "week_3", "week_4", "PMO"]]
+data = data[["week_1", "week_2", "week_3","week_4", "PMO"]]
 X = data[["week_1", "week_2", "week_3", "week_4"]].astype(float)
 y = data["PMO"].astype(int)
 

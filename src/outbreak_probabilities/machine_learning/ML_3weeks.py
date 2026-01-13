@@ -5,13 +5,12 @@ import joblib
 import argparse
 import numpy as np
 import pandas as pd
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
 # Set Path
 BASE_DIR = Path(__file__).resolve().parents[3]
-data_path = BASE_DIR / "data" / "simulated_cases_and_serial_interval_and_weights1.csv"
+data_path = BASE_DIR / "data" / "test_simulations.csv"
 model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_3weeks"
 model_dir.mkdir(parents=True, exist_ok=True)
 
@@ -19,7 +18,7 @@ model_dir.mkdir(parents=True, exist_ok=True)
 data = pd.read_csv(data_path)
 
 # remove first two rows
-data = data.iloc[1:].reset_index(drop=True)
+data = data.iloc[2:].reset_index(drop=True)
 data.columns = data.iloc[0]
 data = data.iloc[1:].reset_index(drop=True)
 
@@ -94,16 +93,17 @@ def predict_pmo(model_name: str, week_1: float, week_2: float, threshold: float 
     if not scaler_path.exists():
         raise FileNotFoundError(f"Scaler not found: {scaler_path}")
 
+    # Load model and scaler
     model = joblib.load(model_path)
     scaler = joblib.load(scaler_path)
 
     X_new = np.array([[float(week_1), float(week_2)]])
     X_new_scaled = scaler.transform(X_new)
 
-
+    # Predict probability
     proba = model.predict_proba(X_new_scaled)[:, 1][0]
   
-
+    # Determine prediction based on threshold
     pred = int(proba >= threshold)
     pred_label = "major" if pred == 1 else "minor"
 
