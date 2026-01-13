@@ -13,8 +13,8 @@ def get_version():
     import os
     import sys
 
-
-    from version_info import VERSION as version
+    
+    from .version_info import VERSION as version
     sys.path.pop()
 
     return version
