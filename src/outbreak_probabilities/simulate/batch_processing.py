@@ -76,6 +76,9 @@ def generate_batch(
         "PMO",
     ]
 
+    # Number of weeks to store in the CSV
+    N_WRITE_WEEKS = 15
+
     trajectories = np.zeros((N, max_weeks), dtype=int)
     csv_path.write_text("")
 
@@ -128,8 +131,6 @@ def generate_batch(
             cumulative = int(result["cumulative"])
             status = result["status"]
             pmo_flag = int(result["PMO"])
-
-            trajectories[sim_id - 1, :] = traj
 
             row = [sim_id, sim_seed, float(R), *traj.tolist(), cumulative, status, pmo_flag]
             writer.writerow(row)
