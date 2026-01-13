@@ -46,7 +46,6 @@ BLUE: str = "tab:blue"
 GRAY: str = "dimgray"
 # ----------------------
 
-
 def load_matches(sim_csv: str, observed: List[int], header_rows: int, week_prefix: str) -> Dict:
     """Call trajectory_match_pmo and return the result dictionary."""
     return trajectory_match_pmo(
@@ -57,13 +56,11 @@ def load_matches(sim_csv: str, observed: List[int], header_rows: int, week_prefi
         return_matches_df=True,
     )
 
-
 def get_week_columns(df: pd.DataFrame, week_prefix: str) -> List[str]:
     """Return sorted week_* columns (numerical order)."""
     week_cols = [c for c in df.columns if c.startswith(week_prefix)]
     week_cols = sorted(week_cols, key=lambda s: int(s.split(week_prefix)[1]))
     return week_cols
-
 
 # Reuse selection helper from plot_matches to keep behavior identical
 def select_indices(df: pd.DataFrame, week_cols: List[str], strategy: str, sample_size: Optional[int],
@@ -118,7 +115,6 @@ def select_indices(df: pd.DataFrame, week_cols: List[str], strategy: str, sample
 
     raise ValueError(f"Unknown sampling strategy: {strategy}")
 
-
 def prepare_sample(matches_df: pd.DataFrame, week_cols: List[str], sample_strategy: str, sample_size: Optional[int],
                    random_seed: Optional[int] = None):
     """
@@ -135,7 +131,6 @@ def prepare_sample(matches_df: pd.DataFrame, week_cols: List[str], sample_strate
         sel_idx = np.array(sel_idx, dtype=int)
         sampled_df = matches_df.iloc[sel_idx].reset_index(drop=True)
     return sampled_df
-
 
 def sort_sampled_df(sampled_df: pd.DataFrame, week_cols: List[str], sort_by: str = "sample_order") -> pd.DataFrame:
     """
@@ -170,7 +165,6 @@ def sort_sampled_df(sampled_df: pd.DataFrame, week_cols: List[str], sort_by: str
 
     raise ValueError(f"Unknown sort_by value: {sort_by}")
 
-
 def compute_pmo_vs_r(sampled_df: pd.DataFrame) -> np.ndarray:
     """
     Given sampled_df (ordered), compute cumulative PMO fraction for r=1..R:
@@ -182,7 +176,6 @@ def compute_pmo_vs_r(sampled_df: pd.DataFrame) -> np.ndarray:
     cumsum = np.cumsum(pmo_flags, dtype=float)
     r = np.arange(1, pmo_flags.size + 1, dtype=float)
     return cumsum / r
-
 
 def plot_pmo_vs_r(
     pmo_r: np.ndarray,
@@ -283,11 +276,9 @@ def run_pmo_vs_r_refractor(
 
     return out_png
 
-
 def main():
     out = run_pmo_vs_r_refractor()
     print(f"Saved PMO vs r plot to {out}")
-
 
 if __name__ == "__main__":
     main()
