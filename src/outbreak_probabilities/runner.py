@@ -50,14 +50,12 @@ def main():
     sim_p.add_argument("--seed", type=int, default=42)
     sim_p.add_argument("--out", default="data/test_simulations.csv")
     sim_p.add_argument("--initial-cases", type=str, default="1")
-    # sim_p.add_argument("--max-weeks", type=int, default=15)
-    # sim_p.add_argument("--major-threshold", type=int, default=100)
-    # sim_p.add_argument("--R-min", type=float, default=0.0)
-    # sim_p.add_argument("--R-max", type=float, default=10.0)
+    sim_p.add_argument("--max-weeks", type=int, default=15)
+    sim_p.add_argument("--major-threshold", type=int, default=100)
+    sim_p.add_argument("--R-min", type=float, default=0.0)
+    sim_p.add_argument("--R-max", type=float, default=10.0)
     # sim_p.add_argument("--R-dist", default="uniform")
     # sim_p.add_argument("--use-tempfile", action="store_true")
-    # sim_p.add_argument("--workers", type=int)
-    # sim_p.add_argument("--chunk-size", type=int)
 
     # ---------- plot ----------
     plot_p = sub.add_parser("plot")
