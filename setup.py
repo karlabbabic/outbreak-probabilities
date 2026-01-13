@@ -1,22 +1,7 @@
 #
 from setuptools import setup, find_packages
 
-def get_version():
-    """
-    Get version number from the abm_model module.
 
-    The easiest way would be to just ``import abm_model``, but note that this may
-    fail if the dependencies have not been installed yet. Instead, we've put
-    the version number in a simple version_info module, that we'll import here
-    by temporarily adding the oxrse directory to the pythonpath using sys.path.
-    """
-    import os
-    import sys
-    
-    from src.outbreak_probabilities.version_info import VERSION as version
-    sys.path.pop()
-
-    return version
 
 def get_readme():
     """
@@ -27,10 +12,10 @@ def get_readme():
 
 setup(
     # Module name (lowercase)
-    name='abm_model',
+    name='outbreak_probabilities',
 
     # Version
-    version=get_version(),
+    version= "1.1.0",
 
     description='Outbreak Probabilities Project 2025.',
 

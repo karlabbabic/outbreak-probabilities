@@ -12,3 +12,4 @@ VERSION_INT = 1, 1, 0
 
 # String version of the version number
 VERSION = '.'.join([str(x) for x in VERSION_INT])
+__version__ = VERSION

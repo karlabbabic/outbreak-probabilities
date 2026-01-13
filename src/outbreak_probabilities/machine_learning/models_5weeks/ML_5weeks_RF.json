@@ -1,0 +1,34 @@
+{
+  "model_name": "RF",
+  "n_weeks": 5,
+  "feature_names": [
+    "week_1",
+    "week_2",
+    "week_3",
+    "week_4",
+    "week_5"
+  ],
+  "saved_at": "2026-01-13T16:32:01.053797Z",
+  "hyperparams": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": null,
+    "criterion": "gini",
+    "max_depth": 10,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 100,
+    "n_jobs": -1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "notes": "Trained on simulated_cases_and_serial_interval_and_weights1.csv"
+}

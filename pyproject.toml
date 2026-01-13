@@ -1,3 +1,17 @@
+[project]
+name = "outbreak-probabilities"
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = { attr = "outbreak_probabilities.version_info.__version__" }
+
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=60", "wheel", "build"]
 build-backend = "setuptools.build_meta"
+[tool.setuptools.package-data]
+"packagename.machine_learning" = ["models_*weeks/*"]
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["outbreak_probabilities*"]
+
+
