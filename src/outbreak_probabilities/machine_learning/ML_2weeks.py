@@ -1,11 +1,31 @@
-import numpy as np
-import pandas as pd
+import json
+from datetime import datetime
 from pathlib import Path
 import joblib
+import argparse
+import numpy as np
+import pandas as pd
 
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
+
+# Set Path
+BASE_DIR = Path(__file__).resolve().parents[3]
+data_path = BASE_DIR / "data" / "simulated_cases_and_serial_interval_and_weights1.csv"
+model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_2weeks"
+model_dir.mkdir(parents=True, exist_ok=True)
+
+# load data
+data = pd.read_csv(data_path)
+
+# remove first two rows
+data = data.iloc[1:].reset_index(drop=True)
+data.columns = data.iloc[0]
+data = data.iloc[1:].reset_index(drop=True)
+
+data = data[["week_1", "week_2", "PMO"]]
+X = data[["week_1", "week_2"]].astype(float)
+y = data["PMO"].astype(int)
 
 # define models
 models = {
@@ -15,56 +35,59 @@ models = {
         random_state=42,
         n_jobs=-1,
     ),
+    
 }
 
-# set paths
-BASE_DIR = Path(__file__).resolve().parents[3]
-data_path = BASE_DIR / "data" / "simulated_cases_and_serial_interval_and_weights1.csv"
-model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_2weeks"
-
-model_dir.mkdir(parents=True, exist_ok=True)
-
-# Load data
-data = pd.read_csv(data_path)
-
-data = data.iloc[1:].reset_index(drop=True)
-data.columns = data.iloc[0]
-data = data.iloc[1:].reset_index(drop=True)
-
-data = data[["week_1", "week_2", "PMO"]]
-
-X = data[["week_1", "week_2"]].astype(float)
-y = data["PMO"].astype(int)
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# train models on FULL dataset
+# train and dave
+feature_names = list(X.columns)  
+n_weeks = len(feature_names)
+
 for model_name, clf in models.items():
     print(f"\nTraining model on full dataset: {model_name}")
-
     clf.fit(X_scaled, y)
 
+    stem = f"ML_{n_weeks}weeks_{model_name}"
+    model_path = model_dir / f"{stem}.pkl"
+    scaler_path = model_dir / f"{stem}_scaler.pkl"
+    meta_json_path = model_dir / f"{stem}.json"
+    meta_jbl_path = model_dir / f"{stem}_meta.pkl"
+
     # save model and scaler
-    joblib.dump(
-        clf,
-        model_dir / f"ML_2weeks_{model_name}.pkl",
-        compress=3,
-    )
-    joblib.dump(
-        scaler,
-        model_dir / f"ML_2weeks_{model_name}_scaler.pkl",
-        compress=3,
-    )
+    joblib.dump(clf, model_path, compress=3)
+    joblib.dump(scaler, scaler_path, compress=3)
+
+    
+    meta = {
+        "model_name": model_name,
+        "n_weeks": n_weeks,
+        "feature_names": feature_names,
+        "saved_at": datetime.utcnow().isoformat() + "Z",
+        "hyperparams": clf.get_params(),
+        "notes": "Trained on simulated_cases_and_serial_interval_and_weights1.csv",
+    }
+    # write JSON and a joblib copy
+    with open(meta_json_path, "w") as fh:
+        json.dump(meta, fh, indent=2)
+    joblib.dump(meta, meta_jbl_path, compress=3)
+
+    print(f"Saved: {model_path.name}, {scaler_path.name}, {meta_json_path.name}")
 
 print("\nAll models trained and saved.")
 
-import joblib
-import numpy as np
+# Prediction helper
 
-def predict_pmo(model_name, week_1, week_2, threshold=0.5):
-    model_path = model_dir / f"ML_2weeks_{model_name}.pkl"
-    scaler_path = model_dir / f"ML_2weeks_{model_name}_scaler.pkl"
+def predict_pmo(model_name: str, week_1: float, week_2: float, threshold: float = 0.5):
+    """
+    Load model and scaler for model_name (e.g. "RF") and predict PMO probability + class + label.
+    Returns dict with keys: model, probability, PMO (0/1), predicted_label ("major"/"minor")
+    """
+    stem = f"ML_{n_weeks}weeks_{model_name}"
+    model_path = model_dir / f"{stem}.pkl"
+    scaler_path = model_dir / f"{stem}_scaler.pkl"
 
     if not model_path.exists():
         raise FileNotFoundError(f"Model not found: {model_path}")
@@ -77,23 +100,16 @@ def predict_pmo(model_name, week_1, week_2, threshold=0.5):
     X_new = np.array([[float(week_1), float(week_2)]])
     X_new_scaled = scaler.transform(X_new)
 
+
     proba = model.predict_proba(X_new_scaled)[:, 1][0]
+  
+
     pred = int(proba >= threshold)
-    # add major or minor in the reutn if pred == 1 else minor
-    if pred == 1:
-        pred_label = "major"
-    else:
-        pred_label = "minor"
-    
+    pred_label = "major" if pred == 1 else "minor"
+
     return {
         "model": model_name,
         "probability": float(proba),
         "PMO": pred,
-        "predicted_label": pred_label
-        
+        "predicted_label": pred_label,
     }
-
-# example usage
-if __name__ == "__main__":
-    result = predict_pmo("GB", week_1=2, week_2=1)
-    print(result)
