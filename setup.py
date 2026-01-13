@@ -2,7 +2,15 @@
 from setuptools import setup, find_packages
 
 
-
+def get_version():
+    """
+    Load version string from version.py without importing the package.
+    """
+    version_ns = {}
+    with open('src/outbreak_probabilities/version_info.py') as f:
+        exec(f.read(), {}, version_ns)
+    version = version_ns['__version__']
+    return version
 
 def get_readme():
     """
@@ -13,10 +21,10 @@ def get_readme():
 
 setup(
     # Module name (lowercase)
-    name='abm_model',
+    name='outbreak_probabilities',
 
     # Version
-    version= "1.0.0",
+    version= get_version(),
 
     description='Outbreak Probabilities Project 2025.',
 
