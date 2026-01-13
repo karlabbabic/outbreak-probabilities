@@ -14,3 +14,11 @@ It holds the following folders:
 
 `gui`: a simple graphical user interface 
 
+1. Simulate
+PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --seed 42 --out data/test_simulations_2.csv
+
+2. Plot
+PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations_2.csv --sample-strategy random
+
+3. Match trajectories
+PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,3,4
