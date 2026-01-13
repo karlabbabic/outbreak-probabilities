@@ -47,6 +47,7 @@ def generate_batch(
     seed=None,
     R_dist="uniform",
     R_dist_params=None,
+    generate_full=False,
 ):
     """
     Simulate N trajectories.
@@ -69,15 +70,22 @@ def generate_batch(
         csv_path = Path(out_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Number of weeks to store in the CSV
+    N_WRITE_WEEKS = 5
+
     # Header includes sim_seed and R_draw
-    header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, max_weeks + 1)] + [
+    header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, N_WRITE_WEEKS+1)] + [
         "cumulative_cases",
         "status",
         "PMO",
     ]
 
-    # Number of weeks to store in the CSV
-    N_WRITE_WEEKS = 15
+    # # Header includes sim_seed and R_draw
+    # header = ["sim_id", "sim_seed", "R_draw"] + [f"week_{d}" for d in range(1, max_weeks + 1)] + [
+    #     "cumulative_cases",
+    #     "status",
+    #     "PMO",
+    # ]
 
     trajectories = np.zeros((N, max_weeks), dtype=int)
     csv_path.write_text("")
@@ -127,7 +135,12 @@ def generate_batch(
                 major_threshold=major_threshold,
             )
 
-            traj = result["trajectory"]
+            # By default only write the first N_WRITE_WEEKS to the csv
+            if generate_full==True:
+                traj = result["trajectory"]
+            else:
+                traj = result["trajectory"][0:N_WRITE_WEEKS]
+
             cumulative = int(result["cumulative"])
             status = result["status"]
             pmo_flag = int(result["PMO"])

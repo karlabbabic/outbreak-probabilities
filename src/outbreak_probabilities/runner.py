@@ -39,6 +39,7 @@ def main():
     sim_p.add_argument("--major-threshold", type=int, default=100)
     sim_p.add_argument("--R-min", type=float, default=0.0)
     sim_p.add_argument("--R-max", type=float, default=10.0)
+    sim_p.add_argument("--generate-full", type=bool, default=False)
     # sim_p.add_argument("--R-dist", default="uniform")
     # sim_p.add_argument("--use-tempfile", action="store_true")
 
@@ -82,7 +83,7 @@ def main():
     pmo_p.add_argument("--header-rows", type=int, default=3, help="CSV header rows for simulate output")
     pmo_p.add_argument("--week-prefix", type=str, default="week_", help="Week column prefix in CSV")
     pmo_p.add_argument("--random-seed", type=int, default=42, help="Random seed for sampling")
-    pmo_p.add_argument("--max-plot", type=int, default=None)  # we rely on sample-size and module MAX_PLOT if needed
+    pmo_p.add_argument("--max-plot", type=int, default=None)  
 
     args = p.parse_args()
     t0 = time.perf_counter()
@@ -97,6 +98,7 @@ def main():
             max_weeks=args.max_weeks,
             major_threshold=args.major_threshold,
             R_range=(args.R_min, args.R_max),
+            generate_full=args.generate_full,
             # R_dist=args.R_dist,
         )
         sim.simulate_batch(cfg)

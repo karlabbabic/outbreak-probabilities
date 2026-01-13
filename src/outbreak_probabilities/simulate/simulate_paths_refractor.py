@@ -35,6 +35,7 @@ class SimConfig:
     R_dist_params: Optional[dict] = None
     out_path: str = "data/test_simulations.csv"
     use_tempfile: bool = False
+    generate_full: bool = False
 
 
 def prepare_serial_weights(
@@ -80,6 +81,7 @@ def simulate_batch(cfg: SimConfig):
         R_dist_params=cfg.R_dist_params,
         out_path=str(out_path),
         use_tempfile=cfg.use_tempfile,
+        generate_full=cfg.generate_full,
     )
 
     logger.info("Simulated trajectories shape: %s", getattr(trajectories, "shape", repr(trajectories)))
