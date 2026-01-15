@@ -5,7 +5,7 @@ dynamic = ["version"]
 description = "Simulation and analysis tools for outbreak probabilities"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["numpy>=2.0","pandas>=2.0","scipy>=1.0"]
+dependencies = ["numpy>=2.0","pandas>=2.0","scipy>=1.0","pytest>=8.0"]
 authors = [
     { name = "Aniekeme George, Gemma Marshall, Oliver Staples, Rayne Alexander, Salma Amin" }
 ]
