@@ -1,8 +1,6 @@
 import csv
 from pathlib import Path
-
 import numpy as np
-
 from simulate.batch_processing import generate_batch
 from simulate.generate_single_trajectory import simulate_trajectory
 

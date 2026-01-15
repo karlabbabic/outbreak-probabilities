@@ -1,17 +1,36 @@
+# Project description
 [project]
 name = "outbreak-probabilities"
 dynamic = ["version"]
+description = "Simulation and analysis tools for outbreak probabilities"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = ["numpy>=2.0","pandas>=2.0","scipy>=1.0","pytest>=8.0","flake8>=7.0"]
+authors = [
+    { name = "Aniekeme George, Gemma Marshall, Oliver Staples, Rayne Alexander, Salma Amin" }
+]
 
+# Creates temporary local environment when running python -m build
+[build-system]
+requires = ["setuptools>=60", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Tells that the root is called src
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+# Get version number by returning __version__ from version_info.py in src/outbreak_probabilities
 [tool.setuptools.dynamic]
 version = { attr = "outbreak_probabilities.version_info.__version__" }
 
-[build-system]
-requires = ["setuptools>=60", "wheel", "build"]
-build-backend = "setuptools.build_meta"
-[tool.setuptools.package-data]
-"packagename.machine_learning" = ["models_*weeks/*"]
+# Tells Python to include src/outbreak_probabilities in the package
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["outbreak_probabilities*"]
 
+# Necessary if we want the pre-trained .pkl files to be contained in the package
+[tool.setuptools.package-data]
+outbreak_probabilities = [
+    "machine_learning/models_*weeks/*"
+]
 
