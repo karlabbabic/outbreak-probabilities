@@ -158,7 +158,6 @@ def plot_pmo_vs_r(pmo_r: np.ndarray, out_png: str, figsize: Tuple[int, int], obs
     plt.close(fig)
     return out_png
 
-
 def plot_pmo_over_full_index(
     sel_sim_ids: np.ndarray,
     sel_pmo: np.ndarray,
@@ -253,7 +252,7 @@ def plot_pmo_over_full_index(
         ax.scatter(events_df["sim_id"].values, events_df["cum_pmo"].values,
                    s=35,
                    c=[BLUE if v == 1 else GRAY for v in events_df["PMO"].values],
-                   edgecolors="none", linewidths=0.1, zorder=4,
+                   edgecolors="none", linewidths=0.1, zorder=4, label="Matched events (exact)",
                    alpha=[alpha_calc if v == 1 else alpha_calc/2 for v in events_df["PMO"].values])
 
     ax.set_xlim(-0.5, float(N_total) + 0.5)
@@ -280,7 +279,10 @@ def plot_pmo_over_full_index(
     )
     ax.legend(frameon=False, fontsize=9, loc="upper right")
 
-    Path(out_png).parent.mkdir(parents=True, exist_ok=True)
+    out_png_full = Path(out_png).with_name(
+    Path(out_png).stem + "_full_index.png")
+
+    Path(out_png_full).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=300)
     plt.close(fig)
 
