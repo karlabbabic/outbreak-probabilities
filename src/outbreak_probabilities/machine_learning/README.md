@@ -2,7 +2,7 @@
 
 *The models are trained using different numbers of weeks of case data (2 weeks, 3 weeks, 4 weeks, and 5 weeks) to evaluate their performance in predicting the probability of an outbreak.*
 
-## Each script follows a similar structure 
+## Scripts Structure
 1. Import necessary libraries and modules.
 2. Define machine learning models to be used
 3. Set paths for data, model storage, and output plots.
