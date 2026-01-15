@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SimConfig:
     N: int = 1000
-    max_weeks: int = 15
+    max_weeks: int = 50
     mean_serial: float = 15.3
     std_serial: float = 9.3
-    k_max: int = 10
+    k_max: int = 50
     nquad: int = 32
     step: float = 7.0
     R_range: Tuple[float, float] = (0.0, 10.0)
