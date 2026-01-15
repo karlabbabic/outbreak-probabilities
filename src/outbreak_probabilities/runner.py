@@ -4,8 +4,8 @@
 import argparse
 import re
 import time
-from typing import List, Optional, Tuple
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 # Make sure imports are correct for running from source
 from .simulate import simulate_paths_refractor as sim
@@ -13,11 +13,13 @@ from .simulate import plot_traj_refractor as plot
 from .trajectory_matching import plot_matches_refractor as tm
 from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r
 
+
 # Parser for initial cases like 1,2,3
 def parse_int_list(s: Optional[str]) -> List[int]:
     if not s:
         return []
     return [int(x) for x in re.split(r"[,\s;]+", s.strip()) if x]
+
 
 # Parser for figsize like 800,400
 def parse_figsize(s: Optional[str]) -> Optional[Tuple[float, float]]:
@@ -26,90 +28,255 @@ def parse_figsize(s: Optional[str]) -> Optional[Tuple[float, float]]:
     w, h = [float(x) for x in s.split(",")]
     return (w, h)
 
+
 def main():
     p = argparse.ArgumentParser(description="Runner")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # ---------- simulate ----------
     sim_p = sub.add_parser("simulate", help="Generate simulated outbreak trajectories")
-    sim_p.add_argument("--N", "--num", dest="N", type=int, default=1000,
-                    metavar="N",
-                    help="Number of outbreaks to create (default: 1000)")
-    sim_p.add_argument("--seed", type=int, default=42,
-                    metavar="SEED",
-                    help="RNG seed for reproducibility (default: 42)")
-    sim_p.add_argument("--out", default="data/test_simulations.csv",
-                    metavar="PATH",
-                    help="Output CSV path (default: data/test_simulations.csv)")
-    sim_p.add_argument("--initial-cases", type=str, default="1",
-                    metavar="LIST",
-                    help="Initial cases starting week 1 (comma/space separated, default: '1')")
-    sim_p.add_argument("--max-weeks", type=int, default=50,
-                    metavar="WEEKS",
-                    help="Simulation length in weeks (default: 50)")
-    sim_p.add_argument("--write-weeks", type=int, default=5,
-                    metavar="WEEKS",
-                    help="Number of weeks to write to CSV (default: 5)")
-    sim_p.add_argument("--major-threshold", type=int, default=100,
-                    metavar="THRESH",
-                    help="Cumulative cases considered a major outbreak (default: 100)")
-    sim_p.add_argument("--R-min", type=float, default=0.0, metavar="R_MIN",
-                    help="Minimum R value (default: 0.0)")
-    sim_p.add_argument("--R-max", type=float, default=10.0, metavar="R_MAX",
-                    help="Maximum R value (default: 10.0)")
-    sim_p.add_argument("--generate-full", action="store_true",
-                    help="Store full weekly cases to CSV; may conflict with --write-weeks (default: False)")
+    sim_p.add_argument(
+        "--N",
+        "--num",
+        dest="N",
+        type=int,
+        default=1000,
+        metavar="N",
+        help="Number of outbreaks to create (default: 1000)",
+    )
+    sim_p.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        metavar="SEED",
+        help="RNG seed for reproducibility (default: 42)",
+    )
+    sim_p.add_argument(
+        "--out",
+        default="data/test_simulations.csv",
+        metavar="PATH",
+        help="Output CSV path (default: data/test_simulations.csv)",
+    )
+    sim_p.add_argument(
+        "--initial-cases",
+        type=str,
+        default="1",
+        metavar="LIST",
+        help="Initial cases starting week 1 (comma/space separated, default: '1')",
+    )
+    sim_p.add_argument(
+        "--max-weeks",
+        type=int,
+        default=50,
+        metavar="WEEKS",
+        help="Simulation length in weeks (default: 50)",
+    )
+    sim_p.add_argument(
+        "--write-weeks",
+        type=int,
+        default=5,
+        metavar="WEEKS",
+        help="Number of weeks to write to CSV (default: 5)",
+    )
+    sim_p.add_argument(
+        "--major-threshold",
+        type=int,
+        default=100,
+        metavar="THRESH",
+        help="Cumulative cases considered a major outbreak (default: 100)",
+    )
+    sim_p.add_argument(
+        "--R-min",
+        type=float,
+        default=0.0,
+        metavar="R_MIN",
+        help="Minimum R value (default: 0.0)",
+    )
+    sim_p.add_argument(
+        "--R-max",
+        type=float,
+        default=10.0,
+        metavar="R_MAX",
+        help="Maximum R value (default: 10.0)",
+    )
+    sim_p.add_argument(
+        "--generate-full",
+        action="store_true",
+        help="Store full weekly cases to CSV; may conflict with --write-weeks (default: False)",
+    )
     # sim_p.add_argument("--r-dist", default="uniform", metavar="DIST", help="R distribution (default: uniform)")
     # sim_p.add_argument("--use-tempfile", action="store_true", help="Write to tempfile instead of out path")
 
     # ---------- plot ----------
     plot_p = sub.add_parser("plot", help="Plot simulated outbreak trajectories")
-    plot_p.add_argument("--csv", default="data/test_simulations.csv",
-                        help="Input simulations CSV (default: data/test_simulations.csv)")
-    plot_p.add_argument("--sample-size", type=int, default=200,
-                        help="Number of outbreaks to plot (default: 200)")
-    plot_p.add_argument("--sample-strategy", default="hybrid",
-                        help="Sampling strategy: random, highest_cumulative, highest_R, hybrid (default)")
-    plot_p.add_argument("--overlay-mean", action="store_true",
-                        help="Overlay mean trajectory (default: False)")
-    plot_p.add_argument("--overlay-quantiles", action="store_true",
-                        help="Overlay 10–90 percentile quantile band (default: False)")
-    plot_p.add_argument("--bins", type=int, default=20,
-                        help="Number of histogram bins for PMO plot (default: 20)")
-    plot_p.add_argument("--major-threshold", type=int, default=100,
-                        help="Cumulative cases defining a major outbreak (default: 100)")
-    plot_p.add_argument("--random-seed", type=int, default=42,
-                        help="Random seed for sampling (default: 42)")
+    plot_p.add_argument(
+        "--csv",
+        default="data/test_simulations.csv",
+        help="Input simulations CSV (default: data/test_simulations.csv)",
+    )
+    plot_p.add_argument(
+        "--sample-size",
+        type=int,
+        default=200,
+        help="Number of outbreaks to plot (default: 200)",
+    )
+    plot_p.add_argument(
+        "--sample-strategy",
+        default="hybrid",
+        help="Sampling strategy: random, highest_cumulative, highest_R, hybrid (default)",
+    )
+    plot_p.add_argument(
+        "--overlay-mean",
+        action="store_true",
+        help="Overlay mean trajectory (default: False)",
+    )
+    plot_p.add_argument(
+        "--overlay-quantiles",
+        action="store_true",
+        help="Overlay 10–90 percentile quantile band (default: False)",
+    )
+    plot_p.add_argument(
+        "--bins",
+        type=int,
+        default=20,
+        help="Number of histogram bins for PMO plot (default: 20)",
+    )
+    plot_p.add_argument(
+        "--major-threshold",
+        type=int,
+        default=100,
+        help="Cumulative cases defining a major outbreak (default: 100)",
+    )
+    plot_p.add_argument(
+        "--random-seed",
+        type=int,
+        default=42,
+        help="Random seed for sampling (default: 42)",
+    )
 
     # ---------- match ----------
     match_p = sub.add_parser("match")
-    match_p.add_argument("--sim-csv", default="data/test_simulations.csv", help = "Input csv filepath (default:data/test_simulations.csv)")
-    match_p.add_argument("--out", default="figs/matched_trajectories.png", help = "Output filepath for trajectories (default: figs/matched_trajectories.png)")
-    match_p.add_argument("--initial-cases", type=str, default="1,2,3", help = "Inital cases for the outbreak (default: 1,2,3)")
-    match_p.add_argument("--sample-size", type=int, default=200, help = "Number of cases to sample (default: 200)")
-    match_p.add_argument("--max-plot", type=int, default=200,help = "Number of cases plot (default: 200)")
-    match_p.add_argument("--figsize", type=str, default=None, help="Size of the figure (default: )")
+    match_p.add_argument(
+        "--sim-csv",
+        default="data/test_simulations.csv",
+        help="Input csv filepath (default:data/test_simulations.csv)",
+    )
+    match_p.add_argument(
+        "--out",
+        default="figs/matched_trajectories.png",
+        help="Output filepath for trajectories (default: figs/matched_trajectories.png)",
+    )
+    match_p.add_argument(
+        "--initial-cases",
+        type=str,
+        default="1,2,3",
+        help="Inital cases for the outbreak (default: 1,2,3)",
+    )
+    match_p.add_argument(
+        "--sample-size",
+        type=int,
+        default=200,
+        help="Number of cases to sample (default: 200)",
+    )
+    match_p.add_argument(
+        "--max-plot",
+        type=int,
+        default=200,
+        help="Number of cases plot (default: 200)",
+    )
+    match_p.add_argument(
+        "--figsize",
+        type=str,
+        default=None,
+        help="Size of the figure (default: )",
+    )
     # match_p.add_argument("--header-rows", type=int, default=3)
     # match_p.add_argument("--week-prefix", default="week_")
-    match_p.add_argument("--major-threshold", type=int, default=100, help="Cumulative cases defining a major outbreak (default: 100)")
-    match_p.add_argument("--sample-strategy", default="highest_peak", help="Sampling strategy: random, highest_cumulative (default), highest_R, hybrid")
-    match_p.add_argument("--random-seed", type=int, default=42, help="Seed for RNG reproucibility (default: 42)")
+    match_p.add_argument(
+        "--major-threshold",
+        type=int,
+        default=100,
+        help="Cumulative cases defining a major outbreak (default: 100)",
+    )
+    match_p.add_argument(
+        "--sample-strategy",
+        default="highest_peak",
+        help="Sampling strategy: random, highest_cumulative (default), highest_R, hybrid",
+    )
+    match_p.add_argument(
+        "--random-seed",
+        type=int,
+        default=42,
+        help="Seed for RNG reproucibility (default: 42)",
+    )
 
     # ---------- pmo_vs_r ----------
-    pmo_p = sub.add_parser("pmo_vs_r", help="Plot PMO fraction as a function of sampled matched trajectories (r=1..R)")
-    pmo_p.add_argument("--sim-csv", default="data/test_simulations.csv", help="Input csv filepath (default:data/test_simulations.csv)")
-    pmo_p.add_argument("--out", default="figs/pmo_vs_r.png", help="Output filepath (default: figs/pmo_vs_r.png)")
-    pmo_p.add_argument("--initial-cases", type=str, default="1,2,3", help="Inital cases for the outbreak (default: 1,2,3)")
+    pmo_p = sub.add_parser(
+        "pmo_vs_r",
+        help="Plot PMO fraction as a function of sampled matched trajectories (r=1..R)",
+    )
+    pmo_p.add_argument(
+        "--sim-csv",
+        default="data/test_simulations.csv",
+        help="Input csv filepath (default:data/test_simulations.csv)",
+    )
+    pmo_p.add_argument(
+        "--out",
+        default="figs/pmo_vs_r.png",
+        help="Output filepath (default: figs/pmo_vs_r.png)",
+    )
+    pmo_p.add_argument(
+        "--initial-cases",
+        type=str,
+        default="1,2,3",
+        help="Inital cases for the outbreak (default: 1,2,3)",
+    )
     pmo_p.add_argument("--sample-size", type=int, default=200)
-    pmo_p.add_argument("--sample-strategy", default="random", help="Sampling strategy: random (default), highest_cumulative, highest_R, hybrid")
-    pmo_p.add_argument("--sort-by", default="sample_order", help="Sorting of sampled matches before computing PMO(r): sample_order (default), by_cumulative, by_peak, by_R, by_PMO")
-    pmo_p.add_argument("--figsize", type=str, default=None, help="FSize of the figure (default: )")
-    pmo_p.add_argument("--header-rows", type=int, default=3, help="CSV header rows for simulate output")
-    pmo_p.add_argument("--week-prefix", type=str, default="week_", help="Week column prefix in CSV")
-    pmo_p.add_argument("--random-seed", type=int, default=42, help="Random seed for sampling")
+    pmo_p.add_argument(
+        "--sample-strategy",
+        default="random",
+        help="Sampling strategy: random (default), highest_cumulative, highest_R, hybrid",
+    )
+    pmo_p.add_argument(
+        "--sort-by",
+        default="sample_order",
+        help="Sorting of sampled matches before computing PMO(r): sample_order (default), by_cumulative, by_peak, by_R, by_PMO",
+    )
+    pmo_p.add_argument(
+        "--figsize",
+        type=str,
+        default=None,
+        help="FSize of the figure (default: )",
+    )
+    pmo_p.add_argument(
+        "--header-rows",
+        type=int,
+        default=3,
+        help="CSV header rows for simulate output",
+    )
+    pmo_p.add_argument(
+        "--week-prefix",
+        type=str,
+        default="week_",
+        help="Week column prefix in CSV",
+    )
+    pmo_p.add_argument(
+        "--random-seed",
+        type=int,
+        default=42,
+        help="Random seed for sampling",
+    )
     pmo_p.add_argument("--max-plot", type=int, default=None)
-    pmo_p.add_argument("--full-index", action="store_true", help="Plot cumulative PMO over full sim index (1..N_total) with updates only at matched indices")
-    pmo_p.add_argument("--events-out", default=None, help="Optional path to write events CSV when using --full-index (default: next to PNG)")
+    pmo_p.add_argument(
+        "--full-index",
+        action="store_true",
+        help="Plot cumulative PMO over full sim index (1..N_total) with updates only at matched indices",
+    )
+    pmo_p.add_argument(
+        "--events-out",
+        default=None,
+        help="Optional path to write events CSV when using --full-index (default: next to PNG)",
+    )
 
     args = p.parse_args()
     t0 = time.perf_counter()
@@ -125,7 +292,7 @@ def main():
             major_threshold=args.major_threshold,
             R_range=(args.R_min, args.R_max),
             generate_full=args.generate_full,
-            write_weeks=args.write_weeks
+            write_weeks=args.write_weeks,
             # R_dist=args.R_dist,
         )
         sim.simulate_batch(cfg)
