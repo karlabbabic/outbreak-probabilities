@@ -1,5 +1,3 @@
-# Train the models on different data sizes to compare when it converges with the Analytic solution (how much data does it need to align with the analytic folution)
-
 import json
 from datetime import datetime
 from pathlib import Path
