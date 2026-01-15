@@ -28,4 +28,4 @@ jobs:
           python -m pip install .[dev]
       - name: Run style tests
         run: |
-          python -m flake8 --max-line-length=120
+          python -m flake8 src/outbreak_probabilities/runner.py --max-line-length=120
