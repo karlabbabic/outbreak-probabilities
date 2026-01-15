@@ -12,10 +12,13 @@
 7. Train the model on the full dataset and save it in model_*weeks
 
 ## Example Usage
+###
+#### List available models
  PYTHONPATH=src python -m outbreak_probabilities.predict --list
- 
-  PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4
-  
-  PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv
+
+ #### Predict using number of cases and model type
+ PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4
+ #### Predict using input from a CSV
+ PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv
 
 
