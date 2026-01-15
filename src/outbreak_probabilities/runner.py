@@ -13,6 +13,7 @@ from .simulate import plot_traj_refractor as plot
 from .trajectory_matching import plot_matches_refractor as tm
 from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r
 
+from .analytic import analytical_refractor as an
 
 # Parser for initial cases like 1,2,3
 def parse_int_list(s: Optional[str]) -> List[int]:
@@ -278,6 +279,40 @@ def main():
         help="Optional path to write events CSV when using --full-index (default: next to PNG)",
     )
 
+    # ---------- analytic (PMO estimator) ----------
+    analytic_p = sub.add_parser("analytic", help="Estimate PMO from early observed weekly counts (analytic estimator)")
+    analytic_p.add_argument(
+        "--initial-cases",
+        type=str,
+        required=True,
+        help="Initial cases starting week 1",
+        metavar="",
+    )
+    analytic_p.add_argument(
+        "--r-min",
+        type=float,
+        default=0.0,
+        help="Minimum R for grid (default: 0.0)",
+    )
+    analytic_p.add_argument(
+        "--r-max",
+        type=float,
+        default=10.0,
+        help="Maximum R for grid (default: 10.0)",
+    )
+    analytic_p.add_argument(
+        "--nR",
+        type=int,
+        default=2001,
+        help="Number of R grid points for integration, which may help for rare events (default: 2001)",
+    )
+    analytic_p.add_argument(
+        "--print-grid",
+        action="store_true",
+        help="Print some R-grid/posterior info for debugging (default: False)",
+    )
+
+
     args = p.parse_args()
     t0 = time.perf_counter()
 
@@ -367,6 +402,44 @@ def main():
                         print(f"Events CSV (auto) -> {events_csv}")
         else:
             print(f"PMO vs r plot -> {result}")
+
+    elif args.cmd == "analytic":
+        # Use the analytic PMO estimator from pmo/estimate_pmo.py
+        try:
+            res = an.compute_pmo_from_string(
+                initial_cases=args.initial_cases,
+                nR=args.nR,
+                R_min=args.r_min,
+                R_max=args.r_max,
+            )
+        except Exception as exc:
+            print(f"Error computing PMO: {exc}")
+            raise SystemExit(2)
+
+        I_seq = res["I_seq"]
+        PMO = res["PMO"]
+        ext = res["extinction_prob"]
+
+        print("Observed sequence (weeks 1..T):", I_seq)
+        print(f"Estimated PMO (probability of major outbreak) integrated over R in [{args.r_min},{args.r_max}] = {PMO:.6f}")
+        print(f"Estimated extinction probability = {ext:.6f}")
+
+        if args.print_grid:
+            R_grid = res["R_grid"]
+            post = res["post"]
+            pmogivenR = res["pmogivenR"]
+            delta = R_grid[1] - R_grid[0]
+            print("\nR_grid (first 10):", R_grid[:10], " ... (last 10):", R_grid[-10:])
+            print("Posterior mass at grid endpoints (approx):", post[0] * delta, post[-1] * delta)
+            print("Sum(post*delta) ~= ", float((post * delta).sum()))
+            finite_mask = (post * delta) > 0
+            if finite_mask.any():
+                map_idx = int(res["loglikes"].argmax())
+                print(f"MAP R (by loglike) = {R_grid[map_idx]:.6f}")
+            # print a short sample
+            print("\nSample of R, posterior_density, PMO|R (first 10 entries):")
+            for R, p, pmor in zip(R_grid[:10], post[:10], pmogivenR[:10]):
+                print(f" R={R:.4f} post={p:.6g} PMO|R={pmor:.6g}")
 
     print(f"Done in {time.perf_counter() - t0:.2f}s")
 
