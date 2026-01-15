@@ -33,7 +33,7 @@ models = {
         max_depth=10,
         random_state=42,
         n_jobs=-1,
-    ),
+    )
     
 }
 
@@ -112,3 +112,7 @@ def predict_pmo(model_name: str, week_1: float, week_2: float, threshold: float 
         "PMO": pred,
         "predicted_label": pred_label,
     }
+
+# TEST 1 sample on week 1, 2 on week 2, and 1 on week 3 on all the 4 models (1k samples, 2k samples, 3k samples, 4k samples)
+
+    
