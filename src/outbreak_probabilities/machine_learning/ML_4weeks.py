@@ -79,7 +79,7 @@ print("\nAll models trained and saved.")
 
 # Prediction helper
 
-def predict_pmo(model_name: str, week_1: float, week_2: float, threshold: float = 0.5):
+def predict_pmo(model_name: str, week_1: float, week_2: float, week_3:float, week4:float, threshold: float = 0.5):
     """
     Load model and scaler for model_name (e.g. "RF") and predict PMO probability + class + label.
     Returns dict with keys: model, probability, PMO (0/1), predicted_label ("major"/"minor")
@@ -96,7 +96,7 @@ def predict_pmo(model_name: str, week_1: float, week_2: float, threshold: float 
     model = joblib.load(model_path)
     scaler = joblib.load(scaler_path)
 
-    X_new = np.array([[float(week_1), float(week_2)]])
+    X_new = np.array([[float(week_1), float(week_2), float(week_3), float(week_4)]])
     X_new_scaled = scaler.transform(X_new)
 
 
