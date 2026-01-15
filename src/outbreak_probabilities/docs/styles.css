@@ -25,6 +25,12 @@ h1{
  height:10%;
  
 }
+#gskimg{
+ position:fixed;
+ top:0;
+ right:10;
+ height:5%;
+}
 
 #Ovrview {
     width: 100%;
