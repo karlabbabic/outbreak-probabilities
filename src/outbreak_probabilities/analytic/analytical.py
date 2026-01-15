@@ -1,38 +1,4 @@
 
-Hugging Face's logo Hugging Face
-
-Models
-Datasets
-Spaces
-Docs
-Enterprise
-Pricing
-
-Spaces:
-Ray-va
-/
-raytest
-App
-Files
-Community
-Settings
-raytest
-/ app.py
-Ray-va's picture
-Ray-va
-Update app.py
-87ea5ed
-verified
-2 days ago
-raw
-history
-blame
-edit
-delete
-7.56 kB
-# app.py
-# Converted to a Hugging Face Space friendly Gradio app.
-# Enter observed weekly counts as comma-separated integers (e.g. "2,0,1,3").
 
 import io
 import math
