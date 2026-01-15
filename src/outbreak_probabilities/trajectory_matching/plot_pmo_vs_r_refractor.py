@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # src/outbreak_probabilities/trajectory_matching/pmo_vs_r_refractor.py
 """
 Plot PMO as a function of sampled matched trajectories (r = 1..R)
@@ -23,9 +24,10 @@ import matplotlib.pyplot as plt
 from .trajectory import trajectory_match_pmo
 from matplotlib.ticker import MultipleLocator, AutoMinorLocator
 
-# ----------------------
-# Defaults (can be overridden)
-# ----------------------
+# import analytic helper to compute integrated PMO from initial cases
+from ..analytic.analytical_refractor import compute_pmo_from_string, DEFAULT_R_MIN, DEFAULT_R_MAX
+
+# defaults
 SIM_CSV: str = "data/test_simulations.csv"
 OBSERVED: List[int] = [1, 2, 0]
 HEADER_ROWS: int = 3
@@ -123,22 +125,34 @@ def compute_pmo_r_from_ordered(sampled_df: pd.DataFrame) -> np.ndarray:
 
 
 def plot_pmo_vs_r(pmo_r: np.ndarray, out_png: str, figsize: Tuple[int, int], observed: List[int],
-                  sample_strategy: str, sample_size: Optional[int], sort_by: str) -> str:
-    """Plot PMO(r) vs r (r = 1..R). Returns saved path."""
+                  sample_strategy: str, sample_size: Optional[int], sort_by: str,
+                  analytic_pmo: Optional[float] = None) -> str:
+    """Plot PMO(r) vs r (r = 1..R). Returns saved path.
+
+    If analytic_pmo is provided it will be shown as a single horizontal line
+    computed from the observed initial cases and the simulation R-range.
+    """
+
     R = pmo_r.size
+
     rs = np.arange(1, R + 1)
 
     fig, ax = plt.subplots(figsize=figsize)
-    ax.plot(rs, pmo_r, marker="o", linewidth=LINEWIDTH, markersize=MARKERSIZE, alpha=ALPHA, label="PMO(r)")
+    ax.plot(rs, pmo_r, marker="o", linewidth=LINEWIDTH, markersize=MARKERSIZE, alpha=ALPHA, label="Empirical PMO(r)")
     overall = pmo_r[-1] if R > 0 else np.nan
     if not np.isnan(overall):
-        ax.axhline(overall, linestyle="--", linewidth=1.0, label=f"Overall PMO (R={R}) = {overall:.3f}")
+        ax.axhline(overall, linestyle="--", linewidth=1.0, label=f"Overall empirical PMO = {overall:.5f}")
+
+    # analytic horizontal line (single value) if provided
+    if analytic_pmo is not None and np.isfinite(analytic_pmo):
+        ax.axhline(analytic_pmo, linestyle="-.", linewidth=1.25, color="xkcd:forest green",
+                   label=f"Analytic PMO (observed,R-range) = {analytic_pmo:.5f}")
 
     ax.set_xlabel("Sampled matched trajectory index r")
     ax.set_ylabel("Cumulative PMO fraction (first r trajectories)")
     obs_str = ", ".join(str(x) for x in observed) if observed else "[]"
     ax.set_title(
-        f"PMO vs r — Initial Cases: {obs_str}\nSampling: {sample_strategy} (size={sample_size})  |  sort_by: {sort_by}"
+        f"Cumulative PMO across matched outbreaks only \n{R} outbreaks with initial cases {obs_str}\nSampling: {sample_strategy} (size={sample_size})  |  sort_by: {sort_by}"
     )
     ax.set_xlim(1, max(1, R))
     ax.set_ylim(0, 1.0)
@@ -158,12 +172,14 @@ def plot_pmo_vs_r(pmo_r: np.ndarray, out_png: str, figsize: Tuple[int, int], obs
     plt.close(fig)
     return out_png
 
+
 def plot_pmo_over_full_index(
     sel_sim_ids: np.ndarray,
     sel_pmo: np.ndarray,
     N_total: int,
     out_png: str,
     figsize: Tuple[int, int],
+    analytic_single: Optional[float] = None,
     draw_verticals: bool = True,
     smooth: bool = True,
     max_points: int = 5000,
@@ -171,10 +187,7 @@ def plot_pmo_over_full_index(
     """
     Plot cumulative PMO on full sim index 1..N_total.
 
-    Minimal changes from your previous code:
-    - Do NOT anchor interpolation at N_total+1 (that caused the drop).
-    - Interpolate using actual event positions, and use `right=final_pmo` to hold the tail flat.
-    - After smoothing, explicitly clamp left/right tails to 0 and final_pmo respectively.
+    If analytic_single is provided (a scalar), draw it as a horizontal line for comparison.
     """
     # 1) build events dataframe and exact cumulative fractions
     if sel_sim_ids.size == 0:
@@ -202,65 +215,51 @@ def plot_pmo_over_full_index(
             dense_x = np.linspace(1, float(N_total), num=max_points, dtype=float)
 
         # 3) interpolate exact cumulative values defined at sel_sim_ids onto dense_x
-        # Use event_x = [first_event, ..., last_event]; define value 0 before first, and hold final_pmo after last.
         first_event = float(sel_sim_ids[0])
         last_event = float(sel_sim_ids[-1])
         final_pmo = float(cum_pmo_fraction[-1])
 
-        # Use event_x without artificial N_total+1 anchor
         event_x = sel_sim_ids.astype(float)
         event_y = cum_pmo_fraction.astype(float)
 
-        # interpolate: before first -> left=0.0, after last -> right=final_pmo (flat tail)
         dense_y = np.interp(dense_x, event_x, event_y, left=0.0, right=final_pmo)
 
-        # # 4) optional smoothing: light moving average on dense_y
-        # if smooth and dense_x.size > 10:
-        #     win = max(3, min(201, dense_x.size // 200))
-        #     if win % 2 == 0:
-        #         win += 1
-        #     kernel = np.ones(win, dtype=float) / float(win)
-        #     dense_y = np.convolve(dense_y, kernel, mode="same")
-
-        #     # Crucial: after smoothing, clamp the tails so we don't create artifacts.
-        #     dense_y[dense_x < first_event] = 0.0
-        #     dense_y[dense_x >= last_event] = final_pmo
-
-        #     # Ensure the dense point nearest last_event exactly equals final_pmo
-        #     idx_end = np.abs(dense_x - last_event).argmin()
-        #     dense_y[idx_end] = final_pmo
-
-    # 5) plotting: smooth/interpolated curve + exact event markers
+    # plotting: smoothed/interpolated curve + exact event markers
     fig, ax = plt.subplots(figsize=figsize)
 
-    # plot the (smoothed/interpolated) running PMO curve (keep your style)
-    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=0.8, color="grey", label="Running PMO (smoothed)")
+    # plot the (smoothed/interpolated) running PMO curve
+    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=0.8, color="grey", label="Running PMO (empirical)")
 
-    # dashed horizontal line at the FINAL (true) PMO value (keep your color)
+    # dashed horizontal line at the FINAL (true) PMO value
     ax.axhline(
         final_pmo,
         linestyle="--",
         linewidth=1.2,
         color="xkcd:bright orange",
         alpha=0.7,
-        label=f"Final PMO = {final_pmo:.3f}",
+        label=f"Final empirical PMO = {final_pmo:.3f}",
     )
 
-    alpha_calc = 0.1 + 0.8/(1+len(cumulative_counts))
     # overlay exact event scatter (cum_pmo_fraction at sel_sim_ids)
     if sel_sim_ids.size:
         ax.scatter(events_df["sim_id"].values, events_df["cum_pmo"].values,
                    s=35,
                    c=[BLUE if v == 1 else GRAY for v in events_df["PMO"].values],
-                   edgecolors="none", linewidths=0.1, zorder=4, label="Matched events (exact)",
-                   alpha=[alpha_calc if v == 1 else alpha_calc/2 for v in events_df["PMO"].values])
+                   edgecolors="none", linewidths=0.1, zorder=1, label="Matched events (empirical)",
+                   alpha=[0.1 if v == 1 else 0.05 for v in events_df["PMO"].values])
+
+    # analytic horizontal line if provided
+    if analytic_single is not None and np.isfinite(analytic_single):
+        ax.axhline(analytic_single, linestyle="-.", linewidth=1.25, color="xkcd:forest green",
+                   alpha=0.9, label=f"Analytic PMO = {analytic_single:.3f}")
 
     ax.set_xlim(-0.5, float(N_total) + 0.5)
     ax.set_ylim(-0.05, 1.05)
     ax.set_xlabel("Simulation ID (1..N_total)")
     ax.set_ylabel("Cumulative PMO fraction (running)")
-    ax.set_title(f"Cumulative PMO across full simulation index (N_total={N_total}, events={sel_sim_ids.size})")
+    ax.set_title(f"Cumulative PMO across full simulation index\n({sel_sim_ids.size}/{N_total} matches)")
 
+    
     # hide extra spines like other plots
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -280,13 +279,14 @@ def plot_pmo_over_full_index(
     ax.legend(frameon=False, fontsize=9, loc="upper right")
 
     out_png_full = Path(out_png).with_name(
-    Path(out_png).stem + "_full_index.png")
+        Path(out_png).stem + "_full_index.png")
 
     Path(out_png_full).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=300)
     plt.close(fig)
 
     return out_png, events_df
+
 
 def run_pmo_vs_r_refractor(
     sim_csv: str = SIM_CSV,
@@ -353,6 +353,34 @@ def run_pmo_vs_r_refractor(
     else:
         sampled_df = sampled_df.reset_index(drop=True)
 
+    # --- Read the full simulation CSV so we can fetch the R range if present ---
+    total_df = pd.read_csv(sim_csv, header=header_rows)
+
+    # infer R_min/R_max from the simulation file if possible (prefer common column names)
+    r_col_candidates = [c for c in ("R_draw", "R", "r_draw", "r") if c in total_df.columns]
+    if r_col_candidates:
+        r_col = r_col_candidates[0]
+        try:
+            R_min_val = float(total_df[r_col].min())
+            R_max_val = float(total_df[r_col].max())
+            if not np.isfinite(R_min_val):
+                R_min_val = DEFAULT_R_MIN
+            if not np.isfinite(R_max_val):
+                R_max_val = DEFAULT_R_MAX
+            if R_min_val > R_max_val:
+                R_min_val, R_max_val = min(R_min_val, R_max_val), max(R_min_val, R_max_val)
+        except Exception:
+            R_min_val, R_max_val = DEFAULT_R_MIN, DEFAULT_R_MAX
+    else:
+        R_min_val, R_max_val = DEFAULT_R_MIN, DEFAULT_R_MAX
+
+    # Single-line analytic PMO: computed from observed initial cases and inferred R range.
+    initial_cases_str = ",".join(str(int(x)) for x in observed) if observed else ""
+    try:
+        analytic_pmo = float(compute_pmo_from_string(initial_cases_str, nR=2001, R_min=R_min_val, R_max=R_max_val).get("PMO", float("nan")))
+    except Exception:
+        analytic_pmo = float("nan")
+
     # Branch: full_index mode vs sampled-index mode
     if not full_index:
         pmo_r = compute_pmo_r_from_ordered(sampled_df)
@@ -364,11 +392,11 @@ def run_pmo_vs_r_refractor(
             sample_strategy=sample_strategy,
             sample_size=sample_size,
             sort_by=sort_by,
+            analytic_pmo=analytic_pmo,
         )
         return out_path, None
 
     # full_index mode: we need N_total and the sim ids of the sampled rows
-    total_df = pd.read_csv(sim_csv, header=header_rows)
     N_total = len(total_df)
 
     # selected sampled rows' original sim IDs (assume match_index is 0-based row id in original sim CSV)
@@ -380,12 +408,16 @@ def run_pmo_vs_r_refractor(
     sel_sim_ids = sim_ids_one_based[order_by_simid]
     sel_pmo = sampled_df["PMO"].astype(int).to_numpy()[order_by_simid]
 
+    # analytic_single is the same across events (we computed above)
+    analytic_single = analytic_pmo
+
     out_path, events_df = plot_pmo_over_full_index(
         sel_sim_ids=sel_sim_ids,
         sel_pmo=sel_pmo,
         N_total=N_total,
         out_png=out_png,
         figsize=figsize,
+        analytic_single=analytic_single,
     )
 
     # also save events CSV next to PNG for reproducibility
