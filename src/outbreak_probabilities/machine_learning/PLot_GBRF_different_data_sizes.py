@@ -24,7 +24,6 @@ sample_solutions = {
     (1, 2, 1): 0.90805,
     (1,3,1): 0.94251,
     (1,0,1): 0.74969,
-    # first time it appears is at sample 21441
     (1,5,3): 0.99822
 }
 
