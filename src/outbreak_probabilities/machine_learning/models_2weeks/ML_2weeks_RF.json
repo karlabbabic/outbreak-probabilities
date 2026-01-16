@@ -5,7 +5,7 @@
     "week_1",
     "week_2"
   ],
-  "saved_at": "2026-01-13T16:26:23.908366Z",
+  "saved_at": "2026-01-16T10:34:07.266659Z",
   "hyperparams": {
     "bootstrap": true,
     "ccp_alpha": 0.0,
@@ -27,5 +27,5 @@
     "verbose": 0,
     "warm_start": false
   },
-  "notes": "Trained on test_simulations.csv.csv"
+  "notes": "Trained on test_simulations.csv"
 }
