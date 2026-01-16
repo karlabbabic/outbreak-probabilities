@@ -123,52 +123,99 @@ def compute_pmo_r_from_ordered(sampled_df: pd.DataFrame) -> np.ndarray:
     r = np.arange(1, pmo_flags.size + 1, dtype=float)
     return cumsum / r
 
-
-def plot_pmo_vs_r(pmo_r: np.ndarray, out_png: str, figsize: Tuple[int, int], observed: List[int],
-                  sample_strategy: str, sample_size: Optional[int], sort_by: str,
-                  analytic_pmo: Optional[float] = None) -> str:
-    """Plot PMO(r) vs r (r = 1..R). Returns saved path.
-
-    If analytic_pmo is provided it will be shown as a single horizontal line
-    computed from the observed initial cases and the simulation R-range.
+def plot_pmo_vs_r(
+    pmo_r: np.ndarray,
+    out_png: str,
+    figsize: Tuple[int, int],
+    observed: List[int],
+    sample_strategy: str,
+    sample_size: Optional[int],
+    sort_by: str,
+    analytic_pmo: Optional[float] = None,
+) -> str:
     """
+    Plot PMO(r) vs r (r = 1..R) with the same styling as the full-index plot:
+    - running empirical PMO: blue line
+    - individual points: very light blue dots
+    - final empirical PMO: black dashed line
+    - analytic PMO: orange dashed-dotted line
+    """
+    BLUE = "xkcd:azure"
+    ORANGE = "xkcd:bright orange"
+    LIGHT_POINT_ALPHA = 0.50
+    LINE_ALPHA = 0.95
 
-    R = pmo_r.size
-
+    R = int(pmo_r.size)
     rs = np.arange(1, R + 1)
 
     fig, ax = plt.subplots(figsize=figsize)
-    ax.plot(rs, pmo_r, marker="o", linewidth=LINEWIDTH, markersize=MARKERSIZE, alpha=ALPHA, label="Empirical PMO(r)")
-    overall = pmo_r[-1] if R > 0 else np.nan
-    if not np.isnan(overall):
-        ax.axhline(overall, linestyle="--", linewidth=1.0, label=f"Overall empirical PMO = {overall:.5f}")
 
-    # analytic horizontal line (single value) if provided
+    # running empirical PMO: blue line (solid)
+    if R > 0:
+        ax.plot(
+            rs,
+            pmo_r,
+            linewidth=LINEWIDTH if "LINEWIDTH" in globals() else 2.0,
+            alpha=LINE_ALPHA,
+            color=BLUE,
+            label="Running PMO (empirical)",
+            zorder=3,
+        )
+
+    # very light individual points (muted)
+    if R > 0:
+        ax.scatter(
+            rs,
+            pmo_r,
+            s=30,
+            c=[BLUE] * R,
+            edgecolors="none",
+            alpha=LIGHT_POINT_ALPHA,
+            zorder=2,
+            label="_nolegend_",
+        )
+
+    # final empirical PMO (horizontal dashed black)
+    overall = float(pmo_r[-1]) if R > 0 else float("nan")
+    if R > 0 and np.isfinite(overall):
+        ax.axhline(overall, linestyle="-", linewidth=2.4, color="black", alpha=0.8,
+                   label=f"Final empirical PMO = {overall:.5f}", zorder=4)
+
+    # analytic PMO (orange dash-dot)
     if analytic_pmo is not None and np.isfinite(analytic_pmo):
-        ax.axhline(analytic_pmo, linestyle="-.", linewidth=1.25, color="xkcd:forest green",
-                   label=f"Analytic PMO (observed,R-range) = {analytic_pmo:.5f}")
+        ax.axhline(analytic_pmo, linestyle="--", linewidth=1.4, color=ORANGE,
+                   alpha=1.0, label=f"Analytic PMO = {analytic_pmo:.5f}", zorder=5)
 
-    ax.set_xlabel("Sampled matched trajectory index r")
-    ax.set_ylabel("Cumulative PMO fraction (first r trajectories)")
+    # axes, title, ticks
+    ax.set_xlabel("Sampled matched trajectory index")
+    ax.set_ylabel("Cumulative PMO fraction")
     obs_str = ", ".join(str(x) for x in observed) if observed else "[]"
+
+    # guard sample_size display
+    disp_sample_size = sample_size if (sample_size is None or sample_size <= R) else R
+
     ax.set_title(
-        f"Cumulative PMO across matched outbreaks only \n{R} outbreaks with initial cases {obs_str}\nSampling: {sample_strategy} (size={sample_size})  |  sort_by: {sort_by}"
+        f"Cumulative PMO across matched outbreaks\n{R} outbreaks with initial cases {obs_str}\n"
+        f"Sampling: {sample_strategy} | sort_by: {sort_by}"
     )
+
     ax.set_xlim(1, max(1, R))
-    ax.set_ylim(0, 1.0)
+    ax.set_ylim(-0.02, 1.02)
     if R > 1:
         ax.set_xticks(np.linspace(1, max(1, R), min(10, R)))
     else:
         ax.set_xticks([1])
-    ax.grid(alpha=0.6)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.spines['left'].set_visible(False)
+
+    # styling consistent with full-index plot
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.grid(alpha=0.25, which="major", linestyle="--")
+
+    # compact legend
     ax.legend(frameon=False, fontsize=9, loc="upper right")
 
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_png, dpi=300)
+    fig.savefig(out_png, dpi=300, bbox_inches="tight")
     plt.close(fig)
     return out_png
 
@@ -187,12 +234,16 @@ def plot_pmo_over_full_index(
     """
     Plot cumulative PMO on full sim index 1..N_total.
 
-    If analytic_single is provided (a scalar), draw it as a horizontal line for comparison.
+    Styling consistent with plot_pmo_vs_r: empirical running PMO is blue, analytic is orange.
     """
+    BLUE = "tab:blue"
+    ORANGE = "xkcd:bright orange"
+    LIGHT_POINT_ALPHA = 0.10
+    LINE_ALPHA = 0.95
+
     # 1) build events dataframe and exact cumulative fractions
     if sel_sim_ids.size == 0:
         events_df = pd.DataFrame(columns=["sim_id", "PMO", "event_order", "cum_pmo"])
-        # trivial flat curve
         dense_x = np.array([1, N_total], dtype=float)
         dense_y = np.zeros_like(dense_x, dtype=float)
         final_pmo = 0.0
@@ -208,84 +259,65 @@ def plot_pmo_over_full_index(
             "cum_pmo": cum_pmo_fraction,
         })
 
-        # 2) create dense x grid for plotting but cap points for memory
+        # dense x grid
         if N_total <= max_points:
             dense_x = np.arange(1, N_total + 1, dtype=float)
         else:
-            dense_x = np.linspace(1, float(N_total), num=max_points, dtype=float)
+            dense_x = np.linspace(1.0, float(N_total), num=max_points, dtype=float)
 
-        # 3) interpolate exact cumulative values defined at sel_sim_ids onto dense_x
-        first_event = float(sel_sim_ids[0])
-        last_event = float(sel_sim_ids[-1])
+        # interpolate
         final_pmo = float(cum_pmo_fraction[-1])
-
         event_x = sel_sim_ids.astype(float)
         event_y = cum_pmo_fraction.astype(float)
-
         dense_y = np.interp(dense_x, event_x, event_y, left=0.0, right=final_pmo)
 
-    # plotting: smoothed/interpolated curve + exact event markers
+    # plotting
     fig, ax = plt.subplots(figsize=figsize)
 
-    # plot the (smoothed/interpolated) running PMO curve
-    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=0.8, color="grey", label="Running PMO (empirical)")
+    # running empirical PMO: blue line (smoothed/interpolated)
+    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=LINE_ALPHA, color=BLUE, label="Running PMO (empirical)", zorder=2)
 
-    # dashed horizontal line at the FINAL (true) PMO value
-    ax.axhline(
-        final_pmo,
-        linestyle="--",
-        linewidth=1.2,
-        color="xkcd:bright orange",
-        alpha=0.7,
-        label=f"Final empirical PMO = {final_pmo:.3f}",
-    )
+    # dashed horizontal line at the FINAL empirical PMO (black dashed)
+    ax.axhline(final_pmo, linestyle="--", linewidth=1.2, color="black", alpha=0.9, label=f"Final empirical PMO = {final_pmo:.3f}", zorder=3)
 
-    # overlay exact event scatter (cum_pmo_fraction at sel_sim_ids)
+    # overlay exact event scatter: very light filled dots, colored by PMO but muted
     if sel_sim_ids.size:
+        colors = [BLUE if v == 1 else "dimgray" for v in events_df["PMO"].values]
+        alphas = [LIGHT_POINT_ALPHA] * len(colors)
         ax.scatter(events_df["sim_id"].values, events_df["cum_pmo"].values,
-                   s=35,
-                   c=[BLUE if v == 1 else GRAY for v in events_df["PMO"].values],
-                   edgecolors="none", linewidths=0.1, zorder=1, label="Matched events (empirical)",
-                   alpha=[0.1 if v == 1 else 0.05 for v in events_df["PMO"].values])
+                   s=36,
+                   c=colors,
+                   edgecolors="none",
+                   alpha=LIGHT_POINT_ALPHA,
+                   zorder=4,
+                   label="_nolegend_")
 
-    # analytic horizontal line if provided
+    # analytic horizontal line if provided: orange
     if analytic_single is not None and np.isfinite(analytic_single):
-        ax.axhline(analytic_single, linestyle="-.", linewidth=1.25, color="xkcd:forest green",
-                   alpha=0.9, label=f"Analytic PMO = {analytic_single:.3f}")
+        ax.axhline(analytic_single, linestyle="-.", linewidth=1.5, color=ORANGE, alpha=1.0,
+                   label=f"Analytic PMO = {analytic_single:.3f}", zorder=5)
 
     ax.set_xlim(-0.5, float(N_total) + 0.5)
     ax.set_ylim(-0.05, 1.05)
     ax.set_xlabel("Simulation ID (1..N_total)")
-    ax.set_ylabel("Cumulative PMO fraction (running)")
+    ax.set_ylabel("Cumulative PMO fraction")
     ax.set_title(f"Cumulative PMO across full simulation index\n({sel_sim_ids.size}/{N_total} matches)")
 
-    
-    # hide extra spines like other plots
+    # style
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.spines['left'].set_visible(False)
-    # Minor ticks halfway between majors (but hidden)
-    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
-    ax.yaxis.set_minor_locator(AutoMinorLocator(2))
+    ax.grid(alpha=0.25, which="major", linestyle="--")
 
-    # Minor gridlines: lighter gray, thinner
-    ax.grid(
-        which="minor",
-        color="0.85",      # lighter gray
-        linewidth=0.6,
-        alpha=0.9
-    )
+    # show legend (only for main lines)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
 
-    out_png_full = Path(out_png).with_name(
-        Path(out_png).stem + "_full_index.png")
-
+    out_png_full = Path(out_png).with_name(Path(out_png).stem + "_full_index.png")
     Path(out_png_full).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_png, dpi=300)
+    fig.savefig(out_png, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
     return out_png, events_df
+
 
 
 def run_pmo_vs_r_refractor(

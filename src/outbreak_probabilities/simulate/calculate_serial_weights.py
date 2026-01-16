@@ -87,6 +87,10 @@ def compute_serial_weights(mean: float, std: float, k_max: int, nquad: int = 64,
     if total <= 0.0 or not np.isfinite(total):
         raise RuntimeError("Computed serial-interval weights sum to a non-positive or non-finite value")
 
-    # normalize to sum to 1
-    w = w / total
+
+    # adjust first bin so sum(w)=1 (Gittins-like adjustment)
+    w[0] = max(0.0, 1.0 - w[1:].sum())
+    w /= w.sum()
+
+    print(w[0],sum(w))
     return w

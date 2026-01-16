@@ -27,22 +27,26 @@ DEFAULT_R_MAX = 10.0
 def weekly_w(max_weeks=50, mean=MEAN_SI_DAYS, sd=SD_SI_DAYS):
     shape = (mean / sd) ** 2
     scale = sd ** 2 / mean
-    g = lambda x: scipy_gamma.pdf(x, a=shape, scale=scale)
 
-    w = np.zeros(max_weeks, dtype=float)
+    def g(x):
+        return scipy_gamma.pdf(x, a=shape, scale=scale)
+
+    w = np.zeros(max_weeks)
     for k in range(1, max_weeks + 1):
-        left = 7 * (k - 1)
+        left = max(0.0, 7 * (k - 1))
         right = 7 * (k + 1)
-        integrand = lambda u: (1.0 - abs(u - 7 * k) / 7.0) * g(u) if abs(u - 7 * k) <= 7 else 0.0
+
+        def integrand(u):
+            return (1.0 - abs(u - 7 * k) / 7.0) * g(u) if abs(u - 7 * k) <= 7 else 0.0
+
         val, _ = quad(integrand, left, right, epsabs=1e-9, epsrel=1e-9)
         w[k - 1] = val
 
-    total = w.sum()
-    if total <= 0:
-        raise RuntimeError("Serial interval weights sum to zero")
-
-    return w / total
-
+    # adjust first bin so sum(w)=1 (Gittins-like adjustment)
+    w[0] = max(0.0, 1.0 - w[1:].sum())
+    w /= w.sum()
+ 
+    return w
 
 def parse_initial_cases(s: str) -> List[int]:
     """ A simple parse to help with initial case input as strings.
