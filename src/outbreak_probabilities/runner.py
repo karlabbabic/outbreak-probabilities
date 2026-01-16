@@ -278,6 +278,26 @@ def main():
         default=None,
         help="Optional path to write events CSV when using --full-index (default: next to PNG)",
     )
+    pmo_p.add_argument(
+        "--show_final_pmo",
+        default=False,
+        help="Display horizontal line for final PMO",
+    )
+    pmo_p.add_argument(
+        "--show_ci",
+        default=True,
+        help="Display confindence interval",
+    )
+    pmo_p.add_argument(
+        "--ci",
+        default=0.9,
+        help="Confidence interval width (default: 90 percentile)",
+    )
+    pmo_p.add_argument(
+        "--ci_random_seed",
+        default=42,
+        help="Seed for confidence interval shuffling",
+    )
 
     # ---------- analytic (PMO estimator) ----------
     analytic_p = sub.add_parser("analytic", help="Estimate PMO from early observed weekly counts (analytic estimator)")
@@ -383,6 +403,11 @@ def main():
             figsize=figsize if figsize is not None else None,
             random_seed=args.random_seed,
             full_index=args.full_index,
+            show_final_pmo=args.show_final_pmo,
+            show_ci=args.show_ci,        # enable band
+            ci=args.ci,             # 90% band
+            # n_boot=args.n_boot,          # reduce/increase as needed (trade-off speed vs smoothness)
+            ci_random_seed=args.ci_random_seed,
         )
 
         # result may be (out_path, None) or (out_path, events_df)

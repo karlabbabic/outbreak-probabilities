@@ -46,6 +46,43 @@ BLUE: str = "tab:blue"
 GRAY: str = "dimgray"
 # ----------------------
 
+def compute_running_ci(
+    pmo_flags: np.ndarray,
+    n_boot: int = 1000,
+    ci: float = 0.90,
+    random_seed: Optional[int] = None,
+) -> (np.ndarray, np.ndarray):
+    """
+    Compute pointwise CI band for the running PMO by repeatedly shuffling the
+    order of pmo_flags and computing the running cumulative fraction.
+
+    Returns (lower, upper) arrays of length R where lower is the (alpha/2) percentile
+    and upper is the (1 - alpha/2) percentile with alpha = 1 - ci.
+    """
+    if pmo_flags is None or pmo_flags.size == 0:
+        return np.array([]), np.array([])
+
+    R = pmo_flags.size
+    rng = np.random.default_rng(random_seed)
+    n_boot = max(1, int(n_boot))
+
+    # container for boot runs (n_boot, R)
+    runs = np.empty((n_boot, R), dtype=float)
+
+    for i in range(n_boot):
+        perm = rng.permutation(R)
+        perm_flags = pmo_flags[perm]
+        csum = np.cumsum(perm_flags, dtype=float)
+        r = np.arange(1, R + 1, dtype=float)
+        runs[i, :] = csum / r
+
+    alpha = 1.0 - float(ci)
+    lower_pct = 100.0 * (alpha / 2.0)
+    upper_pct = 100.0 * (1.0 - alpha / 2.0)
+    lower = np.percentile(runs, lower_pct, axis=0)
+    upper = np.percentile(runs, upper_pct, axis=0)
+    return lower, upper
+
 
 def load_matches(sim_csv: str, observed: List[int], header_rows: int, week_prefix: str) -> Dict:
     """Obtain matches via trajectory_match_pmo (same contract used elsewhere)."""
@@ -132,7 +169,14 @@ def plot_pmo_vs_r(
     sample_size: Optional[int],
     sort_by: str,
     analytic_pmo: Optional[float] = None,
+    pmo_flags: Optional[np.ndarray] = None,
+    show_final_pmo: bool = False,
+    show_ci: bool = True,
+    ci: float = 0.90,
+    n_boot: int = 500,
+    ci_random_seed: Optional[int] = 42,
 ) -> str:
+
     """
     Plot PMO(r) vs r (r = 1..R) with the same styling as the full-index plot:
     - running empirical PMO: blue line
@@ -148,7 +192,48 @@ def plot_pmo_vs_r(
     R = int(pmo_r.size)
     rs = np.arange(1, R + 1)
 
+    # optional: compute CI band (pointwise) via shuffling bootstrap of pmo_flags
+    lower = upper = None
+    if show_ci and (pmo_flags is not None) and (pmo_flags.size == R) and R > 0:
+        try:
+            lower, upper = compute_running_ci(pmo_flags=pmo_flags, n_boot=n_boot, ci=ci, random_seed=ci_random_seed)
+        except Exception:
+            lower, upper = None, None
+
     fig, ax = plt.subplots(figsize=figsize)
+
+    # final empirical PMO (horizontal dashed black)
+    overall = float(pmo_r[-1]) if R > 0 else float("nan")
+
+        # shaded CI band (if available)
+    if lower is not None and upper is not None and lower.size == R and upper.size == R:
+        ax.fill_between(
+            rs,
+            lower,
+            upper,
+            step=None,
+            alpha=0.18,
+            color=BLUE,
+            zorder=1,
+            label=f"{int(ci*100)}% band (random shuffling)",
+        )
+
+    # very light individual points (muted)
+    if R > 0:
+        # select up to 50 equidistant indices
+        n_pts = min(50, R)
+        idx = np.linspace(0, R - 1, n_pts, dtype=int)
+
+        ax.scatter(
+            rs[idx],
+            pmo_r[idx],
+            s=30,
+            c=[BLUE] * n_pts,
+            edgecolors="none",
+            alpha=LIGHT_POINT_ALPHA,
+            zorder=2,
+            label="_nolegend_",
+        )
 
     # running empirical PMO: blue line (solid)
     if R > 0:
@@ -158,28 +243,17 @@ def plot_pmo_vs_r(
             linewidth=LINEWIDTH if "LINEWIDTH" in globals() else 2.0,
             alpha=LINE_ALPHA,
             color=BLUE,
-            label="Running PMO (empirical)",
+            label=f"Running PMO = {overall:.5f}",
             zorder=3,
         )
 
-    # very light individual points (muted)
-    if R > 0:
-        ax.scatter(
-            rs,
-            pmo_r,
-            s=30,
-            c=[BLUE] * R,
-            edgecolors="none",
-            alpha=LIGHT_POINT_ALPHA,
-            zorder=2,
-            label="_nolegend_",
-        )
-
-    # final empirical PMO (horizontal dashed black)
-    overall = float(pmo_r[-1]) if R > 0 else float("nan")
-    if R > 0 and np.isfinite(overall):
-        ax.axhline(overall, linestyle="-", linewidth=2.4, color="black", alpha=0.8,
-                   label=f"Final empirical PMO = {overall:.5f}", zorder=4)
+    # if R > 0 and np.isfinite(overall) and show_final_pmo == True:
+    #     print("show_final_pmo")
+    #     ax.axhline(overall, linestyle="-", linewidth=2.4, color="black", alpha=0.8,
+    #                label=f"Final empirical PMO = {overall:.5f}", zorder=4)
+    # elif R > 0 and np.isfinite(overall) and show_final_pmo == False:
+    #     ax.axhline(overall, linestyle="-", linewidth=2.4, color="black", alpha=0,
+    #                label=f"Final empirical PMO = {overall:.5f}", zorder=4)
 
     # analytic PMO (orange dash-dot)
     if analytic_pmo is not None and np.isfinite(analytic_pmo):
@@ -199,12 +273,22 @@ def plot_pmo_vs_r(
         f"Sampling: {sample_strategy} | sort_by: {sort_by}"
     )
 
+    # 
     ax.set_xlim(1, max(1, R))
-    ax.set_ylim(-0.02, 1.02)
+    ax.set_ylim(-0.01, 1.02)
+
+    # Force equidistant and integer ticks 
     if R > 1:
-        ax.set_xticks(np.linspace(1, max(1, R), min(10, R)))
+        n_ticks = min(10, R)
+        step = max(1, R // (n_ticks - 1))
+        ticks = np.arange(1, R + 1, step, dtype=int)
+        if ticks[-1] != R:
+            ticks = np.append(ticks, R)
+        ax.set_xticks(ticks)
     else:
         ax.set_xticks([1])
+
+
 
     # styling consistent with full-index plot
     ax.spines["top"].set_visible(False)
@@ -230,26 +314,41 @@ def plot_pmo_over_full_index(
     draw_verticals: bool = True,
     smooth: bool = True,
     max_points: int = 5000,
+    # NEW params used for title consistency
+    observed: Optional[List[int]] = None,
+    sample_strategy: str = "unknown",
+    sort_by: str = "sample_order",
+    n_matches: Optional[int] = None,
+    # CI options
+    show_ci: bool = True,
+    ci: float = 0.90,
+    n_boot: int = 500,
+    ci_random_seed: Optional[int] = 42,
 ) -> (str, pd.DataFrame):
     """
     Plot cumulative PMO on full sim index 1..N_total.
 
-    Styling consistent with plot_pmo_vs_r: empirical running PMO is blue, analytic is orange.
+    - The running PMO is interpolated (step-like) so it updates at matched sim IDs.
+    - A pointwise CI band (by random shuffling of matched PMO flags) is computed at
+      event-order positions and interpolated to the dense full-index x-grid.
+    - Title mirrors the sampled-index plot format.
     """
-    BLUE = "tab:blue"
+    BLUE = "xkcd:azure"
     ORANGE = "xkcd:bright orange"
     LIGHT_POINT_ALPHA = 0.10
     LINE_ALPHA = 0.95
 
-    # 1) build events dataframe and exact cumulative fractions
+    # build events dataframe and exact cumulative fractions at event order (1..m)
     if sel_sim_ids.size == 0:
         events_df = pd.DataFrame(columns=["sim_id", "PMO", "event_order", "cum_pmo"])
         dense_x = np.array([1, N_total], dtype=float)
         dense_y = np.zeros_like(dense_x, dtype=float)
         final_pmo = 0.0
+        dense_lower = dense_upper = np.zeros_like(dense_x, dtype=float)
     else:
+        m = sel_pmo.size
         cumulative_counts = np.cumsum(sel_pmo)
-        event_no = np.arange(1, sel_pmo.size + 1)
+        event_no = np.arange(1, m + 1)
         cum_pmo_fraction = cumulative_counts / event_no
 
         events_df = pd.DataFrame({
@@ -259,49 +358,96 @@ def plot_pmo_over_full_index(
             "cum_pmo": cum_pmo_fraction,
         })
 
-        # dense x grid
+        # dense x grid (full simulation index) - integer positions where possible
         if N_total <= max_points:
             dense_x = np.arange(1, N_total + 1, dtype=float)
         else:
             dense_x = np.linspace(1.0, float(N_total), num=max_points, dtype=float)
 
-        # interpolate
+        # final PMO at last event
         final_pmo = float(cum_pmo_fraction[-1])
+
+        # event_x are the sim IDs (1-based) and event_y are cum_pmo_fraction
         event_x = sel_sim_ids.astype(float)
         event_y = cum_pmo_fraction.astype(float)
+
+        # interpolate the step-like curve: between events the cumulative PMO stays at the last event value
+        # we produce a dense_y by interpolation but ensure left=0 and right=final_pmo
         dense_y = np.interp(dense_x, event_x, event_y, left=0.0, right=final_pmo)
+
+        # ----- compute CI at event-order positions (if requested) -----
+        dense_lower = dense_upper = None
+        if show_ci and m > 0:
+            try:
+                # compute CI at event order length m using same helper as sampled-index
+                lower_evt, upper_evt = compute_running_ci(pmo_flags=sel_pmo.astype(int), n_boot=n_boot, ci=ci, random_seed=ci_random_seed)
+                # lower_evt/upper_evt are length m arrays aligned to event order 1..m
+                # interpolate them to dense_x (same approach as for dense_y)
+                # when event_x has duplicates or not strictly increasing, np.interp still works because sel_sim_ids are sorted
+                dense_lower = np.interp(dense_x, event_x, lower_evt, left=0.0, right=final_pmo)
+                dense_upper = np.interp(dense_x, event_x, upper_evt, left=0.0, right=final_pmo)
+            except Exception:
+                dense_lower = dense_upper = None
 
     # plotting
     fig, ax = plt.subplots(figsize=figsize)
 
-    # running empirical PMO: blue line (smoothed/interpolated)
-    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=LINE_ALPHA, color=BLUE, label="Running PMO (empirical)", zorder=2)
+    # CI band (interpolated) plotted first so line sits on top
+    if (dense_lower is not None) and (dense_upper is not None):
+        ax.fill_between(dense_x, dense_lower, dense_upper, step=None, alpha=0.18, color=BLUE, zorder=1,
+                        label=f"{int(ci*100)}% band (random shuffling)")
 
-    # dashed horizontal line at the FINAL empirical PMO (black dashed)
-    ax.axhline(final_pmo, linestyle="--", linewidth=1.2, color="black", alpha=0.9, label=f"Final empirical PMO = {final_pmo:.3f}", zorder=3)
 
-    # overlay exact event scatter: very light filled dots, colored by PMO but muted
+        # overlay exact event scatter: very light filled dots, colored by PMO but muted
     if sel_sim_ids.size:
-        colors = [BLUE if v == 1 else "dimgray" for v in events_df["PMO"].values]
-        alphas = [LIGHT_POINT_ALPHA] * len(colors)
-        ax.scatter(events_df["sim_id"].values, events_df["cum_pmo"].values,
-                   s=36,
-                   c=colors,
-                   edgecolors="none",
-                   alpha=LIGHT_POINT_ALPHA,
-                   zorder=4,
-                   label="_nolegend_")
+        mask_pos = events_df["PMO"].astype(int) == 1
+        mask_neg = ~mask_pos
+
+        # positive PMO (blue) — label "A"
+        if mask_pos.any():
+            ax.scatter(
+                events_df.loc[mask_pos, "sim_id"].values,
+                events_df.loc[mask_pos, "cum_pmo"].values,
+                s=36,
+                c=BLUE,
+                edgecolors="none",
+                alpha=0.5,
+                zorder=4,
+                label="Major outbreak",
+            )
+
+        # negative PMO (light grey) — label "B"
+        if mask_neg.any():
+            ax.scatter(
+                events_df.loc[mask_neg, "sim_id"].values,
+                events_df.loc[mask_neg, "cum_pmo"].values,
+                s=36,
+                c="lightgrey",
+                edgecolors="none",
+                alpha=0.5,
+                zorder=4,
+                label="Outbreak extinction",
+            )
+
+    # running empirical PMO: blue line (smoothed/interpolated)
+    ax.plot(dense_x, dense_y, linewidth=LINEWIDTH, alpha=LINE_ALPHA, color=BLUE, label=f"Running PMO = {final_pmo:.5f}", zorder=2)
+
 
     # analytic horizontal line if provided: orange
     if analytic_single is not None and np.isfinite(analytic_single):
-        ax.axhline(analytic_single, linestyle="-.", linewidth=1.5, color=ORANGE, alpha=1.0,
+        ax.axhline(analytic_single, linestyle="--", linewidth=1.5, color=ORANGE, alpha=1.0,
                    label=f"Analytic PMO = {analytic_single:.3f}", zorder=5)
 
-    ax.set_xlim(-0.5, float(N_total) + 0.5)
-    ax.set_ylim(-0.05, 1.05)
+    ax.set_xlim(1, float(N_total) + 0.5)
+    ax.set_ylim(-0.01, 1.05)
     ax.set_xlabel("Simulation ID (1..N_total)")
     ax.set_ylabel("Cumulative PMO fraction")
-    ax.set_title(f"Cumulative PMO across full simulation index\n({sel_sim_ids.size}/{N_total} matches)")
+
+    # --- Title: mirror the sampled-index title style ---
+    obs_str = ", ".join(str(x) for x in (observed or [])) if observed is not None else "[]"
+    n_matches_local = int(n_matches) if (n_matches is not None) else int(sel_sim_ids.size)
+    ax.set_title(
+        f"Cumulative PMO across matched outbreaks over full simulation\n{n_matches_local} outbreaks with initial cases {obs_str}\n")
 
     # style
     ax.spines['top'].set_visible(False)
@@ -313,10 +459,10 @@ def plot_pmo_over_full_index(
 
     out_png_full = Path(out_png).with_name(Path(out_png).stem + "_full_index.png")
     Path(out_png_full).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_png, dpi=300, bbox_inches="tight")
+    fig.savefig(out_png_full, dpi=300, bbox_inches="tight")
     plt.close(fig)
 
-    return out_png, events_df
+    return str(out_png_full), events_df
 
 
 
@@ -332,6 +478,11 @@ def run_pmo_vs_r_refractor(
     figsize: Tuple[int, int] = FIGSIZE,
     random_seed: Optional[int] = 42,
     full_index: bool = False,
+    show_final_pmo: bool = False, # disable horizontal line of running pmo
+    show_ci: bool = True,        # enable band
+    ci: int = 0.90,             # 90% band
+    n_boot: int = 500,          # reduce/increase as needed (trade-off speed vs smoothness)
+    ci_random_seed: int = 42,
 ):
     """
     Top-level function.
@@ -416,6 +567,7 @@ def run_pmo_vs_r_refractor(
     # Branch: full_index mode vs sampled-index mode
     if not full_index:
         pmo_r = compute_pmo_r_from_ordered(sampled_df)
+        pmo_flags = sampled_df["PMO"].astype(int).to_numpy()
         out_path = plot_pmo_vs_r(
             pmo_r=pmo_r,
             out_png=out_png,
@@ -425,6 +577,12 @@ def run_pmo_vs_r_refractor(
             sample_size=sample_size,
             sort_by=sort_by,
             analytic_pmo=analytic_pmo,
+            pmo_flags=pmo_flags,
+            show_final_pmo=show_final_pmo, # disable horizontal line of running pmo
+            show_ci=show_ci,        # enable band
+            ci=ci,             # 90% band
+            n_boot=n_boot,          # reduce/increase as needed (trade-off speed vs smoothness)
+            ci_random_seed=ci_random_seed,
         )
         return out_path, None
 
@@ -450,7 +608,16 @@ def run_pmo_vs_r_refractor(
         out_png=out_png,
         figsize=figsize,
         analytic_single=analytic_single,
+        observed=observed,
+        sample_strategy=sample_strategy,
+        sort_by=sort_by,
+        n_matches=sel_sim_ids.size,
+        show_ci=show_ci,
+        ci=ci,
+        n_boot=n_boot,
+        ci_random_seed=ci_random_seed,
     )
+
 
     # also save events CSV next to PNG for reproducibility
     events_csv = Path(out_path).with_name(Path(out_path).stem + "_events.csv")
