@@ -220,3 +220,8 @@ __marimo__/
 
 
 
+compare_empirical_vs_analytic.py
+debug_pmo_selection.py
+data/test.py
+src/outbreak_probabilities/simulate/serial_interval.py
+src/outbreak_probabilities/simulate/serial_weights_io.py
