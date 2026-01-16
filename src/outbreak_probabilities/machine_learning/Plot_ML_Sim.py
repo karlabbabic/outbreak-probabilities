@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[3]
 model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"
-plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"/ "plots2"
+plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"/ "test_plots"
 plot_dir.mkdir(parents=True, exist_ok=True)
 import json
 import numpy as np
@@ -21,8 +21,10 @@ sample_solutions = {
     (1, 2, 1): 0.90805,
     (1,3,1): 0.94251,
     (1,0,1): 0.74969,
+    # first time it appears is at sample 21441
+    (1,5,3): 0.99822
 }
-data_sizes = [500 * i for i in range(1, 40)]  # up to 20k samples
+data_sizes = [500 * i for i in range(1, 70)]  # up to 35k samples
 results = {sample: [] for sample in sample_solutions.keys()}
 for size in data_sizes:
     stem = f"ML_SIM_{size}_RF"
@@ -45,7 +47,7 @@ for sample in sample_solutions.keys():
     plt.title(f"Predicted Outbreak Probability for Sample {sample}")
     plt.xlabel("Training Data Size")
     plt.ylabel("Predicted Outbreak Probability")
-    plt.ylim(0, 1.5)
+    plt.ylim(0, 1.13)
     plt.grid(color='lightgray', linestyle='--', linewidth=0.5)
     plt.legend()
     plot_path = plot_dir / f"ML_SIM_convergence_sample_{sample[0]}_{sample[1]}_{sample[2]}.png"

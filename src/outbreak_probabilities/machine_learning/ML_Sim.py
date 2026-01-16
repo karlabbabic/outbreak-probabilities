@@ -44,7 +44,7 @@ feature_names = list(X.columns)
 n_weeks = len(feature_names)
 
 # data subsets (train on 500 samples, then those 500+500 more, then the 500+500+500 more, etc)
-data_sizes = [500 * i for i in range(1, 40)]  # up to 5000 samples
+data_sizes = [500 * i for i in range(1, 70)]  # up to 35000 samples
 results = {}
 for size in data_sizes:
     X_subset = X_scaled[:size]
