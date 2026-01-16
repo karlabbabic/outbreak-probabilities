@@ -46,9 +46,9 @@ Use the `--full-index` flag for the plot to run over the full simulation index
 `PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --full-index` 
 
 Examples of extra options:
-PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --full-index --initial-cases 1,2,0 --sim-csv data/test_simulations_1M.csv --sample-size 200
+`PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --full-index --initial-cases 1,2,0 --sim-csv data/test_simulations_1M.csv --sample-size 200`
 
-PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --initial-cases 1,0 
+`PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --initial-cases 1,0`
 
 **5. List all available Machinge Leaning models**
 
