@@ -273,21 +273,19 @@ def plot_pmo_vs_r(
         f"Sampling: {sample_strategy} | sort_by: {sort_by}"
     )
 
-    # 
     ax.set_xlim(1, max(1, R))
     ax.set_ylim(-0.01, 1.02)
 
-    # Force equidistant and integer ticks 
+    # Integer, evenly spaced ticks using linspace (safe version)
     if R > 1:
         n_ticks = min(10, R)
-        step = max(1, R // (n_ticks - 1))
-        ticks = np.arange(1, R + 1, step, dtype=int)
-        if ticks[-1] != R:
-            ticks = np.append(ticks, R)
+        ticks = np.linspace(1, R, n_ticks)
+        ticks = np.unique(np.round(ticks).astype(int))
+        ticks[0] = 1
+        ticks[-1] = R
         ax.set_xticks(ticks)
     else:
         ax.set_xticks([1])
-
 
 
     # styling consistent with full-index plot
@@ -411,7 +409,7 @@ def plot_pmo_over_full_index(
                 s=36,
                 c=BLUE,
                 edgecolors="none",
-                alpha=0.5,
+                alpha=0,
                 zorder=4,
                 label="Major outbreak",
             )
@@ -424,7 +422,7 @@ def plot_pmo_over_full_index(
                 s=36,
                 c="lightgrey",
                 edgecolors="none",
-                alpha=0.5,
+                alpha=0,
                 zorder=4,
                 label="Outbreak extinction",
             )
