@@ -1,4 +1,4 @@
-"""Run this file to plot the predicted outbreak probabilities from ML models trained on different data sizes. It can be used to assess when the ML models converges to the analytical solutions."""
+"""Run this file to plot the predicted outbreak probabilities from ML models(GB and) trained on different data sizes. It can be used to assess when the ML models converges to the analytical solutions."""
 
 import pandas as pd
 import matplotlib
@@ -12,8 +12,8 @@ import joblib
 
 # set paths
 BASE_DIR = Path(__file__).resolve().parents[3]
-model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"
-plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"/ "test_plots"
+model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_ML_different_data_sizes"
+plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_ML_different_data_sizes"/ "ML_CONVERGENCE_PLOTS"
 plot_dir.mkdir(parents=True, exist_ok=True)
 
 # analytical solutions for selected samples
@@ -34,7 +34,7 @@ results = {sample: [] for sample in sample_solutions.keys()}
 
 # load models and make predictions
 for size in data_sizes:
-    stem = f"ML_SIM_{size}_RF"
+    stem = f"ML_SIM_{size}_GB"
     model_path = model_dir / f"{stem}.pkl"
     scaler_path = model_dir / f"{stem}_scaler.pkl"
     
@@ -48,10 +48,28 @@ for size in data_sizes:
         results[sample].append(pred_prob)
         
         
+
+for size in data_sizes:
+    stem = f"ML_SIM_{size}_RF"
+    model_path = model_dir / f"{stem}.pkl"
+    scaler_path = model_dir / f"{stem}_scaler.pkl"
+    
+    # load model and scaler
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
+    for sample in sample_solutions.keys():
+        sample_array = np.array(sample).reshape(1, -1)
+        sample_scaled = scaler.transform(sample_array)
+        pred_prob = model.predict_proba(sample_scaled)[0][1]  # probability of class 1 (outbreak)
+        results[sample].append(pred_prob)
+
 # plot results
 for sample in sample_solutions.keys():
     plt.figure()
-    plt.plot(data_sizes, results[sample], marker='o', label='ML Prediction')
+    # GB predictions
+    plt.plot(data_sizes, results[sample][:len(data_sizes)], color="darkorange", marker='s', label='GradientBoost Prediction')
+    # RF predictions
+    plt.plot(data_sizes, results[sample][len(data_sizes):], color="royalblue", marker='o', label='Random Forest Prediction')
     plt.axhline(y=sample_solutions[sample], color='r', linestyle='--', label='Analytical Solution = ' + str(sample_solutions[sample]))
     plt.title(f"Predicted Outbreak Probability for Sample {sample}")
     plt.xlabel("Training Data Size")
@@ -59,6 +77,7 @@ for sample in sample_solutions.keys():
     plt.ylim(0, 1.13)
     plt.grid(color='lightgray', linestyle='--', linewidth=0.5)
     plt.legend()
-    plot_path = plot_dir / f"ML_SIM_convergence_sample_{sample[0]}_{sample[1]}_{sample[2]}.png"
+    plot_path = plot_dir / f"ML_convergence_RF_GB_sample_{sample[0]}_{sample[1]}_{sample[2]}.png"
     plt.savefig(plot_path)
     plt.close()
+    
