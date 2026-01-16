@@ -52,7 +52,7 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
 
 <h3 id="simulation-of-trajectories">Simulation of Trajectories</h3>
 
-**Input:**** first `k` weeks of infectious cases, e.g. `k[0:3]` of `k = [1,2,6,8,...]`.  
+**Input:** first `k` weeks of infectious cases, e.g. `k[0:3]` of `k = [1,2,6,8,...]`.  
 **Output:** a CSV file `simulated_cases.csv` with case number entries; columns are days, e.g. `day_1`, `day_2`, `day_3`, ...  
 - Consider using the `tempfile` module rather than saving to the user directory every time.
 
