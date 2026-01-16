@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import GradientBoostingClassifier
 
 # Set Path
 BASE_DIR = Path(__file__).resolve().parents[3]
@@ -34,6 +35,7 @@ models = {
         random_state=42,
         n_jobs=-1,
     ),
+    "GB": GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=5, random_state=42)
     
 }
 
