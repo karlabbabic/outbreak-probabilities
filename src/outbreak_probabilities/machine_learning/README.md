@@ -1,18 +1,19 @@
-*This folder contains machine learning models and scripts used to predict outbreak probabilities based on simulated case data generated from serial interval distributions and weights*.
+# Outbreak Probability Prediction using Machine Learning (RF)
+This directory contains code and models for predicting outbreak probabilities using machine learning techniques.
 
-*The models are trained using different numbers of weeks of case data (2 weeks, 3 weeks, 4 weeks, and 5 weeks) to evaluate their performance in predicting the probability of an outbreak.*
+The models are trained on simulation data and can predict the probability of a major outbreak based on weekly case counts
 
-## Scripts Structure
-1. Import necessary libraries and modules.
-2. Define machine learning models to be used
-3. Set paths for data, model storage, and output plots.
-4. Load and preprocess the simulated case data.
-5. Split the data into training and testing sets.
-6. Scale the features using StandardScaler.
-7. Train the model on the full dataset and save it in model_*weeks
+## Getting Starting
+1. Data Preparation: Ensure you have the simulation data in CSV format as expected by the training scripts.
+2. Training Models: Run the respective training scripts (e.g., ML_2weeks.py, ML_3weeks.py, ML_5weeks.py) to train models on the desired number of weeks of data.
+3. Varying Data Sizes: Use ML_different_data_sizes.py to train models on different sizes of training data to observe performance changes.
+4. Plotting Results: Use Plot_ML_different_data_sizes.py to visualize how model predictions converge to analytical solutions as training data size increases.
 
-## Example Usage
-###
+
+## Model Prediction
+Each training script includes a helper function (predict_pmo) to load the trained model and scaler, and make predictions based on weekly case counts.
+### Example Usage
+
 #### List available models
  PYTHONPATH=src python -m outbreak_probabilities.predict --list
 
