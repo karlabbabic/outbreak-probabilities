@@ -15,10 +15,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 BASE_DIR = Path(__file__).resolve().parents[3]
 data_path = BASE_DIR / "data" / "test_simulations.csv"
 model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"
-plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"/ "plots"
 
 model_dir.mkdir(parents=True, exist_ok=True)
-plot_dir.mkdir(parents=True, exist_ok=True)
 data = pd.read_csv(data_path)
 
 # remove first two rows
