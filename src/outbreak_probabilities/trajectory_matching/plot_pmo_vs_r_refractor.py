@@ -245,6 +245,7 @@ def plot_pmo_vs_r(
             color=BLUE,
             label=f"Running PMO = {overall:.5f}",
             zorder=3,
+            # drawstyle='steps',
         )
 
     # if R > 0 and np.isfinite(overall) and show_final_pmo == True:
@@ -273,21 +274,19 @@ def plot_pmo_vs_r(
         f"Sampling: {sample_strategy} | sort_by: {sort_by}"
     )
 
-    # 
     ax.set_xlim(1, max(1, R))
     ax.set_ylim(-0.01, 1.02)
 
-    # Force equidistant and integer ticks 
+    # Integer, evenly spaced ticks using linspace (safe version)
     if R > 1:
         n_ticks = min(10, R)
-        step = max(1, R // (n_ticks - 1))
-        ticks = np.arange(1, R + 1, step, dtype=int)
-        if ticks[-1] != R:
-            ticks = np.append(ticks, R)
+        ticks = np.linspace(1, R, n_ticks)
+        ticks = np.unique(np.round(ticks).astype(int))
+        ticks[0] = 1
+        ticks[-1] = R
         ax.set_xticks(ticks)
     else:
         ax.set_xticks([1])
-
 
 
     # styling consistent with full-index plot
@@ -411,7 +410,7 @@ def plot_pmo_over_full_index(
                 s=36,
                 c=BLUE,
                 edgecolors="none",
-                alpha=0.5,
+                alpha=0,
                 zorder=4,
                 label="Major outbreak",
             )
@@ -424,7 +423,7 @@ def plot_pmo_over_full_index(
                 s=36,
                 c="lightgrey",
                 edgecolors="none",
-                alpha=0.5,
+                alpha=0,
                 zorder=4,
                 label="Outbreak extinction",
             )
@@ -509,6 +508,21 @@ def run_pmo_vs_r_refractor(
     matches_df = matches_df.copy()
     if "match_index" not in matches_df.columns:
         matches_df["match_index"] = matches_df.index.astype(int)
+
+    # Determine sim_id column: prefer 'sim_id' if present, otherwise use 'match_index'
+    sim_id_col = "sim_id" if "sim_id" in matches_df.columns else "match_index"
+    full_matches_df = matches_df[[sim_id_col, "PMO"]].copy()
+    if sim_id_col != "sim_id":
+        full_matches_df = full_matches_df.rename(columns={sim_id_col: "sim_id"})
+
+    # write it next to out_png (use same stem)
+    out_path_tmp = Path(out_png)
+    out_path_tmp.parent.mkdir(parents=True, exist_ok=True)
+    stem_tmp = out_path_tmp.stem
+    full_matches_path = out_path_tmp.parent / f"{stem_tmp}_matched_trajectories_full.csv"
+    full_matches_df.to_csv(full_matches_path, index=False)
+    print(f"Saved full matched trajectories (sim_id, PMO) to: {full_matches_path}")
+    # -----------------------------
 
     # 1) sample according to strategy
     sampled_df = prepare_sample(matches_df=matches_df, week_cols=week_cols,
