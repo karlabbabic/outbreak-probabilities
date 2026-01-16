@@ -8,18 +8,12 @@ The models are trained on simulation data and can predict the probability of a m
 2. Training Models: Run the respective training scripts (e.g., ML_2weeks.py, ML_3weeks.py, ML_5weeks.py) to train models on the desired number of weeks of data.
 3. Varying Data Sizes: Use ML_different_data_sizes.py to train models on different sizes of training data to observe performance changes.
 4. Plotting Results: Use Plot_ML_different_data_sizes.py to visualize how model predictions converge to analytical solutions as training data size increases.
+5. Predict.py: Use the predict.py file to make predictions using the trained models (2,3,4,and 5 weeks) via command-line interface.
 
 
 ## Model Prediction
-Each training script includes a helper function (predict_pmo) to load the trained model and scaler, and make predictions based on weekly case counts.
-### Example Usage
+Each training script includes a helper function (predict_pmo) to load the trained model and scaler, and make predictions based on weekly case counts. It outputs the predicted class and label (major, minor) as well as the predicted probability.
 
-#### List available models
- PYTHONPATH=src python -m outbreak_probabilities.predict --list
 
- #### Predict using number of cases and model type
- PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4
- #### Predict using input from a CSV
- PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv
 
 
