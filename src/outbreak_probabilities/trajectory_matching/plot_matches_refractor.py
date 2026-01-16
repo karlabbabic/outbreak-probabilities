@@ -1,4 +1,3 @@
-# src/outbreak_probabilities/trajectory_matching/plot_matches.py
 """
 Load matched trajectories and plot them.
 
@@ -7,6 +6,10 @@ Behavior preserved from original script:
 - Red dot marks the first week where cumulative >= MAJOR_THRESHOLD
 - X-axis shows integer ticks (data lives at weeks 1..n_weeks)
 - Saves PNG: main (OUT_PNG)
+- Writes auxiliary CSVs:
+    * <out_stem>_match_indices.csv        (single column: match_index)
+    * <out_stem>_sampled_matches.csv      (full sampled dataframe with match_index)
+    * <out_stem>_matched_trajectories_full.csv  (sim_id, PMO for all matched trajectories)
 - Adjust the configuration section below as needed and run the file.
 """
 
@@ -259,9 +262,10 @@ def run_plot_matches(
 ):
     """
     Top-level function to be called from the runner.
-    It returns the path to the saved PNG and also writes two auxiliary CSVs:
+    It returns the path to the saved PNG and also writes three auxiliary CSVs:
       - <out_stem>_match_indices.csv  (single column: match_index)
       - <out_stem>_sampled_matches.csv (full sampled dataframe with match_index)
+      - <out_stem>_matched_trajectories_full.csv (sim_id, PMO for all matched trajectories)
     """
     # 1) find matches
     res = load_matches(sim_csv=sim_csv, observed=observed, header_rows=header_rows, week_prefix=week_prefix)
@@ -278,6 +282,14 @@ def run_plot_matches(
     # add a persistent identifier for each matched row so callers can reuse selections later
     matches_df = matches_df.copy()
     matches_df["match_index"] = matches_df.index.astype(int)
+
+    # --- Save a full CSV of matched trajectories (sim_id, PMO) for all matches ---
+    # Determine the sim_id column: prefer 'sim_id' if present, otherwise use 'match_index'
+    sim_id_col = "sim_id" if "sim_id" in matches_df.columns else "match_index"
+    full_matches_df = matches_df[[sim_id_col, "PMO"]].copy()
+    # normalize column name to 'sim_id' in output
+    if sim_id_col != "sim_id":
+        full_matches_df = full_matches_df.rename(columns={sim_id_col: "sim_id"})
 
     # total number of simulated trajectories (for title)
     n_total = len(pd.read_csv(sim_csv, header=header_rows))
@@ -334,6 +346,7 @@ def run_plot_matches(
     stem = out_path.stem
     idx_path = out_path.parent / f"{stem}_match_indices.csv"
     sampled_matches_path = out_path.parent / f"{stem}_sampled_matches.csv"
+    full_matches_path = out_path.parent / f"{stem}_matched_trajectories_full.csv"
 
     # Save the original match indices (one column). Use int dtype so it's easy to read back.
     pd.DataFrame({"match_index": sampled_df["match_index"].astype(int)}).to_csv(idx_path, index=False)
@@ -341,12 +354,17 @@ def run_plot_matches(
     # Save sampled rows (including the match_index column and any other metadata like PMO, R_draw, week_*)
     sampled_df.to_csv(sampled_matches_path, index=False)
 
+    # Save the full matched sim_id + PMO CSV (for all matches)
+    full_matches_df.to_csv(full_matches_path, index=False)
+
     # Print where we saved them
     print(f"Saved sampled matches dataframe to: {sampled_matches_path}")
     print(f"Saved sampled match indices to: {idx_path}")
+    print(f"Saved full matched trajectories (sim_id, PMO) to: {full_matches_path}")
 
-    # Return the main PNG path and the two auxiliary paths in case caller wants them
-    return out_png, str(sampled_matches_path), str(idx_path)
+    # Return the main PNG path and the three auxiliary paths in case caller wants them
+    return out_png, str(sampled_matches_path), str(idx_path), str(full_matches_path)
+
 
 def main():
     # uses module-level defaults unless overridden by editing this file

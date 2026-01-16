@@ -245,6 +245,7 @@ def plot_pmo_vs_r(
             color=BLUE,
             label=f"Running PMO = {overall:.5f}",
             zorder=3,
+            # drawstyle='steps',
         )
 
     # if R > 0 and np.isfinite(overall) and show_final_pmo == True:
@@ -507,6 +508,21 @@ def run_pmo_vs_r_refractor(
     matches_df = matches_df.copy()
     if "match_index" not in matches_df.columns:
         matches_df["match_index"] = matches_df.index.astype(int)
+
+    # Determine sim_id column: prefer 'sim_id' if present, otherwise use 'match_index'
+    sim_id_col = "sim_id" if "sim_id" in matches_df.columns else "match_index"
+    full_matches_df = matches_df[[sim_id_col, "PMO"]].copy()
+    if sim_id_col != "sim_id":
+        full_matches_df = full_matches_df.rename(columns={sim_id_col: "sim_id"})
+
+    # write it next to out_png (use same stem)
+    out_path_tmp = Path(out_png)
+    out_path_tmp.parent.mkdir(parents=True, exist_ok=True)
+    stem_tmp = out_path_tmp.stem
+    full_matches_path = out_path_tmp.parent / f"{stem_tmp}_matched_trajectories_full.csv"
+    full_matches_df.to_csv(full_matches_path, index=False)
+    print(f"Saved full matched trajectories (sim_id, PMO) to: {full_matches_path}")
+    # -----------------------------
 
     # 1) sample according to strategy
     sampled_df = prepare_sample(matches_df=matches_df, week_cols=week_cols,
