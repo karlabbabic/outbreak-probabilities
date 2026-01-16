@@ -8,6 +8,11 @@ from pathlib import Path
 import json
 import numpy as np
 import joblib
+import warnings
+warnings.filterwarnings(
+    "ignore",
+    message="X does not have valid feature names"
+)
 
 
 # set paths
