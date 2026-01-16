@@ -10,7 +10,7 @@ It holds the following folders:
 
 `machine_learning`: trains a ML model to classify trajectories on their outbreak probabilities
 
-So far, there is CLI commands to simulate, plot, trajectory match, and to compare the PMO from trajectory matching and the analytic solution. Run these commands in the terminal. 
+So far, there is CLI commands to simulate, plot, trajectory match, compare the PMO from trajectory matching and the analytic solution, predict using any of the ML models trained. Run these commands in the terminal. 
 
 In general, they are in the form `PYTHONPATH=src python -m outbreak_probabilities.runner [simulate,plot,match_trajectory,pmo_vs_r]`. This is so that when we turn this project into a package, it will be easy to transfer the commands, where we should be able to run it like `outbreak-probabilities [simulate,plot,match_trajectory,pmo_vs_r]`.
 
