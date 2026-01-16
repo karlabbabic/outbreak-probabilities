@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# src/outbreak_probabilities/runner.py — concise runner (with commented CLI options)
+# src/outbreak_probabilities/runner.py
 
 import argparse
 import re
@@ -7,13 +7,13 @@ import time
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-# Make sure imports are correct for running from source
+# Imports need to be from source when in package form
 from .simulate import simulate_paths_refractor as sim
 from .simulate import plot_traj_refractor as plot
 from .trajectory_matching import plot_matches_refractor as tm
 from .trajectory_matching import plot_pmo_vs_r_refractor as pmo_r
-
 from .analytic import analytical_refractor as an
+
 
 # Parser for initial cases like 1,2,3
 def parse_int_list(s: Optional[str]) -> List[int]:
@@ -311,7 +311,6 @@ def main():
         action="store_true",
         help="Print some R-grid/posterior info for debugging (default: False)",
     )
-
 
     args = p.parse_args()
     t0 = time.perf_counter()
