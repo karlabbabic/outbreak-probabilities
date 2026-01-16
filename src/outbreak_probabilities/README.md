@@ -51,3 +51,17 @@ Examples of extra options:
 PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --full-index --initial-cases 1,2,0 --sim-csv data/test_simulations_1M.csv --sample-size 200
 
 PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --initial-cases 1,0 
+
+5. List all available Machinge Leaning models
+
+`PYTHONPATH=src python -m outbreak_probabilities.predict --list`
+
+
+6. Predict PMO and probability using number of cases and model type (3 weeks of data)
+
+   
+`PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --week 2.1 --week 1.4`
+
+7. Predicting with Input CSV File:
+
+`PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv`
