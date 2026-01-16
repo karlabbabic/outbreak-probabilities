@@ -1,3 +1,6 @@
+"""This script trains Random Forest models on increasing sizes of data (from 500 to 35000 samples) from a CSV file and saves the models, scalers, and metadata for each size. It also includes a helper function to predict the probability of a major outbreak using the trained models."""
+
+
 import json
 from datetime import datetime
 from pathlib import Path
