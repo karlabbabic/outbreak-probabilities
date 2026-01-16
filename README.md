@@ -72,23 +72,16 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
 
 **What to do:**  
 1. Numerically compute the integral for the serial interval distribution  
-   \[
-     w_{k}=\int_{k-1}^{k+1}(1-|u-k|)\,g(u)\,du
-   \]  
-   - Use `scipy.integrate` or other fast numerical methods.  
-   - k = 2,3,4,...  
-2. Compute the expected number of new cases.  
-   - Consider `@lru_cache` to speed repeated calculations.
+2. Compute the expected number of new cases
 
 <h3 id="method-2-trajectory-matching">Method 2: Trajectory Matching</h3>
 
 **Input:**  
-- the first `k` days worth of simulated infection data from `simulated_cases.csv`  
-- an observed input sequence of early case counts, e.g. `data = [1,2,6] = k[0:3]`
+-  Sequence of case counts
 
 **Output:**  
-- any trajectory of cases where the first `k` days of simulated data match the observed sequence  
-- outbreak probability: fraction (or count) of those trajectories where the final entry > 100
+- All trajectories of cases where the first `k` days of simulated data match the observed sequence  
+- Outbreak probability: fraction of those trajectories classified as major outbreaks
 
 <h3 id="method-3-machine-learning">Method 3: Machine Learning</h3>
 
