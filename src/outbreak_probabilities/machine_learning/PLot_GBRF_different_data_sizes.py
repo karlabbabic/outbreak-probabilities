@@ -54,7 +54,14 @@ for sample in sample_solutions.keys():
     plt.figure(figsize=(10, 6))
     plt.plot(data_sizes, results[sample]["GB"], label="GB Predictions", color="darkorange", linewidth=3)
     plt.plot(data_sizes, results[sample]["RF"], label="RF Predictions", color="royalblue", linewidth=3)
-    plt.axhline(y=sample_solutions[sample], color="red", linestyle="--", label="Analytical Solution", linewidth=3)
+    #plot analytical solution line with label (exact value)
+    plt.axhline(
+        y=sample_solutions[sample],
+        color="red",
+        linestyle="--",
+        label=f"Analytical Solution ({sample_solutions[sample]:.5f})",
+        linewidth=2
+    )
     # add confidence interval shading for analytical solution
     plt.fill_between(
         data_sizes,
@@ -70,5 +77,5 @@ for sample in sample_solutions.keys():
     plt.ylim(0,1.13)
     plt.legend()
     plt.grid(color='lightgrey', linestyle='--', linewidth=0.3)
-    plot_path = plot_dir / f"Convergence_Sample_{sample}_GB_RF2.png"
+    plot_path = plot_dir / f"Convergence_Sample_{sample}_GB_RF.png"
     plt.savefig(plot_path)
