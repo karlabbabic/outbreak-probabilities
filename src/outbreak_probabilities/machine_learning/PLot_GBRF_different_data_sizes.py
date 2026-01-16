@@ -12,8 +12,8 @@ import joblib
 
 # set paths
 BASE_DIR = Path(__file__).resolve().parents[3]
-model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_ML_different_data_sizes"
-plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_ML_different_data_sizes"/ "ML_CONVERGENCE_PLOTS"
+model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" /"Model_SIM"
+plot_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"/ "ML_CONVERGENCE_PLOTS"
 plot_dir.mkdir(parents=True, exist_ok=True)
 
 # analytical solutions for selected samples
