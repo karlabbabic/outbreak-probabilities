@@ -1,4 +1,6 @@
-"""Run this file to plot the predicted outbreak probabilities from ML models(GB and) trained on different data sizes and the analytical solution. It can be used to assess when the ML models converges to the analytical solutions."""
+"""Run this file to plot the predicted outbreak probabilities from ML models(GB and)
+trained on different number of simulations (data sizes)
+and the analytical solution. Used to visualize when the ML models converges to the analytical solutions."""
 
 import pandas as pd
 import matplotlib
