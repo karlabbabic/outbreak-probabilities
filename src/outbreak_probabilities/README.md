@@ -58,8 +58,7 @@ Examples of extra options:
 **6. Predict PMO and probability using number of cases and model type (3 weeks of data)**
 
    
-`PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --week 2.1 --week 1.4`
+`PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4`
 
-**7. Predicting with Input CSV File:**
 
-`PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 3 --model RF --batch inputs.csv --out preds.csv`
+
