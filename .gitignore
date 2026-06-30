@@ -214,9 +214,6 @@ __marimo__/
 !simulated_cases_and_serial_interval_and_weights.csv
 *.png
 *.jpg
-*.pkl
-*.json
-
 
 
 
