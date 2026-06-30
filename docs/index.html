@@ -1,4 +1,547 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PMO Tools — Home</title>
+
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --panel: #ffffff;
+      --primary: #1d7a73;
+      --primary-hover: #165f5a;
+      --text: #22354d;
+      --muted: #667788;
+      --border: #d8e1ea;
+      --radius: 18px;
+      --title-bg: linear-gradient(135deg, #edf3fb, #f8fbff);
+      --nav-bg: rgba(255, 255, 255, 0.88);
+      --soft: #eef7f8;
+      --soft-2: #e8f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .site-header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e5eaf0;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-brand {
+      font-size: 34px;
+      font-weight: 700;
+      color: #183153;
+      letter-spacing: -0.02em;
+    }
+
+    .site-tagline {
+      margin-top: 6px;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      padding: 0 20px 18px;
+      flex-wrap: wrap;
+    }
+
+    .navblock {
+      display: inline-block;
+      background: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: #23354c;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .navblock:hover,
+    .navblock:focus-visible {
+      background: var(--soft);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .navblock.active {
+      background: var(--soft-2);
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      padding: 0 20px;
+    }
+
+    .app-card {
+      background: white;
+      padding: 40px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .title-banner {
+      background: var(--title-bg);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 26px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(15, 35, 70, 0.05);
+    }
+
+    .title-banner h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      color: #17345b;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .title-banner p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      margin-top: 22px;
+    }
+
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      color: #17345b;
+      border-bottom: 2px solid #dbe3ea;
+      padding-bottom: 8px;
+    }
+
+    .section-card h3 {
+      margin: 18px 0 10px;
+      font-size: 1.05rem;
+      color: #17345b;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .formula {
+      background: #f8fbff;
+      border: 1px solid #dbe3ea;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: #1d3557;
+      margin: 12px 0;
+    }
+
+    .highlight {
+      background: #edf7f6;
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+
+    .content-list {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .content-list li {
+      margin: 8px 0;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .button-link {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .button-link:hover,
+    .button-link:focus-visible {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .small-box {
+      background: #fafcff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .small-box strong {
+      color: #17345b;
+    }
+
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    code {
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 860px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        padding-top: 14px;
+        padding-bottom: 10px;
+      }
+
+      .site-brand {
+        font-size: 24px;
+      }
+
+      .app-card {
+        padding: 22px;
+      }
+
+      .title-banner h1 {
+        font-size: 1.7rem;
+      }
+
+      .title-banner p {
+        font-size: 0.98rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </div>
+    </div>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="navblock active">Home</a>
+      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+      <a href="analysispage.html" class="navblock">PMO Calculator</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="home-title">
+      <div class="title-banner">
+        <h1 id="home-title">Poisson processes, renewal models, and outbreak probability</h1>
+        <p>
+          This page gives a short overview of the ideas behind the calculator:
+          the Poisson distribution, Poisson processes, renewal models, and the
+          analytic outbreak probability calculation built from early case counts.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="section-card">
+          <h2>Poisson distribution</h2>
+          <p>
+            The Poisson distribution is a discrete probability distribution for
+            counting how many times an event occurs in a fixed interval of time
+            or space.
+          </p>
+
+          <img src="eqA.png" alt="Equation A" style="display: block; margin: auto; max-width: 50%;">
+
+          <p>
+            Here, <code>λ</code> is the mean rate. For a Poisson random variable,
+            the mean and variance are both equal to <code>λ</code>.
+          </p>
+
+          <div class="highlight">
+            It is often used when events are rare, independent, and occur with a
+            roughly constant rate over the interval being studied.
+          </div>
+
+          <h3>Connection to the binomial distribution</h3>
+          <p>
+            The Poisson distribution can be derived from the binomial model by
+            taking a large number of trials with a small success probability.
+            If the number of trials is <code>n</code>, the success probability is
+            <code>p</code>, and the mean is fixed as <code>λ = np</code>, then
+            taking <code>n → ∞</code> and <code>p → 0</code> gives the Poisson
+            form.
+          </p>
+        
+          <p>
+          <div>
+          <img src="eqB.png" alt="Equation B" style="display: block; margin: auto; max-width: 50%;">
+          </div>
+          </p>
+
+          <p class="muted">
+            After substitution with <code>p = λ/n</code> and simplification, the
+            limiting expression becomes the Poisson PMF above.
+          </p>
+        </article>
+
+        <aside class="section-card">
+          <h2>Key ideas</h2>
+
+          <div class="small-box">
+            <strong>Discrete counts:</strong>
+            <p class="muted">The number of events <code>k</code> is an integer-valued outcome.</p>
+          </div>
+
+          <div class="small-box">
+            <strong>Mean rate:</strong>
+            <p class="muted">The parameter <code>λ</code> controls the average number of events.</p>
+          </div>
+
+          <div class="small-box">
+            <strong>Waiting times:</strong>
+            <p class="muted">In a Poisson process, the waiting time between events is exponentially distributed.</p>
+          </div>
+
+          <div class="small-box">
+            <strong>Renewal processes:</strong>
+            <p class="muted">A renewal process generalizes the Poisson process by allowing more general waiting-time distributions.</p>
+          </div>
+
+          <div class="link-row">
+            <a class="button-link" href="analysispage.html">Open the calculator</a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="grid">
+        <article class="section-card">
+          <h2>Poisson process and renewal model</h2>
+          <p>
+            A Poisson process measures the random time required for a fixed
+            number of events to occur. The waiting times between events are
+            exponentially distributed, which makes the Poisson process a
+            special case of a renewal process.
+          </p>
+
+          <div class="formula">f(t) = (1/λ) e^(-t/λ)</div>
+
+          <p>
+            In an epidemic setting, a renewal model links the number of reportedcases at
+            time <code>t</code> to earlier cases and a serial-interval weight
+            distribution <code>w</code>.
+          </p>
+          <div class="formula">
+            <img src="eq6.png" alt="Equation 6" style="display: block; margin: auto; max-width: 75%;">      
+
+          </div>
+          </div>
+
+          <p>
+            The term <code>R_t</code> is the reproduction number, and
+            <code>w_s</code> is the probability that a secondary case is reported
+            <code>s</code> steps after the primary case.
+          </p>
+        </article>
+
+        <article class="section-card">
+          <h2>Analytic solution overview</h2>
+          <p>
+            The calculator estimates the probability of a major outbreak after
+            observing the first few weeks of cases.
+          </p>
+
+          <div class="highlight">
+            The main idea is to integrate over possible values of
+            <code>R</code>, weighting by how plausible each value is given the
+            early case counts.
+          </div>
+
+          <p>
+            First, the likelihood for the observed counts is written using a
+            Poisson model. Then Bayes' rule gives the posterior distribution for
+            <code>R</code>. Finally, the probability of a major outbreak is
+            averaged over that posterior.
+          </p>
+
+          <div class="formula">
+P(major outbreak | data) = ∫ P(major outbreak | R, data) P(R | data) dR
+          </div>
+
+          <p>
+            If the process is subcritical, it tends to die out. If it is
+            supercritical, there is a nonzero chance of sustained spread. The
+            calculator combines both the early observations and the extinction
+            probability to estimate the final outbreak risk.
+            <p>
+              For more information regarding the analytic method, view the analytical page below!            </p>
+            </p>
+          </p>
+          <div class="link-row">
+            <a class="button-link" href="Analyticalmeth.html">Go to Analytical Method</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="grid">
+        <article class="section-card">
+          <h2>How the serial interval enters the model</h2>
+          <p>
+            Each earlier case contributes to future cases through a delay
+            distribution. If a parent case is observed at week <code>t</code>,
+            then offspring can appear at later weeks with probabilities
+            <code>w1, w2, w3, ...</code>.
+          </p>
+
+          <p>
+            This is why the first few observed weeks are so informative:
+            they constrain the likely range of <code>R</code> and therefore
+            the probability of a larger outbreak.
+          </p>
+
+          <div class="formula">
+μ_t = R(1 - ∑_{s: t+s < 3} w_s)
+          </div>
+
+          <p class="muted">
+            This quantity represents the mean number of offspring that appear
+            after the observed period and can seed unseen transmission chains.
+          </p>
+        </article>
+
+        <article class="section-card">
+          <h2>What the calculator does</h2>
+          <ol class="content-list">
+            <li>Accepts early weekly case counts.</li>
+            <li>Evaluates a grid of possible <code>R</code> values.</li>
+            <li>Computes the posterior over <code>R</code>.</li>
+            <li>Combines that posterior with extinction probability.</li>
+            <li>Returns the probability of a major outbreak.</li>
+          </ol>
+
+          <div class="highlight">
+            The calculator is designed for early data, when uncertainty is still
+            high and the outbreak trajectory is not yet clear.
+          </div>
+
+          <div class="link-row">
+            <a class="button-link" href="calculator.html">Go to PMO Calculator</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="grid">
+        <article class="section-card">
+          <h2>Noise and extensions</h2>
+          <p>
+            A natural extension is to allow the reproduction number to vary over
+            time, for example by making <code>R_t</code> stochastic.
+          </p>
+          <p>
+            One possible model is multiplicative noise, such as
+            <code>log(R_t)</code> evolving over time. This can capture changes in
+            behavior, reporting, or control measures.
+          </p>
+          <p>
+            Even when <code>R &gt; 1</code>, random variation can still lead to
+            extinction in the early stages, so uncertainty matters.
+          </p>
+        </article>
+
+        <article class="section-card">
+          <h2>Notes</h2>
+          <p>
+            This page is meant to introduce the key ideas behind the PMO
+            calculator rather than replace the mathematical derivation.
+          </p>
+          <p>
+            The calculator page contains the interactive controls and output
+            plots; this home page is the conceptual overview.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Built with the same PMO Tools theme as the calculator page.
+  </footer>
+</body>
+</html>
+=======
 <html>
 <head>
   <link rel="stylesheet" href="styles.css"/>
@@ -44,3 +587,4 @@
   </body>
 </html>
 
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09

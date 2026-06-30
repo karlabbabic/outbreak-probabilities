@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -306,137 +305,84 @@
 
     <nav class="site-nav" aria-label="Primary">
       <a href="index.html" class="navblock">Home</a>
-      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+      <a href="Analyticalmeth.html" class="navblock active">Analytical method</a>
       <a href="analysispage.html" class="navblock">PMO Calculator</a>
-      <a href="approaches.html" class="navblock active">Approaches</a>
-      <a href="Additional.html" class="navblock ">Additional Information</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
     </nav>
   </header>
 
   <main>
     <section class="app-card" aria-labelledby="home-title">
       <div class="title-banner">
-        <h1 id="home-title">Approaches</h1>
+        <h1 id="home-title">Poisson processes, renewal models, and outbreak probability</h1>
         <p>
-          This pages provides information on three approaches for estimating outbreak probability from early case data. 
-           The third approach is a machine learning method that uses a trained model to learn the relationship between early case patterns and the probability of a major outbreak. 
+          This page gives a short overview behind the analytical method supplied in the PMO calculator. It also provides links to the other approaches for estimating outbreak probability from early case data.
         </p>
       </div>
-
-
-
-
-   
-<main class="page">
-      <h1 id="methods-title">Analytics solutions</h1>
-      <p class="subtitle">
-        <div class="highlight">
-        This approach uses a discrete-time renewal process to compute the outbreak probability.
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>The first <code>k</code> days of simulated infection data from <code>simulated_cases.csv</code></li>
-          <li>An estimated range for the reproduction number</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>Conditional probability <code>P([I1, I2, I3] | R)</code></li>
-          <li>Outbreak probability given first three cases <code>P(PMO | [I1, I2, I3])</code></li>
-          <li>Outbreak probability given reproduction number <code>P(PMO | R)</code></li>
-          <li>Overall outbreak probability</li>
-        </ul>
-
-        <div class="formula">
-Overall outbreak probability = conditional probability × outbreak probability given reproduction number
-        </div>
-
-        <h3>What to do</h3>
-        <ul class="content-list">
-          <li>Numerically compute the integral for the serial interval distribution</li>
-          <li>Compute the expected number of new cases</li>
-        </ul>
-      </article>
-
-      <article class="method-card">
-        <div class="method-head">
-          <main class="page">
-      <h1 id="methods-title">Trajectory matching</h1>
-      <div class="highlight"> The second approach is a trajectory matching method that compares observed early case counts to simulated epidemic trajectories.</div>
-      
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>Sequence of case counts</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>All trajectories where the first <code>k</code> days of simulated data match the observed sequence</li>
-          <li>Outbreak probability as the fraction of those trajectories classified as major outbreaks</li>
-        </ul>
-
-        <h3>What it does</h3>
-        <p>
-          This method compares observed early case counts to simulated epidemic trajectories
-          and keeps only the trajectories that match the beginning of the data.
-        </p>
-      </article>
-
-      <article class="method-card">
-        <div class="method-head">
-          <span class="method-pill">Method 3</span>
-          <h2>Machine Learning</h2>
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>An observed early sequence of case counts, for example <code>data = [1, 2, 6]</code></li>
-          <li>Machine learning model(s) trained on simulated trajectories</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>Predicted outbreak probability</li>
-          <li>Model metrics</li>
-          <li>Saved model files (TBD)</li>
-        </ul>
-
-        <h3>What it does</h3>
-        <p>
-          This approach uses a trained model to learn the relationship between early case
-          patterns and the probability of a major outbreak.
-        </p>
-      </article>
-    </div>
-  </section>
-</main>
-=======
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approaches</title>
-    <link href="/styles.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-  <header>   <h1> Predicting the probability of a major outbreak </h1> 
-<img id="OxSym" src=unioxsym.png>
-
-</header>
- <nav>
-
-   <div id="navblock"><a href="/index.html">Index</a> </div> <div id="navblock"><a href="/analyticapp">Analytic PMO calculator</a></div><div id="navblock"><a href="/approaches">Approaches</a></div>
+           
+        <article class="section-card">
+          <h2>Epidemiological models</h2>
+          <p>
+           The underlying probability calculation methods is a discrete-time renewal process, a standard epidemic model for infectious disease dynamics that allows us to model new cases over time.
+           <p>
+           The expected number of new cases at a time is given by: 
+          </p>
+          <p>
+          <article class="card">
+          ` <img src="eq1.png" alt="Equation 1" style="display: block; margin: auto; max-width: 50%;">
+    
+        </article>
+    
           
-</nav>
-<main>
-<h3> Click below to learn more about the approaches used to calculate the major outbreak probability:</h3>
-<div id="appbox1"><a href="/mathapproach"> Mathematical Approach</a></div><div id="appbox1"> <a href="/trajapproach">Trajectory Matching</a></div> <div id="appbox1"> <a href="/mlapproach">Machine Learning</a></div>
-
-
-</main>
-  </body>
-</html>
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+          <p>
+            <div class="highlight">
+                
+            <h2>The basis of the equation </h2>
+          </p>
+          <p>  - The past cases </p>
+             <p>   
+            
+            - How strongly those past cases contribute to new cases today, determined by the serial interval weights, <code>Ws</code></p>
+              <p>   
+            - The average number of secondary cases per case, <code>R</code></p>
+            </div>
+            
+</div>
+          </p>
+          <p>
+            <div>
+            </div>
+            <p>   As is common in the lierature, any new cases are generated by drawing from a poisson distribution with this expected value.
+          </p>
+          <p>
+            We model transmission using a weekly discretised serial interval distribution <code>w=(w1, w2, ...)</code>.
+            to construct these weights ,we begin with a continuous gamma distribution for the serial interval with mean 15.3 days and a standard deviation 9.3 days, consistent with estimates from the 2014-2016 West Africa Ebola epidemic 
+          </p>
+          <p> This can be visualised in the following equation: </p>
+          <article class="card">
+          ` <img src="eq3.png" alt="Equation 3" style="display: block; margin: auto; max-width: 50%;">
+    
+        </article>
+        <br>
+        <p>Having defined the underlying epidemiological model, we can inestigate the key question: given early incidence data such as the first three
+            weeks of case counts [I1,I2, I3], what is the probaility that a large outbreak will follow? </p>
+            <div class="highlight">
+            <h2>Estimation approaches</h2>
+            <ol>
+              <li> Analytic solution- an analytic calculation based on branching process theory
+              <li> Trajectory matching- a trajectory matching approach using simulated outbreaks;</li>
+              <li> Simulation- a machine learning classifier trained on large numbers of simulated outbreaks.</li>
+            </ol>
+        </div>
+        <article class="card">
+            <img src="eqC.png" alt="Equation C" style="display: block; margin: 3%; max-width: 91%;">
+            </article>
+<P> The posterior distribution captures the likelihood of different values of R given the early epidemic trajectory. The condition probability is informed by branching process theory and described the probability that the observed early cases gives rise to a major outbreak under fixed value of <code>R</code>. The overall outbreak probability is then obtained by integrating over the posterior distribution of <code>R</code>.</P
+          </p>
+          <p>A step by step derivation of the analytical method consists of:
+            <ol>
+                <li>Deriving the posterio distribution utilising Bayes rule
+                <li>Utillisin M as a normalising constant where we assume the number of cases in week 1 (I1) is unknown </li>
+                <li> Noting that for no outbreak to occur that the I1+I2+I3 cases arising in the first three weeks don't generate cases which initiate a major outbreak after week 3 </li>
+                </ol>
+            

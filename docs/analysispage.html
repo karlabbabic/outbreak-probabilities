@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+=======
 <!DOCTYPE html> 
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -10,6 +14,26 @@
 
   <style>
     :root {
+<<<<<<< HEAD
+      --bg: #f4f6f9;
+      --panel: #ffffff;
+      --primary: #1d7a73;
+      --primary-hover: #165f5a;
+      --accent: #edf7f6;
+      --text: #22354d;
+      --muted: #667788;
+      --border: #d8e1ea;
+      --radius: 18px;
+      --title-bg: linear-gradient(135deg, #edf3fb, #f8fbff);
+      --nav-bg: rgba(255, 255, 255, 0.88);
+      --slider-track: #d7e3ea;
+      --slider-fill: #1d7a73;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+=======
       --bg: #f7f7f8;
       --panel: #ffffff;
       --border: #d9d9e3;
@@ -21,10 +45,123 @@
     }
 
     * { box-sizing: border-box; }
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
 
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+<<<<<<< HEAD
+      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 60px;
+    }
+
+    .site-header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e5eaf0;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-brand {
+      font-size: 34px;
+      font-weight: 700;
+      color: #183153;
+      letter-spacing: -0.02em;
+    }
+
+    .site-tagline {
+      margin-top: 6px;
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      padding: 0 20px 18px;
+      flex-wrap: wrap;
+    }
+
+    .navblock {
+      display: inline-block;
+      background: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: #23354c;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .navblock:hover,
+    .navblock:focus-visible {
+      background: #eef7f8;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .navblock.active {
+      background: #e8f5f5;
+      color: #1d7a73;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      padding: 0 20px;
+      font-family: inherit;
+    }
+
+    .app-card {
+      background: white;
+      padding: 40px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .title-banner {
+      background: var(--title-bg);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(15, 35, 70, 0.05);
+    }
+
+    .title-banner h1 {
+      margin: 0;
+      font-size: 46px;
+      color: #17345b;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .intro {
+      margin-top: 12px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      max-width: 900px;
+      font-size: 18px;
+=======
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -55,6 +192,7 @@
       margin-top: 0;
       margin-bottom: 24px;
       color: var(--muted);
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
 
     .control-row {
@@ -71,11 +209,22 @@
       margin-bottom: 20px;
     }
 
+<<<<<<< HEAD
+    label {
+      font-weight: 600;
+      color: #1f2937;
+    }
+=======
     label { font-weight: 600; }
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
 
     input[type="range"] {
       width: 100%;
       cursor: pointer;
+<<<<<<< HEAD
+      accent-color: var(--primary);
+=======
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
 
     .range-value {
@@ -87,7 +236,11 @@
     output {
       width: 100%;
       border: 1px solid var(--border);
+<<<<<<< HEAD
+      border-radius: 12px;
+=======
       border-radius: var(--radius);
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
       padding: 12px;
       font: inherit;
       background: #fff;
@@ -99,6 +252,30 @@
     }
 
     button {
+<<<<<<< HEAD
+      background: var(--primary);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 14px;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+=======
       border: none;
       border-radius: var(--radius);
       background: var(--primary);
@@ -114,6 +291,7 @@
     button:disabled {
       background: #9ca3af;
       cursor: not-allowed;
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
 
     .output-section {
@@ -121,6 +299,19 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
+<<<<<<< HEAD
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .output-section h2 {
+      margin: 0;
+      color: #0f2346;
+      font-size: 1.45rem;
+      border-bottom: 2px solid #dbe3ea;
+      padding-bottom: 8px;
+=======
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
 
     #pmo-result-output {
@@ -132,7 +323,11 @@
 
     .plot-container {
       border: 1px dashed var(--border);
+<<<<<<< HEAD
+      border-radius: 14px;
+=======
       border-radius: var(--radius);
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
       min-height: 320px;
       display: flex;
       align-items: center;
@@ -169,17 +364,75 @@
     }
 
     @media (max-width: 720px) {
+<<<<<<< HEAD
+      .header-inner {
+        padding-top: 14px;
+        padding-bottom: 10px;
+      }
+
+      .site-brand {
+        font-size: 24px;
+      }
+
+      .control-row {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        margin-top: 18px;
+      }
+
+      .app-card {
+        padding: 22px;
+      }
+
+      .title-banner {
+        padding: 18px;
+      }
+
+      .title-banner h1 {
+        font-size: 1.6rem;
+      }
+
+      .intro {
+        font-size: 16px;
+      }
+=======
       .control-row { grid-template-columns: 1fr; }
       main { margin: 24px auto; }
       .app-card { padding: 20px; }
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
   </style>
 </head>
 
 <body>
+<<<<<<< HEAD
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </div>
+    </div>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="navblock">Home</a>
+      <a href="calculator.html" class="navblock active">PMO Calculator</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="app-title">
+      <div class="title-banner">
+        <h1 id="app-title">PMO calculator — weekly early data</h1>
+      </div>
+=======
   <main>
     <section class="app-card" aria-labelledby="app-title">
       <h1 id="app-title">PMO calculator — weekly early data</h1>
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
 
       <p class="intro" id="app-description">
         Enter how many weeks you will provide and paste the observed counts as
@@ -249,10 +502,18 @@
             Results will appear here after computation.
           </output>
         </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
         <div class="field">
           <label for="pmo-value-output">PMO value</label>
           <output id="pmo-value-output" name="pmo_value">—</output>
         </div>
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
         <div class="field">
           <label for="pmo-plot-container">PMO|R and posterior</label>
 
@@ -280,4 +541,8 @@
 
   <script type="py" src="./analyticalcalc.py" config="./pyscript.json"></script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09

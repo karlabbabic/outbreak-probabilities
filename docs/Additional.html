@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -308,135 +307,26 @@
       <a href="index.html" class="navblock">Home</a>
       <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
       <a href="analysispage.html" class="navblock">PMO Calculator</a>
-      <a href="approaches.html" class="navblock active">Approaches</a>
-      <a href="Additional.html" class="navblock ">Additional Information</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
+      <a href="Additional.html" class="navblock active">Additional Information</a>
     </nav>
   </header>
 
   <main>
     <section class="app-card" aria-labelledby="home-title">
       <div class="title-banner">
-        <h1 id="home-title">Approaches</h1>
+        <h1 id="home-title">Additional information</h1>
         <p>
-          This pages provides information on three approaches for estimating outbreak probability from early case data. 
-           The third approach is a machine learning method that uses a trained model to learn the relationship between early case patterns and the probability of a major outbreak. 
+          This page contains additional information and sources utilised throughout the equation development process 
         </p>
       </div>
-
-
-
-
-   
-<main class="page">
-      <h1 id="methods-title">Analytics solutions</h1>
-      <p class="subtitle">
-        <div class="highlight">
-        This approach uses a discrete-time renewal process to compute the outbreak probability.
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>The first <code>k</code> days of simulated infection data from <code>simulated_cases.csv</code></li>
-          <li>An estimated range for the reproduction number</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>Conditional probability <code>P([I1, I2, I3] | R)</code></li>
-          <li>Outbreak probability given first three cases <code>P(PMO | [I1, I2, I3])</code></li>
-          <li>Outbreak probability given reproduction number <code>P(PMO | R)</code></li>
-          <li>Overall outbreak probability</li>
-        </ul>
-
-        <div class="formula">
-Overall outbreak probability = conditional probability × outbreak probability given reproduction number
-        </div>
-
-        <h3>What to do</h3>
-        <ul class="content-list">
-          <li>Numerically compute the integral for the serial interval distribution</li>
-          <li>Compute the expected number of new cases</li>
-        </ul>
-      </article>
-
-      <article class="method-card">
-        <div class="method-head">
-          <main class="page">
-      <h1 id="methods-title">Trajectory matching</h1>
-      <div class="highlight"> The second approach is a trajectory matching method that compares observed early case counts to simulated epidemic trajectories.</div>
-      
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>Sequence of case counts</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>All trajectories where the first <code>k</code> days of simulated data match the observed sequence</li>
-          <li>Outbreak probability as the fraction of those trajectories classified as major outbreaks</li>
-        </ul>
-
-        <h3>What it does</h3>
-        <p>
-          This method compares observed early case counts to simulated epidemic trajectories
-          and keeps only the trajectories that match the beginning of the data.
-        </p>
-      </article>
-
-      <article class="method-card">
-        <div class="method-head">
-          <span class="method-pill">Method 3</span>
-          <h2>Machine Learning</h2>
-        </div>
-
-        <h3>Input</h3>
-        <ul class="content-list">
-          <li>An observed early sequence of case counts, for example <code>data = [1, 2, 6]</code></li>
-          <li>Machine learning model(s) trained on simulated trajectories</li>
-        </ul>
-
-        <h3>Output</h3>
-        <ul class="content-list">
-          <li>Predicted outbreak probability</li>
-          <li>Model metrics</li>
-          <li>Saved model files (TBD)</li>
-        </ul>
-
-        <h3>What it does</h3>
-        <p>
-          This approach uses a trained model to learn the relationship between early case
-          patterns and the probability of a major outbreak.
-        </p>
-      </article>
-    </div>
-  </section>
-</main>
-=======
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approaches</title>
-    <link href="/styles.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-  <header>   <h1> Predicting the probability of a major outbreak </h1> 
-<img id="OxSym" src=unioxsym.png>
-
-</header>
- <nav>
-
-   <div id="navblock"><a href="/index.html">Index</a> </div> <div id="navblock"><a href="/analyticapp">Analytic PMO calculator</a></div><div id="navblock"><a href="/approaches">Approaches</a></div>
-          
-</nav>
-<main>
-<h3> Click below to learn more about the approaches used to calculate the major outbreak probability:</h3>
-<div id="appbox1"><a href="/mathapproach"> Mathematical Approach</a></div><div id="appbox1"> <a href="/trajapproach">Trajectory Matching</a></div> <div id="appbox1"> <a href="/mlapproach">Machine Learning</a></div>
-
-
-</main>
-  </body>
-</html>
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+           
+        <article class="section-card">
+          <h2>Sources</h2>
+          <p>
+             <li> Christophe Fraser. “Estimating Individual and Household Reproduction Numbers in an Emerging Epidemic”. In: PLoS ONE 2.8 (2007), e758. doi: 10.1371/journal.pone.0000758. </li>
+            <li> WHO Ebola Response Team. “Ebola virus disease in West Africa—the first 9 months of the epidemic and forward projections”. In: The New England journal of medicine 371.16 (2014), pp. 1481–1495. </li>
+            <li> Ogi-Gittins et al. “Real-time inference of the end of an outbreak: Temporally aggregated disease incidence data and under-reporting”. In: Infectious Disease Modelling 10.3 (2025), pp. 935–945. doi: https://doi.org/ 10.1016/j.idm.2025.03.009. </li>
+            <li> James R Norris. Markov chains. 2. Cambridge university press, 1998. </li>
+          </p>
+        </article>
