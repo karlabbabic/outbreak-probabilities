@@ -2,7 +2,7 @@ from pathlib import Path
 
 import joblib
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
 
@@ -58,6 +58,11 @@ def predict_pmo(model_name, week_values, threshold=0.5):
 
 @app.route("/")
 def home():
+    return send_file(BASE_DIR / "ML.html", mimetype="text/html")
+
+
+@app.route("/health")
+def health():
     return jsonify({
         "message": "PMO prediction API is running"
     })
