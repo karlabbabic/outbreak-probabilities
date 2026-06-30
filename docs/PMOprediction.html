@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PMO Prediction</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 24px;
+      max-width: 700px;
+    }
+    label {
+      display: inline-block;
+      min-width: 140px;
+      margin-top: 10px;
+    }
+    select, input {
+      padding: 6px;
+      margin-top: 8px;
+    }
+    #weekInputs {
+      margin-top: 8px;
+      margin-bottom: 16px;
+    }
+    button {
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    #result {
+      white-space: pre-wrap;
+      font-weight: bold;
+    }
+    .week-row {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>PMO Prediction</h2>
+
+  <label for="model">Model:</label>
+  <select id="model" py-input="on_model_change">
+    <option value="RF">Random Forest</option>
+    <option value="GB">Gradient Boosting</option>
+  </select>
+
+  <br><br>
+
+  <label for="numWeeks">Number of weeks:</label>
+  <select id="numWeeks" py-input="createWeekInputs">
+    <option value="1">1 week</option>
+    <option value="2" selected>2 weeks</option>
+    <option value="3">3 weeks</option>
+    <option value="4">4 weeks</option>
+    <option value="5">5 weeks</option>
+  </select>
+
+  <div id="weekInputs"></div>
+
+  <br>
+
+  <button type="button" py-click="getPrediction">Predict</button>
+
+  <h3>Result:</h3>
+  <p id="result">Choose a model and enter weekly values.</p>
+
+  <script type="py" src="./pmo_prediction.py"></script>
+</body>
+</html>
