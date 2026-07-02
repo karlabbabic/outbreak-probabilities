@@ -42,7 +42,7 @@ def clean_simulation_data(raw_df: pd.DataFrame) -> pd.DataFrame:
 
     raise KeyError(f"Expected columns {expected_columns} were not found in the input data.")
 
-# 2. INFERENCE / PREDICTION HELPERS
+# PREDICTION HELPERS
 
 
 def load_pipeline(model_dir: Path, model_name: str, n_weeks: int) -> Pipeline:
@@ -157,10 +157,8 @@ if __name__ == "__main__":
     DATA_PATH = BASE_DIR / "data" / "test_simulations.csv"
     MODEL_DIR = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_4weeks"
 
-    # Execute the training run
     run_training_pipeline(DATA_PATH, MODEL_DIR)
 
-    # Quick end-to-end inference verification check:
     print("\n--- Verifying Saved Artifact Inference ---")
     try:
         loaded_rf_pipeline = load_pipeline(MODEL_DIR, "RF", n_weeks=4)

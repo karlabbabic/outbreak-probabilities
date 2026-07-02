@@ -108,7 +108,6 @@ def run_training_pipeline(data_path: Path, model_dir: Path):
     for model_name, clf in models.items():
         print(f"\nTraining unified pipeline for: {model_name}")
         
-        # Combine Statistical Preprocessing (Scaler) and Model into one workflow object
         pipeline = Pipeline([
             ('scaler', StandardScaler()),
             ('classifier', clf)
@@ -122,7 +121,7 @@ def run_training_pipeline(data_path: Path, model_dir: Path):
         pipeline_path = model_dir / f"{stem}_pipeline.pkl"
         meta_json_path = model_dir / f"{stem}.json"
 
-        # Save unified pipeline (combines model & scaler into 1 file)
+        # Save unified pipeline 
         joblib.dump(pipeline, pipeline_path, compress=3)
 
         # Metadata tracking

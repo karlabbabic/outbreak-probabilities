@@ -18,11 +18,9 @@ def clean_simulation_data(raw_df: pd.DataFrame) -> pd.DataFrame:
     df = raw_df.copy()
     expected_columns = ["week_1", "week_2", "week_3", "PMO"]
 
-    # If the dataframe already has the expected columns, use it directly.
     if all(col in df.columns for col in expected_columns):
         return df.loc[:, expected_columns].dropna().reset_index(drop=True)
 
-    # Otherwise, handle raw CSV-style input with metadata rows.
     if len(df) >= 3:
         df = df.iloc[2:].reset_index(drop=True)
 
@@ -43,7 +41,7 @@ def clean_simulation_data(raw_df: pd.DataFrame) -> pd.DataFrame:
     raise KeyError(f"Expected columns {expected_columns} were not found in the input data.")
 
 
-# INFERENCE / PREDICTION HELPERS
+#PREDICTION HELPERS
 
 
 def load_pipeline(model_dir: Path, model_name: str, n_weeks: int) -> Pipeline:
@@ -88,7 +86,7 @@ def predict_pmo(pipeline: Pipeline, model_name: str, week_1: float, week_2: floa
     }
 
 
-# 3. TRAINING PIPELINE EXECUTION
+#TRAINING PIPELINE EXECUTION
 
 def run_training_pipeline(data_path: Path, model_dir: Path):
     """Encapsulates the structural preprocessing, training, and artifact saving workflow."""
@@ -158,10 +156,8 @@ if __name__ == "__main__":
     DATA_PATH = BASE_DIR / "data" / "test_simulations.csv"
     MODEL_DIR = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_3weeks"
 
-    # Execute the training run
     run_training_pipeline(DATA_PATH, MODEL_DIR)
 
-    # Quick end-to-end inference verification check:
     print("\n--- Verifying Saved Artifact Inference ---")
     try:
         loaded_rf_pipeline = load_pipeline(MODEL_DIR, "RF", n_weeks=3)

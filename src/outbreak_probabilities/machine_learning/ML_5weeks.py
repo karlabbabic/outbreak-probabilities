@@ -43,7 +43,7 @@ def clean_simulation_data(raw_df: pd.DataFrame) -> pd.DataFrame:
     raise KeyError(f"Expected columns {expected_columns} were not found in the input data.")
 
 
-# 2. INFERENCE / PREDICTION HELPERS
+# PREDICTION HELPERS
 
 
 def load_pipeline(model_dir: Path, model_name: str, n_weeks: int) -> Pipeline:
@@ -115,7 +115,6 @@ def run_training_pipeline(data_path: Path, model_dir: Path):
     for model_name, clf in models.items():
         print(f"\nTraining unified pipeline for: {model_name}")
         
-        # Combine Statistical Preprocessing (Scaler) and Model into one workflow object
         pipeline = Pipeline([
             ('scaler', StandardScaler()),
             ('classifier', clf)
@@ -150,7 +149,6 @@ def run_training_pipeline(data_path: Path, model_dir: Path):
     print("\nAll models trained and pipelines archived successfully.")
 
 
-# 4. ENTRYPOINT
 
 
 if __name__ == "__main__":
