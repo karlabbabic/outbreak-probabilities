@@ -147,15 +147,26 @@ def compute_serial_weights(mean, std, k_max, nquad=64, step=7.0):
     return w
 
 
-def calculate_R(R_range, rng=None):
+def calculate_R(R_range, rng=None, dist="uniform", dist_params=None):
+    """Draw a single reproduction number R from the requested distribution."""
     if rng is None:
         rng = default_rng()
     rmin, rmax = float(R_range[0]), float(R_range[1])
-    if rmax < rmin:
-        raise ValueError("R maximum must be greater than or equal to R minimum")
     if rmin == rmax:
         return float(rmin)
-    return float(rng.uniform(rmin, rmax))
+    if dist == "uniform":
+        return float(rng.uniform(rmin, rmax))
+    if dist == "normal":
+        params = {} if dist_params is None else dict(dist_params)
+        mu = params.get("mean", 0.5 * (rmin + rmax))
+        sd = params.get("sd", (rmax - rmin) / 4.0)
+        return float(max(rmin, min(rmax, rng.normal(mu, sd))))
+    if dist == "lognormal":
+        if rmin <= 0:
+            raise ValueError("R_range lower bound must be > 0 for lognormal")
+        log_min, log_max = np.log(rmin), np.log(rmax)
+        return float(np.exp(rng.uniform(log_min, log_max)))
+    raise ValueError(f"Unknown dist '{dist}'")
 
 
 def is_extinct_window(trajectory_prefix, window):
@@ -167,7 +178,7 @@ def is_extinct_window(trajectory_prefix, window):
 
 
 def simulate_trajectory(w, max_weeks=50, R=None, initial_cases=None,
-                        rng=None, extinction_window=10, major_threshold=100,
+                        rng=None, extinction_window=None, major_threshold=100,
                         stop_on_major=True):
     if rng is None:
         rng = default_rng()
@@ -175,7 +186,13 @@ def simulate_trajectory(w, max_weeks=50, R=None, initial_cases=None,
     if w_arr.ndim != 1:
         raise ValueError("w must be one-dimensional")
 
-    R = float(R)
+   if R is None:
+        if R_range is None:
+            raise ValueError("Either R or R_range must be provided")
+        R = float(calculate_R(R_range, rng=rng))
+    else:
+        R = float(R)
+
     initial = [1] if initial_cases is None else list(initial_cases)
     trajectory = np.zeros(int(max_weeks), dtype=int)
     L = min(len(initial), int(max_weeks))
@@ -229,51 +246,62 @@ class SimConfig:
     k_max: int = 50
     nquad: int = 32
     step: float = 7.0
-    R_min: float = 0.0
-    R_max: float = 10.0
-    initial_cases: tuple = (1,)
+    R_range: Tuple[float, float] = (0.0, 10.0)
+    initial_cases: Iterable[int] = (1,)
     extinction_window: int = 10
     major_threshold: int = 100
-    seed: int = 42
+    seed: Optional[int] = None
+    R_dist: str = "uniform"
+    R_dist_params: Optional[dict] = None
     write_weeks: int = 5
 
 
-def simulate_paths(cfg):
+def simulate_paths(cfg: SimConfig) -> Tuple[pd.DataFrame, np.ndarray, np.ndarray]:
+    """Simulate cfg.N trajectories.
+
+    Returns (sim_df, trajectories, w):
+      - sim_df: one row per simulation with sim_id, sim_seed, R_draw,
+        week_1..write_weeks, cumulative_cases, status, PMO (clean dtypes).
+      - trajectories: full (N, max_weeks) integer array (zeros after stop).
+      - w: serial-interval weights used.
+    """
     master_rng = default_rng(cfg.seed)
+    R_min, R_max = float(cfg.R_range[0]), float(cfg.R_range[1])
+
     w = compute_serial_weights(cfg.mean_serial, cfg.std_serial, cfg.k_max, cfg.nquad, cfg.step)
     if len(w) < cfg.max_weeks:
-        raise RuntimeError(f"weights length {len(w)} < max_weeks {cfg.max_weeks}; increase k_max")
+        raise RuntimeError(f"weights length {len(w)} < max_weeks {cfg.max_weeks}; raise k_max.")
 
-    n_write = min(max(1, int(cfg.write_weeks)), int(cfg.max_weeks))
-    N = int(cfg.N)
-    max_weeks = int(cfg.max_weeks)
-    trajectories = np.zeros((N, max_weeks), dtype=int)
-    week_table = np.zeros((N, n_write), dtype=int)
-    r_draws = np.zeros(N, dtype=float)
-    pmo_flags = np.zeros(N, dtype=int)
-    status = np.empty(N, dtype=object)
-    sim_ids = np.arange(1, N + 1, dtype=int)
+    n_write = min(max(1, int(cfg.write_weeks)), cfg.max_weeks)
+    trajectories = np.zeros((int(cfg.N), int(cfg.max_weeks)), dtype=int)
+    rows = []
 
-    for sim_idx in range(N):
+    for sim_idx in range(int(cfg.N)):
         sim_seed = int(master_rng.integers(low=0, high=2**63 - 1, dtype=np.int64))
         child_rng = default_rng(sim_seed)
-        R = calculate_R((cfg.R_min, cfg.R_max), rng=child_rng)
-        traj, R, cumulative, stat, pmo, t_end = simulate_trajectory(
-            w=w,
-            max_weeks=max_weeks,
-            R=R,
-            initial_cases=cfg.initial_cases,
-            rng=child_rng,
-            extinction_window=cfg.extinction_window,
-            major_threshold=cfg.major_threshold,
-        )
-        trajectories[sim_idx, :] = traj
-        week_table[sim_idx, :] = traj[:n_write]
-        r_draws[sim_idx] = R
-        pmo_flags[sim_idx] = int(pmo)
-        status[sim_idx] = stat
+        R = calculate_R((R_min, R_max), rng=child_rng, dist=cfg.R_dist, dist_params=cfg.R_dist_params)
 
-    return trajectories, week_table, r_draws, pmo_flags, status, sim_ids, w
+        result = simulate_trajectory(
+            w=w, max_weeks=int(cfg.max_weeks), R=R, initial_cases=list(cfg.initial_cases),
+            rng=child_rng, extinction_window=cfg.extinction_window,
+            major_threshold=cfg.major_threshold)
+
+        traj = np.asarray(result["trajectory"], dtype=int)
+        trajectories[sim_idx, :] = traj
+
+        row = {"sim_id": sim_idx + 1, "sim_seed": sim_seed, "R_draw": float(R)}
+        for d in range(1, n_write + 1):
+            row[f"week_{d}"] = int(traj[d - 1])
+        row["cumulative_cases"] = int(result["cumulative"])
+        row["status"] = result["status"]
+        row["PMO"] = int(result["PMO"])
+        rows.append(row)
+
+    sim_df = pd.DataFrame(rows)
+    week_cols = [f"week_{d}" for d in range(1, n_write + 1)]
+    sim_df[week_cols] = sim_df[week_cols].astype(int)
+    sim_df["PMO"] = sim_df["PMO"].astype(int)
+    return sim_df, trajectories, w
 
 
 def parse_observed_weeks(raw):
@@ -302,9 +330,10 @@ def select_indices(indices, trajectories_subset, r_subset, pmo_subset, strategy,
 
     if strategy == "random":
         return rng.choice(n, size=sample_size, replace=False)
-
-    cumulative = trajectories_subset.sum(axis=1)
-    peak = trajectories_subset.max(axis=1)
+    arr = df[week_cols].to_numpy(dtype=float)
+    cumulative = arr.sum(axis=1)
+    peak = arr.max(axis=1)
+    Rdraw = df["R_draw"].values if "R_draw" in df.columns else np.zeros(n)
 
     if strategy == "highest_cumulative":
         return np.argsort(-cumulative)[:sample_size]
@@ -325,7 +354,18 @@ def select_indices(indices, trajectories_subset, r_subset, pmo_subset, strategy,
         return np.fromiter(sorted(idx_set), dtype=int)
 
     raise ValueError(f"Unknown sample strategy: {strategy}")
-
+def mask_after_threshold_array(weeks_arr: np.ndarray, threshold: int) -> np.ndarray:
+    """Set values after the first week cumulative>=threshold to NaN (per row)."""
+    weeks = weeks_arr.astype(float).copy()
+    cumulative = np.cumsum(weeks, axis=1)
+    n_sim, n_weeks = weeks.shape
+    for i in range(n_sim):
+        reached = np.where(cumulative[i, :] >= threshold)[0]
+        if reached.size > 0:
+            first_idx = int(reached[0])
+            if first_idx + 1 < n_weeks:
+                weeks[i, first_idx + 1:] = np.nan
+    return weeks
 
 def trajectory_match_pmo(observed_weeks):
     global SIM_WEEK_TABLE, SIM_PMO_FLAGS
