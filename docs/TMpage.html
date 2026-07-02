@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matched-Trajectory PMO Calculator</title>
+
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --panel: #ffffff;
+      --border: #d9d9e3;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 36px auto;
+      padding: 0 20px;
+    }
+
+    .app-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    h1 { margin-top: 0; margin-bottom: 8px; font-size: 2rem; }
+    h2 { margin-top: 28px; }
+
+    .intro, .hint, .status-note {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    label { font-weight: 600; }
+
+    input, select, textarea, output {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font: inherit;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    button {
+      border: none;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: white;
+      padding: 11px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    button:hover { background: var(--primary-hover); }
+    button:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    .button-row { margin: 16px 0 8px; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fafafa;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .metric-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    #diagnostics-output {
+      min-height: 110px;
+      white-space: pre-wrap;
+      display: block;
+    }
+
+    .plot-container {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    #matched-plot-image, #running-pmo-plot-image {
+      max-width: 100%;
+      height: auto;
+      display: none;
+    }
+
+    .placeholder {
+      color: var(--muted);
+      text-align: center;
+      padding: 22px;
+    }
+
+    code {
+      background: #eef2ff;
+      color: #3730a3;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    @media (max-width: 760px) {
+      .grid, .result-grid { grid-template-columns: 1fr; }
+      .app-card { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="app-card" aria-labelledby="app-title">
+      <h1 id="app-title">Matched-trajectory PMO calculator</h1>
+      <p class="intro">
+        Generate simulated outbreak trajectories, enter observed weekly counts, and estimate PMO by matching simulations whose first weeks equal the observation.
+        Example observed data: <code>1,0,0</code>.
+      </p>
+
+      <h2>1. Simulation settings</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="num-simulations-input">Number of simulations</label>
+          <input id="num-simulations-input" type="number" min="100" max="50000" step="100" value="5000" />
+          <span class="hint">Use 1000-5000 in the browser for speed. Larger values are more stable but slower.</span>
+        </div>
+
+        <div class="field">
+          <label for="max-weeks-input">Maximum simulated weeks</label>
+          <input id="max-weeks-input" type="number" min="5" max="100" step="1" value="50" />
+        </div>
+
+        <div class="field">
+          <label for="write-weeks-input">Week columns retained for matching</label>
+          <input id="write-weeks-input" type="number" min="1" max="20" step="1" value="5" />
+          <span class="hint">Observed data cannot be longer than this.</span>
+        </div>
+
+        <div class="field">
+          <label for="major-threshold-input">Major outbreak threshold</label>
+          <input id="major-threshold-input" type="number" min="1" max="10000" step="1" value="100" />
+        </div>
+
+        <div class="field">
+          <label for="r-min-input">R minimum</label>
+          <input id="r-min-input" type="number" min="0" step="0.1" value="0" />
+        </div>
+
+        <div class="field">
+          <label for="r-max-input">R maximum</label>
+          <input id="r-max-input" type="number" min="0.1" step="0.1" value="10" />
+        </div>
+
+        <div class="field">
+          <label for="seed-input">Random seed</label>
+          <input id="seed-input" type="number" step="1" value="42" />
+        </div>
+
+        <div class="field">
+          <label for="extinction-window-input">Extinction window</label>
+          <input id="extinction-window-input" type="number" min="1" max="50" step="1" value="10" />
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="simulate-button" type="button" py-click="run_simulation">Generate simulation data</button>
+      </div>
+
+      <h2>2. Observed data</h2>
+      <div class="grid">
+        <div class="field">
+          <label for="observed-weeks-input">Observed weekly counts</label>
+          <textarea id="observed-weeks-input" placeholder="Enter comma-separated counts, e.g. 1,0,0">1,0,0</textarea>
+        </div>
+
+        <div class="field">
+          <label for="sample-strategy-select">Plot sampling strategy</label>
+          <select id="sample-strategy-select">
+            <option value="highest_peak" selected>Highest peak</option>
+            <option value="highest_cumulative">Highest cumulative</option>
+            <option value="highest_R">Highest R</option>
+            <option value="random">Random</option>
+            <option value="hybrid">Hybrid</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="sample-size-input">Matched trajectories to plot</label>
+          <input id="sample-size-input" type="number" min="1" max="2000" step="1" value="200" />
+        </div>
+
+        <div class="field">
+          <label for="ci-boot-input">Bootstrap shuffles for CI band</label>
+          <input id="ci-boot-input" type="number" min="0" max="2000" step="50" value="300" />
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="match-button" type="button" py-click="match_observed_data">Match observed data and estimate PMO</button>
+      </div>
+
+      <h2>3. Results</h2>
+      <div class="result-grid">
+        <div class="metric">
+          <span class="metric-label">Matched PMO</span>
+          <span class="metric-value" id="pmo-value-output">-</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Matches</span>
+          <span class="metric-value" id="matches-output">-</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Major outbreaks among matches</span>
+          <span class="metric-value" id="major-output">-</span>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top: 18px;">
+        <label for="diagnostics-output">Diagnostics</label>
+        <output id="diagnostics-output">Ready. Generate simulation data first, then match observed data.</output>
+      </div>
+
+      <h2>4. Matched trajectory plot</h2>
+      <div id="matched-plot-container" class="plot-container">
+        <img id="matched-plot-image" alt="Matched outbreak trajectories" />
+        <div id="matched-plot-placeholder" class="placeholder">Matched trajectory plot will appear here.</div>
+      </div>
+
+      <h2>5. Running PMO plot</h2>
+      <div id="running-pmo-plot-container" class="plot-container">
+        <img id="running-pmo-plot-image" alt="Running PMO across matched trajectories" />
+        <div id="running-pmo-plot-placeholder" class="placeholder">Running PMO plot will appear here.</div>
+      </div>
+    </section>
+  </main>
+
+  <script type="py" src="./trajmatch.py" config="./pyscript.json"></script>
+</body>
+</html>
