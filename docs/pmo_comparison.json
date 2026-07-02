@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "n_simulations": 35000,
+    "ml_training_size": 34500,
+    "ml_features": [
+      "week_1",
+      "week_2",
+      "week_3"
+    ],
+    "R_range": [
+      0.0005593665581915541,
+      9.99999974615736
+    ],
+    "major_threshold": 100,
+    "generated": "2026-07-02 10:50:17"
+  },
+  "results": {
+    "1_2_0": {
+      "initial_cases": [
+        1,
+        2,
+        0
+      ],
+      "analytic": 0.716167,
+      "ml_gb": 0.722504,
+      "ml_rf": 0.721199,
+      "trajectory_matching": 0.72,
+      "trajectory_matching_n_matches": 175
+    },
+    "1_1_0": {
+      "initial_cases": [
+        1,
+        1,
+        0
+      ],
+      "analytic": 0.534552,
+      "ml_gb": 0.555832,
+      "ml_rf": 0.557465,
+      "trajectory_matching": 0.556,
+      "trajectory_matching_n_matches": 1250
+    },
+    "1_0_0": {
+      "initial_cases": [
+        1,
+        0,
+        0
+      ],
+      "analytic": 0.224143,
+      "ml_gb": 0.222263,
+      "ml_rf": 0.221365,
+      "trajectory_matching": 0.221684,
+      "trajectory_matching_n_matches": 5368
+    }
+  }
+}
