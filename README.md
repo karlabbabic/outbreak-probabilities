@@ -31,9 +31,9 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
 
 - Simulate – done  
 - Analytic – upload the cell in rough-work collab to GitHub without the sliders (input params)  
-- ML – write code that uses the simulated data and include plots (train 4 separate classifiers and save the models)  
+- ML – done
 - Write unit tests (ask Matthew) to cover as many lines as you can
-
+- Notebook has all 
 <h2 id="set-up">Set-up</h2>
 
 <h3 id="continuous-integration">Continuous Integration</h3>
