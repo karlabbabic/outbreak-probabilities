@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PMO Tools — Home</title>
+
   <style>
     :root {
       --bg: #f4f6f9;
@@ -159,6 +166,14 @@
       font-size: 1.05rem;
       color: #17345b;
     }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      max-width: 900px;
+    }
 
     p {
       margin: 0 0 12px;
@@ -277,3 +292,41 @@
       }
     }
   </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </div>
+    </div>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="navblock">Home</a>
+      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+      <a href="analysispage.html" class="navblock">PMO Calculator</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
+      <a href="Additional.html" class="navblock active">Additional Information</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="home-title">
+      <div class="title-banner">
+        <h1 id="home-title">Additional information</h1>
+        <p>
+          This page contains additional information and sources utilised throughout the equation development process 
+        </p>
+      </div>
+           
+        <article class="section-card">
+          <h2>Sources</h2>
+          <p>
+             <li> Christophe Fraser. “Estimating Individual and Household Reproduction Numbers in an Emerging Epidemic”. In: PLoS ONE 2.8 (2007), e758. doi: 10.1371/journal.pone.0000758. </li>
+            <li> WHO Ebola Response Team. “Ebola virus disease in West Africa—the first 9 months of the epidemic and forward projections”. In: The New England journal of medicine 371.16 (2014), pp. 1481–1495. </li>
+            <li> Ogi-Gittins et al. “Real-time inference of the end of an outbreak: Temporally aggregated disease incidence data and under-reporting”. In: Infectious Disease Modelling 10.3 (2025), pp. 935–945. doi: https://doi.org/ 10.1016/j.idm.2025.03.009. </li>
+            <li> James R Norris. Markov chains. 2. Cambridge university press, 1998. </li>
+          </p>
+        </article>

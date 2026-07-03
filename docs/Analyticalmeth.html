@@ -305,97 +305,111 @@
 
     <nav class="site-nav" aria-label="Primary">
       <a href="index.html" class="navblock">Home</a>
-      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+      <a href="Analyticalmeth.html" class="navblock active">Analytical method</a>
       <a href="analysispage.html" class="navblock">PMO Calculator</a>
       <a href="approaches.html" class="navblock">Approaches</a>
-      <a href="Additional.html" class="navblock ">Additional Information</a>
-      <a href="PMOprediction.html" class="navblock active">PMO Prediction ML</a>
     </nav>
   </header>
-</body>
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PMO Prediction</title>
 
   <main>
     <section class="app-card" aria-labelledby="home-title">
       <div class="title-banner">
-        <h1 id="home-title">PMO prediction tools</h1>
-        <p>Use this tool to predict the possibility of a major outbreak occurring</p>
+        <h1 id="home-title">Poisson processes, renewal models, and outbreak probability</h1>
+        <p>
+          This page gives a short overview behind the analytical method supplied in the PMO calculator. It also provides links to the other approaches for estimating outbreak probability from early case data.
+        </p>
       </div>
+           
+        <article class="section-card">
+          
+          <h2>Epidemiological models</h2>
+          <p>
+           The underlying probability calculation methods is a discrete-time renewal process, a standard epidemic model for infectious disease dynamics that allows us to model new cases over time.
+           <p>
+           The expected number of new cases at a time is given by: 
+          </p>
+          <p>
+          <article class="card">
+          ` <img src="eq1.png" alt="Equation 1" style="display: block; margin: auto; max-width: 50%;">
+            </div>
+        </article>
     
-
-
-  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 24px;
-      max-width: 700px;
-    }
-    label {
-      display: inline-block;
-      min-width: 140px;
-      margin-top: 10px;
-    }
-    select, input {
-      padding: 6px;
-      margin-top: 8px;
-    }
-    #weekInputs {
-      margin-top: 8px;
-      margin-bottom: 16px;
-    }
-    button {
-      padding: 8px 14px;
-      cursor: pointer;
-    }
-    #result {
-      white-space: pre-wrap;
-      font-weight: bold;
-    }
-    .week-row {
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
-
-  <h2>PMO Prediction</h2>
-
-  <label for="model">Model:</label>
-  <select id="model" py-input="on_model_change">
-    <option value="RF">Random Forest</option>
-    <option value="GB">Gradient Boosting</option>
-  </select>
-
-  <br><br>
-
-  <label for="numWeeks">Number of weeks:</label>
-  <select id="numWeeks" py-input="createWeekInputs">
-    <option value="1">1 week</option>
-    <option value="2" selected>2 weeks</option>
-    <option value="3">3 weeks</option>
-    <option value="4">4 weeks</option>
-    <option value="5">5 weeks</option>
-  </select>
-
-  <div id="weekInputs"></div>
-
-  <br>
-
-  <button type="button" py-click="getPrediction">Predict</button>
-
-  <h3>Result:</h3>
-  <p id="result">
-    <div class="highlight">Choose a model and enter weekly values.</div>
-  </p>
-
-  <script type="py" src="./pmo_prediction.py"></script>
-</body>
-</html>
-</section>
+          
+          <p>
+            <div class="highlight">
+                <section class="section-card">       
+            <h2>The basis of the equation </h2>
+            <h3> The equation is based on the premis of the following generalisations:</h3>
+          </p>
+          
+          <p>
+          <ul>
+            <li>The average number of secondary cases per case, <code>R</code></li>
+            <li>Averaging plausible values of R, weighted by how well each value explains the observed data.</li>
+            <li>Conditional probility based on the <code> branching process theory </code> describing the probability that the observed early cases give rise to a major outbreak under a set value of <code>R</code></li>
+            <li>No major outbreak is identified based on the probability of <code>not</code> generating offspring after week 3 </li>
+            <li> Major outbreaks are defined as those that do not go extinct and <code> continue </code> to generate cases after week 3</li>
+            <li> How strongly those past cases contribute to new cases today, determined by the serial interval weights, <code>Ws</code></li>
+            
+          </ul>
+          </div>
+            
+            </div>
+</div>
+          </p>
+          <p>
+            <br>
+            <div>
+            </div>
+            <p>   As is common in the literature, any new cases are generated by drawing from a poisson distribution with this expected value.
+          </p>
+          <p>
+            We model transmission using a weekly discretised serial interval distribution <code>w=(w1, w2, ...)</code>.
+            to construct these weights ,we begin with a continuous gamma distribution for the serial interval with mean 15.3 days and a standard deviation 9.3 days, consistent with estimates from the 2014-2016 West Africa Ebola epidemic 
+          </p>
+          <p> This can be visualised in the following equation: </p>
+          <article class="card">
+          ` <img src="eq3.png" alt="Equation 3" style="display: block; margin: auto; max-width: 50%;">
+    
+        </article>
+        <br>
+        <p>Having defined the underlying epidemiological model, we can inestigate the key question: given early incidence data such as the first three
+            weeks of case counts [I1,I2, I3], what is the probaility that a large outbreak will follow? </p>
+            <div class="highlight">
+            <h2>Estimation approaches</h2>
+            <p> There are 3 main approaches which could be utilised to etimate the probability of a major outbreak (PMO)</p>
+            <ol>
+              <li> Analytic solution- an analytic calculation based on branching process theory
+              <li> Trajectory matching- a trajectory matching approach using simulated outbreaks;</li>
+              <li> Simulation- a machine learning classifier trained on large numbers of simulated outbreaks.</li>
+            </ol>
+        </div>
+        <br>
+        <p> The analytic solution is the most efficient and is the method used in the PMO calculator.
+        <p>To estimate the probability of a major outbreak analytically,  a Bayesian approach that incorporates uncertainty in the reproduction number R. Specifically, given observed case counts from the first three weeks, [I1 I2 I3],
+we compute the probability that a large outbreak follows by averaging over all plausible values of R, weighted by
+how well each value explains the observed data.
+This leads to the following expression:
+</p>
+        <article class="card">
+            <img src="eqC.png" alt="Equation C" style="display: block; margin: 3%; max-width: 91%;">
+            </article>
+            <br>
+          <p>
+<P> The posterior distribution captures the likelihood of different values of R given the early epidemic trajectory. The condition probability is informed by branching process theory and described the probability that the observed early cases gives rise to a major outbreak under fixed value of <code>R</code>. The overall outbreak probability is then obtained by integrating over the posterior distribution of <code>R</code>.</P
+          </p>
+          <div class="highlight">
+          <h2>A step by step derivation of the analytical method consists of:</h2>
+            <ol>
+                <li>Deriving the posterio distribution utilising Bayes rule
+                <li>Utillisin M as a normalising constant where we assume the number of cases in week 1 (I1) is unknown </li>
+                <li> Noting that for no outbreak to occur that the I1+I2+I3 cases arising in the first three weeks don't generate cases which initiate a major outbreak after week 3 </li>
+                <li>The total number of offspring generated by a single case is drawn from poisson distribution with <code> mean R</code></li>
+                <li>Offspirng generated after week three by a single case in wek 1 is drawn from a poisson distribution <code>R(1 − w1 − w2)</code></li>
+                <p> Based on the previously assumed generalisations the general formula is: </p></li>
+                </ol>
+              
+        <article class="card">
+               <img src="eqD.png" alt="Equation D" style="display: block; margin: auto; max-width: 100%;"></div>
+                
+            
