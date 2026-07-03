@@ -7,7 +7,7 @@
 <body>
 
   <h2>PMO Comparison</h2>
-  <p>Enter the initial case counts starting from <code>(1, ... , ...)</code> to look up the PMO probability estimates.</p>
+  <p>Enter the initial case counts for weeks 2–4, with week 1 fixed at <code>1</code>, to look up the PMO probability estimates.</p>
 
   <label>Initial case 1:</label>
   <span id="case1" style="font-weight:600; margin-left:8px;">1</span>
@@ -21,6 +21,10 @@
   <input type="number" id="case3" value="0" step="1" min="0" max="9">
   <br><br>
 
+  <label>Initial case 4:</label>
+  <input type="number" id="case4" value="0" step="1" min="0" max="9">
+  <br><br>
+
   <button onclick="lookupPMO()">Get PMO probability</button>
 
   <h3>Result:</h3>
@@ -30,13 +34,14 @@
 
   <script>
     async function lookupPMO() {
-      const case1 = parseInt(document.getElementById("case1").value, 10);
+      const case1 = parseInt(document.getElementById("case1").textContent, 10);
       const case2 = parseInt(document.getElementById("case2").value, 10);
       const case3 = parseInt(document.getElementById("case3").value, 10);
+      const case4 = parseInt(document.getElementById("case4").value, 10);
       const resultElement = document.getElementById("result");
 
-      if (isNaN(case2) || isNaN(case3)) {
-        resultElement.innerText = "Please enter valid integers for the second and third initial cases.";
+      if (isNaN(case2) || isNaN(case3) || isNaN(case4)) {
+        resultElement.innerText = "Please enter valid integers for weeks 2, 3, and 4.";
         return;
       }
 
@@ -45,24 +50,27 @@
         return;
       }
 
-      if (case2 < 0 || case2 > 9 || case3 < 0 || case3 > 9) {
+      if (case2 < 0 || case2 > 9 || case3 < 0 || case3 > 9 || case4 < 0 || case4 > 9) {
         resultElement.innerText = "Initial case values must be integers between 0 and 9.";
         return;
       }
 
-      const key = `${case1}_${case2}_${case3}`;
+      const key = `${case1}_${case2}_${case3}_${case4}`;
 
       try {
-        const response = await fetch("pmo_comparison.json");
+        const response = await fetch("./pmo_comparison.json", { cache: 'no-store' });
         if (!response.ok) {
           throw new Error(`Unable to load pmo_comparison.json: ${response.statusText}`);
         }
 
         const data = await response.json();
-        const entry = data.results[key];
+        const entry = data.results ? data.results[key] : undefined;
 
         if (!entry) {
-          resultElement.innerText = `No PMO comparison entry found for initial cases (${case1}, ${case2}, ${case3}).`;
+          const available = data && data.results ? Object.keys(data.results).slice(0, 5).join(', ') : 'none';
+          resultElement.innerText = `No PMO comparison entry found for initial cases (${case1}, ${case2}, ${case3}, ${case4}).\n` +
+            `Loaded results count: ${data && data.results ? Object.keys(data.results).length : 0}\n` +
+            `Sample keys: ${available}`;
           return;
         }
 
@@ -80,7 +88,7 @@
         const values = [analytic, mlGb, mlRf, trajectoryMatching].map(v => v === null ? NaN : v);
 
         resultElement.innerText =
-          `Initial cases: (${case1}, ${case2}, ${case3})\n` +
+          `Initial cases: (${case1}, ${case2}, ${case3}, ${case4})\n` +
           `Analytic PMO: ${analytic !== null ? analytic.toFixed(6) : "N/A"}\n` +
           `ML Gradient Boosting PMO: ${mlGb !== null ? mlGb.toFixed(6) : "N/A"}\n` +
           `ML Random Forest PMO: ${mlRf !== null ? mlRf.toFixed(6) : "N/A"}\n` +
@@ -96,43 +104,44 @@
       const container = document.getElementById("chartContainer");
       container.innerHTML = "";
 
-      const validValues = values.map(v => Number.isFinite(v) ? v : 0);
-      const maxVal = Math.max(...validValues, 0.01);
-
       labels.forEach((label, idx) => {
         const value = values[idx];
         const bar = document.createElement("div");
-        bar.style.margin = "8px 0";
+        bar.style.margin = "12px 0";
+
+        const labelRow = document.createElement("div");
+        labelRow.style.display = "flex";
+        labelRow.style.justifyContent = "space-between";
+        labelRow.style.alignItems = "center";
 
         const labelEl = document.createElement("div");
         labelEl.innerText = label;
         labelEl.style.fontWeight = "600";
 
+        const valueEl = document.createElement("div");
+        valueEl.innerText = Number.isFinite(value) ? value.toFixed(6) : "N/A";
+        valueEl.style.fontSize = "0.95rem";
+
+        labelRow.appendChild(labelEl);
+        labelRow.appendChild(valueEl);
+
         const barOuter = document.createElement("div");
         barOuter.style.background = "#ececec";
         barOuter.style.borderRadius = "6px";
         barOuter.style.overflow = "hidden";
-        barOuter.style.height = "26px";
+        barOuter.style.height = "24px";
+        barOuter.style.marginTop = "8px";
+        barOuter.style.position = "relative";
 
         const barInner = document.createElement("div");
         barInner.style.height = "100%";
-        barInner.style.width = `${Number.isFinite(value) ? (value / maxVal) * 100 : 0}%`;
-        barInner.style.background = value >= 0 ? "#4C8BF5" : "#d55";
+        barInner.style.width = `${Number.isFinite(value) ? Math.max(0, Math.min(value, 1)) * 100 : 0}%`;
+        barInner.style.background = "#4C8BF5";
         barInner.style.transition = "width 0.2s ease";
 
-        const valueEl = document.createElement("div");
-        valueEl.innerText = Number.isFinite(value) ? value.toFixed(6) : "N/A";
-        valueEl.style.position = "absolute";
-        valueEl.style.marginTop = "-24px";
-        valueEl.style.marginLeft = "8px";
-        valueEl.style.fontSize = "0.95rem";
-
         barOuter.appendChild(barInner);
-        bar.appendChild(labelEl);
+        bar.appendChild(labelRow);
         bar.appendChild(barOuter);
-        bar.appendChild(valueEl);
-        bar.style.position = "relative";
-
         container.appendChild(bar);
       });
     }
