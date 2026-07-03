@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 <!DOCTYPE html>
-=======
+
 <!DOCTYPE html> 
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
 
   <style>
     :root {
-<<<<<<< HEAD
+
       --bg: #f4f6f9;
       --panel: #ffffff;
       --primary: #1d7a73;
@@ -33,7 +33,7 @@
     * {
       box-sizing: border-box;
     }
-=======
+
       --bg: #f7f7f8;
       --panel: #ffffff;
       --border: #d9d9e3;
@@ -45,12 +45,12 @@
     }
 
     * { box-sizing: border-box; }
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
 
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-<<<<<<< HEAD
+
       background: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
       color: var(--text);
       line-height: 1.5;
@@ -161,7 +161,7 @@
       color: var(--muted);
       max-width: 900px;
       font-size: 18px;
-=======
+
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
@@ -192,7 +192,7 @@
       margin-top: 0;
       margin-bottom: 24px;
       color: var(--muted);
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
     }
 
     .control-row {
@@ -209,22 +209,22 @@
       margin-bottom: 20px;
     }
 
-<<<<<<< HEAD
+
     label {
       font-weight: 600;
       color: #1f2937;
     }
 =======
     label { font-weight: 600; }
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
 
     input[type="range"] {
       width: 100%;
       cursor: pointer;
-<<<<<<< HEAD
+
       accent-color: var(--primary);
 =======
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
     }
 
     .range-value {
@@ -236,11 +236,11 @@
     output {
       width: 100%;
       border: 1px solid var(--border);
-<<<<<<< HEAD
+
       border-radius: 12px;
 =======
       border-radius: var(--radius);
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
       padding: 12px;
       font: inherit;
       background: #fff;
@@ -252,7 +252,6 @@
     }
 
     button {
-<<<<<<< HEAD
       background: var(--primary);
       border: none;
       padding: 14px 28px;
@@ -275,7 +274,7 @@
       background: #9ca3af;
       cursor: not-allowed;
       transform: none;
-=======
+
       border: none;
       border-radius: var(--radius);
       background: var(--primary);
@@ -291,7 +290,7 @@
     button:disabled {
       background: #9ca3af;
       cursor: not-allowed;
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
     }
 
     .output-section {
@@ -299,7 +298,7 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
-<<<<<<< HEAD
+
       padding-top: 12px;
       border-top: 1px solid var(--border);
     }
@@ -310,8 +309,7 @@
       font-size: 1.45rem;
       border-bottom: 2px solid #dbe3ea;
       padding-bottom: 8px;
-=======
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
     }
 
     #pmo-result-output {
@@ -323,11 +321,11 @@
 
     .plot-container {
       border: 1px dashed var(--border);
-<<<<<<< HEAD
+
       border-radius: 14px;
-=======
+
       border-radius: var(--radius);
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
+
       min-height: 320px;
       display: flex;
       align-items: center;
@@ -335,7 +333,13 @@
       background: #fafafa;
       overflow: hidden;
     }
-
+    .highlight {
+      background: #edf7f6;
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
     #pmo-plot-image {
       max-width: 100%;
       height: auto;
@@ -364,7 +368,7 @@
     }
 
     @media (max-width: 720px) {
-<<<<<<< HEAD
+
       .header-inner {
         padding-top: 14px;
         padding-bottom: 10px;
@@ -401,13 +405,11 @@
       .control-row { grid-template-columns: 1fr; }
       main { margin: 24px auto; }
       .app-card { padding: 20px; }
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
     }
   </style>
 </head>
 
 <body>
-<<<<<<< HEAD
   <header class="site-header">
     <div class="header-inner">
       <div>
@@ -427,16 +429,15 @@
     <section class="app-card" aria-labelledby="app-title">
       <div class="title-banner">
         <h1 id="app-title">PMO calculator — weekly early data</h1>
+        <p> The following page provides a PMO calculator based on the analytical approach. </p>
       </div>
-=======
   <main>
     <section class="app-card" aria-labelledby="app-title">
-      <h1 id="app-title">PMO calculator — weekly early data</h1>
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
-
       <p class="intro" id="app-description">
-        Enter how many weeks you will provide and paste the observed counts as
-        comma-separated integers. Example: <code>1,2,0</code> for weeks 1..3.
+        <h2>Instructions </h2>
+        <p>
+          Enter how many weeks you will provide and paste the observed counts as
+        comma-separated integers. Example: <code>1,2,0</code> for weeks 1..3.</div>
       </p>
 
       <form id="pmo-form">
@@ -465,15 +466,15 @@
               id="r-grid-slider"
               name="nR"
               type="range"
-              min="501"
-              max="8001"
+              min="500"
+              max="8000"
               step="500"
-              value="4001"
+              value="4000"
               py-input="update_r_grid_value"
             />
             <div class="range-value">
               Selected:
-              <span id="r-grid-value">4001</span>
+              <span id="r-grid-value">4000</span>
             </div>
           </div>
         </div>
@@ -502,18 +503,12 @@
             Results will appear here after computation.
           </output>
         </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
         <div class="field">
           <label for="pmo-value-output">PMO value</label>
           <output id="pmo-value-output" name="pmo_value">—</output>
         </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
         <div class="field">
           <label for="pmo-plot-container">PMO|R and posterior</label>
 
@@ -541,8 +536,5 @@
 
   <script type="py" src="./analyticalcalc.py" config="./pyscript.json"></script>
 </body>
-<<<<<<< HEAD
+
 </html>
-=======
-</html>
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09

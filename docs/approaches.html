@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,8 +8,8 @@
 
   <style>
     :root {
-      --bg: #f4f6f9;
-      --panel: #ffffff;
+      --bg: #dbe3ea;
+      --panel: #22354d;
       --primary: #1d7a73;
       --primary-hover: #165f5a;
       --text: #22354d;
@@ -17,7 +17,7 @@
       --border: #d8e1ea;
       --radius: 18px;
       --title-bg: linear-gradient(135deg, #edf3fb, #f8fbff);
-      --nav-bg: rgba(255, 255, 255, 0.88);
+      --nav-bg: #a8c6e3ca;
       --soft: #eef7f8;
       --soft-2: #e8f5f5;
     }
@@ -29,7 +29,7 @@
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
+      background: linear-gradient(180deg, #a8c6e3 0%, #233750 100%);
       color: var(--text);
       line-height: 1.6;
       padding-bottom: 60px;
@@ -42,7 +42,7 @@
       z-index: 20;
       background: var(--nav-bg);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #e5eaf0;
+      border-bottom: 1px solid #667788;
       box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
     }
 
@@ -316,7 +316,7 @@
   <main>
     <section class="app-card" aria-labelledby="home-title">
       <div class="title-banner">
-        <h1 id="home-title">Approaches</h1>
+        <h1 id="home-title">Approaches summary</h1>
         <p>
           This pages provides information on three approaches for estimating outbreak probability from early case data. 
            The third approach is a machine learning method that uses a trained model to learn the relationship between early case patterns and the probability of a major outbreak. 
@@ -324,10 +324,14 @@
       </div>
 
 
-
+      <main class="page">
+        
+  
+  
 
    
 <main class="page">
+  <section class="app-card" aria-labelledby="methods-title">
       <h1 id="methods-title">Analytics solutions</h1>
       <p class="subtitle">
         <div class="highlight">
@@ -360,11 +364,19 @@ Overall outbreak probability = conditional probability × outbreak probability g
       </article>
 
       <article class="method-card">
-        <div class="method-head">
-          <main class="page">
+      </section>
+
+      <section class="app-card" aria-labelledby="methods-title">
       <h1 id="methods-title">Trajectory matching</h1>
-      <div class="highlight"> The second approach is a trajectory matching method that compares observed early case counts to simulated epidemic trajectories.</div>
-      
+      <div class="highlight"> 
+       <p> 
+        <ol>
+          <h3>The trajectory matching approach </h3>
+          <p>compares observed early case counts to simulated epidemic trajectories.
+          This method compares observed early case counts to simulated epidemic trajectories
+          and keeps only the trajectories that match the beginning of the data.</p>
+        </ol>
+        </p>
         </div>
 
         <h3>Input</h3>
@@ -378,17 +390,19 @@ Overall outbreak probability = conditional probability × outbreak probability g
           <li>Outbreak probability as the fraction of those trajectories classified as major outbreaks</li>
         </ul>
 
-        <h3>What it does</h3>
-        <p>
-          This method compares observed early case counts to simulated epidemic trajectories
-          and keeps only the trajectories that match the beginning of the data.
-        </p>
       </article>
+</section>
 
       <article class="method-card">
-        <div class="method-head">
-          <span class="method-pill">Method 3</span>
-          <h2>Machine Learning</h2>
+<section class="app-card" aria-labelledby="methods-title">
+      <h1 id="methods-title">Machine Learning</h1>
+      <div class="highlight"> 
+        <p>
+          This approach uses a trained model to learn the relationship between early case
+          patterns and the probability of a major outbreak.
+          here the first three weeksof incidence [I1 I2 I3] are taken as predictors and the outcome (major or minor outbreak) as the response. We
+train random forest classifiers, with the trainingset size ranging from 1 up to 1,000,000
+observations. </p>
         </div>
 
         <h3>Input</h3>
@@ -404,39 +418,11 @@ Overall outbreak probability = conditional probability × outbreak probability g
           <li>Saved model files (TBD)</li>
         </ul>
 
-        <h3>What it does</h3>
-        <p>
-          This approach uses a trained model to learn the relationship between early case
-          patterns and the probability of a major outbreak.
-        </p>
+
+        
       </article>
     </div>
+    </section>
   </section>
 </main>
-=======
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approaches</title>
-    <link href="/styles.css" rel="stylesheet" type="text/css" media="all">
-  </head>
-  <body>
-  <header>   <h1> Predicting the probability of a major outbreak </h1> 
-<img id="OxSym" src=unioxsym.png>
 
-</header>
- <nav>
-
-   <div id="navblock"><a href="/index.html">Index</a> </div> <div id="navblock"><a href="/analyticapp">Analytic PMO calculator</a></div><div id="navblock"><a href="/approaches">Approaches</a></div>
-          
-</nav>
-<main>
-<h3> Click below to learn more about the approaches used to calculate the major outbreak probability:</h3>
-<div id="appbox1"><a href="/mathapproach"> Mathematical Approach</a></div><div id="appbox1"> <a href="/trajapproach">Trajectory Matching</a></div> <div id="appbox1"> <a href="/mlapproach">Machine Learning</a></div>
-
-
-</main>
-  </body>
-</html>
->>>>>>> 0c20c672eedc16d6ad3ce12ffa66fd845006df09
