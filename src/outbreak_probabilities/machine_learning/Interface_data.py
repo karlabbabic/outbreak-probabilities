@@ -81,8 +81,6 @@ MAX_WEEK_VALUE = 10
 
 
 # This comparison JSON is generated from the RF model artifacts saved in the
-# package directory. It is not tied to a separate trajectory-matching sample
-# size, so we do not keep the old 35k metadata here.
 
 ML_TRAINING_SIZE = 1_000_000
 
@@ -149,7 +147,6 @@ def get_predictor(n_weeks: int):
     )
 
 
-# ====================================================================
 # Load saved RF and GB models
 
 def load_models(n_weeks: int):
@@ -373,9 +370,7 @@ def generate_results(
             }
 
 
-    # =================================================================
     # Save JSON
-    # =================================================================
 
     with output_path.open(
         "w",
@@ -393,9 +388,7 @@ def generate_results(
     return output
 
 
-# =====================================================================
 # Command-line entry point
-# =====================================================================
 
 if __name__ == "__main__":
 
