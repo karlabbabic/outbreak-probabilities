@@ -80,14 +80,10 @@ DEFAULT_MODEL_NAMES = ("RF",)
 MAX_WEEK_VALUE = 10
 
 
-# Number of simulations that we RECORD / use for trajectory matching.
+# This comparison JSON is generated from the RF model artifacts saved in the
+# package directory. It is not tied to a separate trajectory-matching sample
+# size, so we do not keep the old 35k metadata here.
 
-N_SIMULATIONS = 35_000
-
-
-# Number of simulations used to TRAIN the ML models.
-
-# RF and GB should use the full 1M simulations from test_simulations.
 ML_TRAINING_SIZE = 1_000_000
 
 
@@ -220,15 +216,12 @@ def generate_results(
 
     IMPORTANT:
 
-    N_SIMULATIONS = 35,000
-        Number of simulations being recorded / used for trajectory
-        matching.
-
     ML_TRAINING_SIZE = 1,000,000
-        Number of simulations used to train RF and GB.
+        Approximate size of the full synthetic dataset used to train the RF
+        model artifacts stored in this package.
 
-    The ML models loaded by this script should therefore have been
-    trained on the full 1M-row test_simulations dataset.
+    The ML models loaded by this script are the RF models saved in the
+    models_{n}weeks directories and are used directly for prediction.
     """
 
     output_path.parent.mkdir(
@@ -241,10 +234,6 @@ def generate_results(
     output = {
         "metadata": {
 
-            # Keep this at 35k
-            "n_simulations": N_SIMULATIONS,
-
-            # ML trained using all 1M
             "ml_training_size": ML_TRAINING_SIZE,
 
             # Maximum horizon is now 3 weeks
@@ -450,10 +439,6 @@ if __name__ == "__main__":
     print(
         f"Saved {len(results['results'])} results "
         f"to {args.output}"
-    )
-
-    print(
-        f"Recorded simulations: {N_SIMULATIONS:,}"
     )
 
     print(
