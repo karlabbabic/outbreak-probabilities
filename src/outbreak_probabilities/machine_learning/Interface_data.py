@@ -25,6 +25,9 @@ if str(SRC_ROOT) not in sys.path:
 from outbreak_probabilities.analytic.analytical_refractor import (
     compute_pmo_from_string,
 )
+from outbreak_probabilities.trajectory_matching.trajectory import (
+    trajectory_match_pmo,
+)
 
 # Keep the standalone ML training scripts untouched. This wrapper loads the
 # saved RF artifacts directly and does not depend on helper functions that are
@@ -315,6 +318,27 @@ def generate_results(
         ]
 
 
+        # Trajectory matching PMO fraction
+
+        sim_csv_path = REPO_ROOT / "data" / "test_simulations.csv"
+        if not sim_csv_path.exists():
+            raise FileNotFoundError(
+                f"Simulation CSV not found for trajectory matching: {sim_csv_path}"
+            )
+
+        df_input["trajectory_matching"] = [
+            (
+                trajectory_match_pmo(
+                    observed_weeks=[int(value) for value in case_string.split(",")],
+                    simulated_csv=str(sim_csv_path),
+                    header_rows=3,
+                )["pmo_fraction"]
+            )
+            for case_string
+            in df_input["initial_cases_string"]
+        ]
+
+
         # Random Forest predictions
 
         rf_probability = (
@@ -352,6 +376,10 @@ def generate_results(
 
             # Store result
 
+            trajectory_matching_value = row["trajectory_matching"]
+            if pd.isna(trajectory_matching_value):
+                trajectory_matching_value = None
+
             output["results"][result_key] = {
 
                 "n_weeks": n_weeks,
@@ -361,6 +389,15 @@ def generate_results(
                 "analytic": round(
                     float(row["analytic"]),
                     6,
+                ),
+
+                "trajectory_matching": (
+                    None
+                    if trajectory_matching_value is None
+                    else round(
+                        float(trajectory_matching_value),
+                        6,
+                    )
                 ),
 
                 "ml_rf": round(

@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 @dataclass
 class SimConfig:
     N: int = 1000
-    max_weeks: int = 50
+    max_weeks: int = 100
     mean_serial: float = 15.3
     std_serial: float = 9.3
-    k_max: int = 50
+    k_max: int = 100
     nquad: int = 32
     step: float = 7.0
     R_range: Tuple[float, float] = (0.0, 10.0)
@@ -99,6 +99,7 @@ def main(argv=None):
     parser.add_argument("--N", type=int, default=1000, help="Number of trajectories to simulate")
     parser.add_argument("--seed", type=int, default=42, help="Master/random seed")
     parser.add_argument("--out", type=str, default="data/test_simulations.csv", help="Output CSV path")
+    parser.add_argument("--use-tempfile", action="store_true", default=False, help="Write the CSV to a temporary file instead of the requested output path")
     args = parser.parse_args(argv)
 
     cfg = SimConfig(N=args.N, seed=args.seed, out_path=args.out, use_tempfile=args.use_tempfile)

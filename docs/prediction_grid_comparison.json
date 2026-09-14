@@ -12,7 +12,7 @@
     ],
     "major_threshold": 100,
     "simulation_file": "test_simulations",
-    "generated": "2026-09-14 14:44:26"
+    "generated": "2026-09-14 16:41:07"
   },
   "results": {
     "2w_1_0": {
@@ -22,7 +22,8 @@
         0
       ],
       "analytic": 0.502175,
-      "ml_rf": 0.495082
+      "trajectory_matching": 0.503073,
+      "ml_rf": 0.503106
     },
     "2w_1_1": {
       "n_weeks": 2,
@@ -31,7 +32,8 @@
         1
       ],
       "analytic": 0.899796,
-      "ml_rf": 0.900083
+      "trajectory_matching": 0.900252,
+      "ml_rf": 0.900183
     },
     "2w_1_2": {
       "n_weeks": 2,
@@ -40,7 +42,8 @@
         2
       ],
       "analytic": 0.984984,
-      "ml_rf": 0.986292
+      "trajectory_matching": 0.985454,
+      "ml_rf": 0.985478
     },
     "2w_1_3": {
       "n_weeks": 2,
@@ -49,7 +52,8 @@
         3
       ],
       "analytic": 0.998065,
-      "ml_rf": 0.99796
+      "trajectory_matching": 0.998202,
+      "ml_rf": 0.998204
     },
     "2w_1_4": {
       "n_weeks": 2,
@@ -58,7 +62,8 @@
         4
       ],
       "analytic": 0.999771,
-      "ml_rf": 0.999888
+      "trajectory_matching": 0.999862,
+      "ml_rf": 0.999862
     },
     "2w_1_5": {
       "n_weeks": 2,
@@ -67,7 +72,8 @@
         5
       ],
       "analytic": 0.999974,
-      "ml_rf": 0.999761
+      "trajectory_matching": 0.999952,
+      "ml_rf": 0.999951
     },
     "2w_1_6": {
       "n_weeks": 2,
@@ -76,7 +82,8 @@
         6
       ],
       "analytic": 0.999997,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.999948,
+      "ml_rf": 0.999951
     },
     "2w_1_7": {
       "n_weeks": 2,
@@ -85,6 +92,7 @@
         7
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "2w_1_8": {
@@ -94,6 +102,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "2w_1_9": {
@@ -103,6 +112,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "2w_1_10": {
@@ -112,6 +122,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_0": {
@@ -122,7 +133,8 @@
         0
       ],
       "analytic": 0.22406,
-      "ml_rf": 0.21934
+      "trajectory_matching": 0.22517,
+      "ml_rf": 0.225153
     },
     "3w_1_0_1": {
       "n_weeks": 3,
@@ -132,7 +144,8 @@
         1
       ],
       "analytic": 0.749693,
-      "ml_rf": 0.741529
+      "trajectory_matching": 0.753429,
+      "ml_rf": 0.753535
     },
     "3w_1_0_2": {
       "n_weeks": 3,
@@ -142,7 +155,8 @@
         2
       ],
       "analytic": 0.944392,
-      "ml_rf": 0.947521
+      "trajectory_matching": 0.947866,
+      "ml_rf": 0.947946
     },
     "3w_1_0_3": {
       "n_weeks": 3,
@@ -152,7 +166,8 @@
         3
       ],
       "analytic": 0.99029,
-      "ml_rf": 0.990196
+      "trajectory_matching": 0.991948,
+      "ml_rf": 0.992054
     },
     "3w_1_0_4": {
       "n_weeks": 3,
@@ -162,7 +177,8 @@
         4
       ],
       "analytic": 0.998557,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.999451,
+      "ml_rf": 0.999443
     },
     "3w_1_0_5": {
       "n_weeks": 3,
@@ -172,6 +188,7 @@
         5
       ],
       "analytic": 0.999808,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_6": {
@@ -182,6 +199,7 @@
         6
       ],
       "analytic": 0.999976,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_7": {
@@ -192,6 +210,7 @@
         7
       ],
       "analytic": 0.999997,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_8": {
@@ -202,6 +221,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_9": {
@@ -212,6 +232,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_0_10": {
@@ -222,6 +243,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_1_0": {
@@ -232,7 +254,8 @@
         0
       ],
       "analytic": 0.534552,
-      "ml_rf": 0.544713
+      "trajectory_matching": 0.535397,
+      "ml_rf": 0.535114
     },
     "3w_1_1_1": {
       "n_weeks": 3,
@@ -242,7 +265,8 @@
         1
       ],
       "analytic": 0.850509,
-      "ml_rf": 0.846174
+      "trajectory_matching": 0.850697,
+      "ml_rf": 0.85054
     },
     "3w_1_1_2": {
       "n_weeks": 3,
@@ -252,7 +276,8 @@
         2
       ],
       "analytic": 0.963103,
-      "ml_rf": 0.964761
+      "trajectory_matching": 0.965429,
+      "ml_rf": 0.965476
     },
     "3w_1_1_3": {
       "n_weeks": 3,
@@ -262,7 +287,8 @@
         3
       ],
       "analytic": 0.992557,
-      "ml_rf": 0.992375
+      "trajectory_matching": 0.993542,
+      "ml_rf": 0.993506
     },
     "3w_1_1_4": {
       "n_weeks": 3,
@@ -272,7 +298,8 @@
         4
       ],
       "analytic": 0.998717,
-      "ml_rf": 0.997827
+      "trajectory_matching": 0.998923,
+      "ml_rf": 0.998929
     },
     "3w_1_1_5": {
       "n_weeks": 3,
@@ -282,7 +309,8 @@
         5
       ],
       "analytic": 0.999804,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.999763,
+      "ml_rf": 0.999766
     },
     "3w_1_1_6": {
       "n_weeks": 3,
@@ -292,6 +320,7 @@
         6
       ],
       "analytic": 0.999973,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_1_7": {
@@ -302,6 +331,7 @@
         7
       ],
       "analytic": 0.999996,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_1_8": {
@@ -312,6 +342,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_1_9": {
@@ -322,6 +353,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_1_10": {
@@ -332,6 +364,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_2_0": {
@@ -342,7 +375,8 @@
         0
       ],
       "analytic": 0.716165,
-      "ml_rf": 0.719886
+      "trajectory_matching": 0.715437,
+      "ml_rf": 0.716899
     },
     "3w_1_2_1": {
       "n_weeks": 3,
@@ -352,7 +386,8 @@
         1
       ],
       "analytic": 0.90805,
-      "ml_rf": 0.925125
+      "trajectory_matching": 0.907382,
+      "ml_rf": 0.90735
     },
     "3w_1_2_2": {
       "n_weeks": 3,
@@ -362,7 +397,8 @@
         2
       ],
       "analytic": 0.975722,
-      "ml_rf": 0.976168
+      "trajectory_matching": 0.979879,
+      "ml_rf": 0.979649
     },
     "3w_1_2_3": {
       "n_weeks": 3,
@@ -372,7 +408,8 @@
         3
       ],
       "analytic": 0.994587,
-      "ml_rf": 0.997928
+      "trajectory_matching": 0.995567,
+      "ml_rf": 0.995597
     },
     "3w_1_2_4": {
       "n_weeks": 3,
@@ -382,7 +419,8 @@
         4
       ],
       "analytic": 0.998953,
-      "ml_rf": 0.999537
+      "trajectory_matching": 0.998898,
+      "ml_rf": 0.998901
     },
     "3w_1_2_5": {
       "n_weeks": 3,
@@ -392,7 +430,8 @@
         5
       ],
       "analytic": 0.99982,
-      "ml_rf": 0.999572
+      "trajectory_matching": 0.999955,
+      "ml_rf": 0.999954
     },
     "3w_1_2_6": {
       "n_weeks": 3,
@@ -402,6 +441,7 @@
         6
       ],
       "analytic": 0.999972,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_2_7": {
@@ -412,6 +452,7 @@
         7
       ],
       "analytic": 0.999996,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_2_8": {
@@ -422,6 +463,7 @@
         8
       ],
       "analytic": 0.999999,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_2_9": {
@@ -432,6 +474,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_2_10": {
@@ -442,6 +485,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_3_0": {
@@ -452,7 +496,8 @@
         0
       ],
       "analytic": 0.824121,
-      "ml_rf": 0.829983
+      "trajectory_matching": 0.812627,
+      "ml_rf": 0.810311
     },
     "3w_1_3_1": {
       "n_weeks": 3,
@@ -462,7 +507,8 @@
         1
       ],
       "analytic": 0.942505,
-      "ml_rf": 0.950601
+      "trajectory_matching": 0.949206,
+      "ml_rf": 0.949475
     },
     "3w_1_3_2": {
       "n_weeks": 3,
@@ -472,7 +518,8 @@
         2
       ],
       "analytic": 0.984103,
-      "ml_rf": 0.987341
+      "trajectory_matching": 0.98685,
+      "ml_rf": 0.987089
     },
     "3w_1_3_3": {
       "n_weeks": 3,
@@ -482,7 +529,8 @@
         3
       ],
       "analytic": 0.996195,
-      "ml_rf": 0.994062
+      "trajectory_matching": 0.996077,
+      "ml_rf": 0.996122
     },
     "3w_1_3_4": {
       "n_weeks": 3,
@@ -492,7 +540,8 @@
         4
       ],
       "analytic": 0.999197,
-      "ml_rf": 0.998188
+      "trajectory_matching": 0.999432,
+      "ml_rf": 0.999441
     },
     "3w_1_3_5": {
       "n_weeks": 3,
@@ -502,7 +551,8 @@
         5
       ],
       "analytic": 0.999848,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999962
     },
     "3w_1_3_6": {
       "n_weeks": 3,
@@ -512,7 +562,8 @@
         6
       ],
       "analytic": 0.999974,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.999904,
+      "ml_rf": 0.999933
     },
     "3w_1_3_7": {
       "n_weeks": 3,
@@ -522,6 +573,7 @@
         7
       ],
       "analytic": 0.999996,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_3_8": {
@@ -532,6 +584,7 @@
         8
       ],
       "analytic": 0.999999,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_3_9": {
@@ -542,6 +595,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_3_10": {
@@ -552,6 +606,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_4_0": {
@@ -562,7 +617,8 @@
         0
       ],
       "analytic": 0.889684,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.851064,
+      "ml_rf": 0.850384
     },
     "3w_1_4_1": {
       "n_weeks": 3,
@@ -572,6 +628,7 @@
         1
       ],
       "analytic": 0.963656,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_4_2": {
@@ -582,7 +639,8 @@
         2
       ],
       "analytic": 0.989611,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999894
     },
     "3w_1_4_3": {
       "n_weeks": 3,
@@ -592,7 +650,8 @@
         3
       ],
       "analytic": 0.99738,
-      "ml_rf": 0.990278
+      "trajectory_matching": 0.996094,
+      "ml_rf": 0.996146
     },
     "3w_1_4_4": {
       "n_weeks": 3,
@@ -602,7 +661,8 @@
         4
       ],
       "analytic": 0.999409,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999893
     },
     "3w_1_4_5": {
       "n_weeks": 3,
@@ -612,7 +672,8 @@
         5
       ],
       "analytic": 0.999879,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.999529,
+      "ml_rf": 0.999656
     },
     "3w_1_4_6": {
       "n_weeks": 3,
@@ -622,7 +683,8 @@
         6
       ],
       "analytic": 0.999978,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999989
     },
     "3w_1_4_7": {
       "n_weeks": 3,
@@ -632,7 +694,8 @@
         7
       ],
       "analytic": 0.999996,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999999
     },
     "3w_1_4_8": {
       "n_weeks": 3,
@@ -642,7 +705,8 @@
         8
       ],
       "analytic": 0.999999,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999999
     },
     "3w_1_4_9": {
       "n_weeks": 3,
@@ -652,7 +716,8 @@
         9
       ],
       "analytic": 1.0,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999999
     },
     "3w_1_4_10": {
       "n_weeks": 3,
@@ -662,7 +727,8 @@
         10
       ],
       "analytic": 1.0,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999999
     },
     "3w_1_5_0": {
       "n_weeks": 3,
@@ -672,7 +738,8 @@
         0
       ],
       "analytic": 0.930165,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.987433
     },
     "3w_1_5_1": {
       "n_weeks": 3,
@@ -682,6 +749,7 @@
         1
       ],
       "analytic": 0.976842,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_5_2": {
@@ -692,7 +760,8 @@
         2
       ],
       "analytic": 0.993212,
-      "ml_rf": 0.784523
+      "trajectory_matching": 0.960784,
+      "ml_rf": 0.961595
     },
     "3w_1_5_3": {
       "n_weeks": 3,
@@ -702,7 +771,8 @@
         3
       ],
       "analytic": 0.998219,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999745
     },
     "3w_1_5_4": {
       "n_weeks": 3,
@@ -712,6 +782,7 @@
         4
       ],
       "analytic": 0.999577,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_5_5": {
@@ -722,7 +793,8 @@
         5
       ],
       "analytic": 0.999908,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999921
     },
     "3w_1_5_6": {
       "n_weeks": 3,
@@ -732,7 +804,8 @@
         6
       ],
       "analytic": 0.999982,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999995
     },
     "3w_1_5_7": {
       "n_weeks": 3,
@@ -742,6 +815,7 @@
         7
       ],
       "analytic": 0.999997,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_5_8": {
@@ -752,6 +826,7 @@
         8
       ],
       "analytic": 0.999999,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_5_9": {
@@ -762,6 +837,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_5_10": {
@@ -772,6 +848,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_6_0": {
@@ -782,7 +859,8 @@
         0
       ],
       "analytic": 0.955472,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.987433
     },
     "3w_1_6_1": {
       "n_weeks": 3,
@@ -792,6 +870,7 @@
         1
       ],
       "analytic": 0.985154,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_6_2": {
@@ -802,7 +881,8 @@
         2
       ],
       "analytic": 0.995562,
-      "ml_rf": 0.802106
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999322
     },
     "3w_1_6_3": {
       "n_weeks": 3,
@@ -812,7 +892,8 @@
         3
       ],
       "analytic": 0.998798,
-      "ml_rf": 1.0
+      "trajectory_matching": 0.916667,
+      "ml_rf": 0.922117
     },
     "3w_1_6_4": {
       "n_weeks": 3,
@@ -822,6 +903,7 @@
         4
       ],
       "analytic": 0.999703,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_6_5": {
@@ -832,7 +914,8 @@
         5
       ],
       "analytic": 0.999932,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999921
     },
     "3w_1_6_6": {
       "n_weeks": 3,
@@ -842,7 +925,8 @@
         6
       ],
       "analytic": 0.999986,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999995
     },
     "3w_1_6_7": {
       "n_weeks": 3,
@@ -852,6 +936,7 @@
         7
       ],
       "analytic": 0.999997,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_6_8": {
@@ -862,6 +947,7 @@
         8
       ],
       "analytic": 0.999999,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_6_9": {
@@ -872,6 +958,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_6_10": {
@@ -882,6 +969,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_7_0": {
@@ -892,7 +980,8 @@
         0
       ],
       "analytic": 0.971446,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.987433
     },
     "3w_1_7_1": {
       "n_weeks": 3,
@@ -902,6 +991,7 @@
         1
       ],
       "analytic": 0.990436,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_7_2": {
@@ -912,7 +1002,8 @@
         2
       ],
       "analytic": 0.997095,
-      "ml_rf": 0.946317
+      "trajectory_matching": 1.0,
+      "ml_rf": 1.0
     },
     "3w_1_7_3": {
       "n_weeks": 3,
@@ -922,7 +1013,8 @@
         3
       ],
       "analytic": 0.999194,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.937432
     },
     "3w_1_7_4": {
       "n_weeks": 3,
@@ -932,6 +1024,7 @@
         4
       ],
       "analytic": 0.999794,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_7_5": {
@@ -942,7 +1035,8 @@
         5
       ],
       "analytic": 0.999951,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999921
     },
     "3w_1_7_6": {
       "n_weeks": 3,
@@ -952,7 +1046,8 @@
         6
       ],
       "analytic": 0.999989,
-      "ml_rf": 1.0
+      "trajectory_matching": 1.0,
+      "ml_rf": 0.999995
     },
     "3w_1_7_7": {
       "n_weeks": 3,
@@ -962,6 +1057,7 @@
         7
       ],
       "analytic": 0.999998,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_7_8": {
@@ -972,6 +1068,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_7_9": {
@@ -982,6 +1079,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_7_10": {
@@ -992,6 +1090,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_8_0": {
@@ -1002,7 +1101,8 @@
         0
       ],
       "analytic": 0.981603,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.987433
     },
     "3w_1_8_1": {
       "n_weeks": 3,
@@ -1012,6 +1112,7 @@
         1
       ],
       "analytic": 0.993814,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_8_2": {
@@ -1022,7 +1123,8 @@
         2
       ],
       "analytic": 0.998097,
-      "ml_rf": 0.946317
+      "trajectory_matching": null,
+      "ml_rf": 1.0
     },
     "3w_1_8_3": {
       "n_weeks": 3,
@@ -1032,7 +1134,8 @@
         3
       ],
       "analytic": 0.999461,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.937432
     },
     "3w_1_8_4": {
       "n_weeks": 3,
@@ -1042,6 +1145,7 @@
         4
       ],
       "analytic": 0.999858,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_8_5": {
@@ -1052,7 +1156,8 @@
         5
       ],
       "analytic": 0.999965,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999921
     },
     "3w_1_8_6": {
       "n_weeks": 3,
@@ -1062,7 +1167,8 @@
         6
       ],
       "analytic": 0.999992,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999995
     },
     "3w_1_8_7": {
       "n_weeks": 3,
@@ -1072,6 +1178,7 @@
         7
       ],
       "analytic": 0.999998,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_8_8": {
@@ -1082,6 +1189,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_8_9": {
@@ -1092,6 +1200,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_8_10": {
@@ -1102,6 +1211,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_9_0": {
@@ -1112,7 +1222,8 @@
         0
       ],
       "analytic": 0.988101,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.987433
     },
     "3w_1_9_1": {
       "n_weeks": 3,
@@ -1122,6 +1233,7 @@
         1
       ],
       "analytic": 0.995985,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_9_2": {
@@ -1132,7 +1244,8 @@
         2
       ],
       "analytic": 0.998751,
-      "ml_rf": 0.946317
+      "trajectory_matching": null,
+      "ml_rf": 1.0
     },
     "3w_1_9_3": {
       "n_weeks": 3,
@@ -1142,7 +1255,8 @@
         3
       ],
       "analytic": 0.99964,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.937432
     },
     "3w_1_9_4": {
       "n_weeks": 3,
@@ -1152,6 +1266,7 @@
         4
       ],
       "analytic": 0.999903,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_9_5": {
@@ -1162,7 +1277,8 @@
         5
       ],
       "analytic": 0.999976,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999921
     },
     "3w_1_9_6": {
       "n_weeks": 3,
@@ -1172,7 +1288,8 @@
         6
       ],
       "analytic": 0.999994,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999995
     },
     "3w_1_9_7": {
       "n_weeks": 3,
@@ -1182,6 +1299,7 @@
         7
       ],
       "analytic": 0.999999,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_9_8": {
@@ -1192,6 +1310,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_9_9": {
@@ -1202,6 +1321,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_9_10": {
@@ -1212,6 +1332,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": 1.0,
       "ml_rf": 1.0
     },
     "3w_1_10_0": {
@@ -1222,7 +1343,8 @@
         0
       ],
       "analytic": 0.992279,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.987433
     },
     "3w_1_10_1": {
       "n_weeks": 3,
@@ -1232,6 +1354,7 @@
         1
       ],
       "analytic": 0.997387,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_10_2": {
@@ -1242,7 +1365,8 @@
         2
       ],
       "analytic": 0.99918,
-      "ml_rf": 0.946317
+      "trajectory_matching": null,
+      "ml_rf": 1.0
     },
     "3w_1_10_3": {
       "n_weeks": 3,
@@ -1252,7 +1376,8 @@
         3
       ],
       "analytic": 0.99976,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.937432
     },
     "3w_1_10_4": {
       "n_weeks": 3,
@@ -1262,6 +1387,7 @@
         4
       ],
       "analytic": 0.999934,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_10_5": {
@@ -1272,7 +1398,8 @@
         5
       ],
       "analytic": 0.999983,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999921
     },
     "3w_1_10_6": {
       "n_weeks": 3,
@@ -1282,7 +1409,8 @@
         6
       ],
       "analytic": 0.999996,
-      "ml_rf": 1.0
+      "trajectory_matching": null,
+      "ml_rf": 0.999995
     },
     "3w_1_10_7": {
       "n_weeks": 3,
@@ -1292,6 +1420,7 @@
         7
       ],
       "analytic": 0.999999,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_10_8": {
@@ -1302,6 +1431,7 @@
         8
       ],
       "analytic": 1.0,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_10_9": {
@@ -1312,6 +1442,7 @@
         9
       ],
       "analytic": 1.0,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     },
     "3w_1_10_10": {
@@ -1322,6 +1453,7 @@
         10
       ],
       "analytic": 1.0,
+      "trajectory_matching": null,
       "ml_rf": 1.0
     }
   }
