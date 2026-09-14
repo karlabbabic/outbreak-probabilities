@@ -1,153 +1,856 @@
 <!DOCTYPE html>
-<!-- NEED TO LINK TO PMO CALCULATOR TAB -->
-
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PMO Comparison</title>
-</head>
+  <!-- Chart.js must load before the chart functions below are used. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    /* Core palette */
+    --bg: #002147;              /* Oxford blue */
+    --bg-2: #ffffff;           /* Deep navy */
+    --panel: #f4f6f9;          /* Light grey */
+    --panel-strong: #ffffff;   /* White */
+    --primary: #1d7a73;        /* Green accent */
+    --primary-hover: #165f5a;  /* Green hover */
+    --text: #183153;           /* Dark blue text */
+    --text-dark: #081a33;      /* Extra-deep blue */
+    --text-inverse: #f8fbff;   /* Near-white text */
+    --muted: #617287;          /* Muted slate */
+    --border: #d8e2eb;        /* Soft border */
+    --radius: 18px;
+
+    /* UI surfaces */
+    --title-bg: linear-gradient(135deg, #ffffff, #f4f6f9);
+    --nav-bg: rgba(0, 33, 71, 0.756);
+    --soft: #eef4f8;
+    --soft-2: #e6f3f1;
+
+    /* Shadows */
+    --shadow: 0 15px 40px rgba(2, 14, 30, 0.18);
+    --shadow-soft: 0 8px 20px rgba(2, 14, 30, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
+
+  .site-header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.18);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 20px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-brand {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-inverse);
+    letter-spacing: -0.02em;
+  }
+
+  .site-tagline {
+    margin-top: 6px;
+    font-size: 16px;
+    color: rgba(248, 251, 255, 0.78);
+  }
+
+  .site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    padding: 0 20px 18px;
+    flex-wrap: wrap;
+  }
+
+  .navblock {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(2, 14, 30, 0.10);
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .navblock:hover,
+  .navblock:focus-visible {
+    background: var(--soft);
+    border-color: #c6d3df;
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .navblock.active {
+    background: var(--soft-2);
+    color: var(--primary);
+    border-color: rgba(29, 122, 115, 0.25);
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    padding: 0 20px;
+  }
+
+  .app-card {
+    background: var(--panel-strong);
+    padding: 40px;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .title-banner {
+    background: var(--title-bg);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 26px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .title-banner h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .title-banner p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 900px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+    margin-top: 22px;
+  }
+
+  .section-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(2, 14, 30, 0.05);
+  }
+
+  .section-card h2 {
+    margin: 0 0 12px;
+    font-size: 1.35rem;
+    color: var(--text);
+    border-bottom: 2px solid #dee6ee;
+    padding-bottom: 8px;
+  }
+
+  .section-card h3 {
+    margin: 18px 0 10px;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0 0 12px;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .formula {
+    background: #f8fbff;
+    border: 1px solid #dde6ef;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    color: #ffffff;
+    margin: 12px 0;
+  }
+
+  .highlight {
+    background: #edf7f6;
+    border-left: 4px solid var(--primary);
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin: 14px 0;
+  }
+
+  .content-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .content-list li {
+    margin: 8px 0;
+  }
+
+  .link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+    button {
+      background: var(--primary);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 14px;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover,
+    button:focus-visible {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+
+      border: none;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    button:hover { background: var(--primary-hover); }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+
+    }
+
+  .small-box {
+    background: #fafcff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .small-box strong {
+    color: var(--text);
+  }
+
+  footer {
+    margin-top: 24px;
+    text-align: center;
+    color: rgba(248, 251, 255, 0.72);
+    font-size: 0.95rem;
+  }
+
+  code {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .header-inner {
+      padding-top: 14px;
+      padding-bottom: 10px;
+    }
+
+    .site-brand {
+      font-size: 24px;
+    }
+
+    .app-card {
+      padding: 22px;
+    }
+
+    .title-banner h1 {
+      font-size: 1.7rem;
+    }
+
+    .title-banner p {
+      font-size: 0.98rem;
+    }
+    .site-footer {
+    background: var(--nav-bg);   /* Same colour as the PMO Tools header */
+    color: var(--text-inverse);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    margin-top: 50px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.footer-left,
+.footer-right {
+    width: 120px;
+}
+
+.footer-left img,
+.footer-right img {
+    max-width: 100%;
+    height: 70px;
+    object-fit: contain;
+}
+
+.footer-centre {
+    flex: 1;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.footer-centre p {
+    margin: 0;
+    color: rgba(29, 17, 89, 0.8);
+}
+  }
+</style>
 <body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </div>
+    </div>
 
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="navblock ">Home</a>
+      <a href="approaches.html" class="navblock">Approaches</a>
+      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+      <a href="trajapproach.html" class="navblock">Trajectory Approach</a>
+      <a href="PMO.html" class="navblock active">PMO Comparison</a>
+      <a href="Additional.html" class="navblock">Additional Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="home-title" >
+      
+      
+      <div class="title-banner">
+        <h1 id="home-title"> Concept breakdown </h1>
+        
+        <p>Comparison of various methods to the analyticial approach based on a 4 week case count breakdwon.
+          
+        </p>
+      </div>
+<section class="app-card" aria-labelledby="home-title">
   <h2>PMO Comparison</h2>
-  <p>Enter the initial case counts for weeks 2–4, with week 1 fixed at <code>1</code>, to look up the PMO probability estimates.</p>
+  <section class="highlight"
+   <code> Enter the initial case counts for weeks 2–4, with week 1 fixed at 1, to look up the PMO probability estimates. </code>
+</section>
+ 
+<label>Initial case 1:</label>
+<span id="case1" style="font-weight:600; margin-left:8px;">1</span>
 
-  <label>Initial case 1:</label>
-  <span id="case1" style="font-weight:600; margin-left:8px;">1</span>
-  <br><br>
+<br><br>
 
-  <label>Initial case 2:</label>
-  <input type="number" id="case2" value="0" step="1" min="0" max="9">
-  <br><br>
+<label>Initial case 2:</label>
+<input type="number" id="case2" value="0" step="1" min="0" max="9">
 
-  <label>Initial case 3:</label>
-  <input type="number" id="case3" value="0" step="1" min="0" max="9">
-  <br><br>
+<br><br>
 
-  <label>Initial case 4:</label>
-  <input type="number" id="case4" value="0" step="1" min="0" max="9">
-  <br><br>
+<label>Initial case 3:</label>
+<input type="number" id="case3" value="0" step="1" min="0" max="9">
 
-  <button onclick="lookupPMO()">Get PMO probability</button>
+<br><br>
 
-  <h3>Result:</h3>
-  <pre id="result"></pre>
+<label>Initial case 4:</label>
+<input type="number" id="case4" value="0" step="1" min="0" max="9">
 
-  <div id="chartContainer" style="margin-top:20px; max-width:420px;"></div>
+<br><br>
 
-  <script>
-    async function lookupPMO() {
-      const case1 = parseInt(document.getElementById("case1").textContent, 10);
-      const case2 = parseInt(document.getElementById("case2").value, 10);
-      const case3 = parseInt(document.getElementById("case3").value, 10);
-      const case4 = parseInt(document.getElementById("case4").value, 10);
-      const resultElement = document.getElementById("result");
+<button onclick="lookupPMO()">Get PMO probability</button>
 
-      if (isNaN(case2) || isNaN(case3) || isNaN(case4)) {
-        resultElement.innerText = "Please enter valid integers for weeks 2, 3, and 4.";
+<h3>Result:</h3>
+
+<pre id="result"></pre>
+
+<!-- Line graph -->
+<div style="width:700px; max-width:100%; height:320px; margin-top:30px; background:#FAFAFA; border-radius:16px; padding:12px;">
+    <canvas id="casesChart"></canvas>
+</div>
+
+<script>
+const ctx = document.getElementById('casesChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [{
+            label: 'Cases',
+            data: [12, 19, 8, 15],
+
+            /* Change graph colours here */
+            backgroundColor: '#4F46E5',
+            borderColor: '#3730A3',
+            borderWidth: 1
+        }]
+    }
+});
+</script>
+
+
+<!-- Vertical bar graph -->
+<div style="width:700px; max-width:100%; height:320px; margin-top:40px; background:#FAFAFA; border-radius:16px; padding:12px;">
+    <canvas id="pmoChart"></canvas>
+
+
+
+<script>
+
+let casesChart = null;
+let pmoChart = null;
+
+
+async function lookupPMO() {
+
+    const case1 = parseInt(
+        document.getElementById("case1").textContent,
+        10
+    );
+
+    const case2 = parseInt(
+        document.getElementById("case2").value,
+        10
+    );
+
+    const case3 = parseInt(
+        document.getElementById("case3").value,
+        10
+    );
+
+    const case4 = parseInt(
+        document.getElementById("case4").value,
+        10
+    );
+ <section class="highlight" 
+ <code>
+    const resultElement = document.getElementById("result");
+
+
+    // Check inputs
+    if (
+        isNaN(case2) ||
+        isNaN(case3) ||
+        isNaN(case4)
+    ) {
+        resultElement.innerText =
+            "Please enter valid integers for weeks 2, 3, and 4.";
+
         return;
-      }
+    }
 
-      if (case1 !== 1) {
-        resultElement.innerText = "The first initial case value must be 1 for this PMO comparison dataset.";
+
+    if (case1 !== 1) {
+        resultElement.innerText =
+            "The first initial case value must be 1 for this PMO comparison dataset.";
+
         return;
-      }
+    }
 
-      if (case2 < 0 || case2 > 9 || case3 < 0 || case3 > 9 || case4 < 0 || case4 > 9) {
-        resultElement.innerText = "Initial case values must be integers between 0 and 9.";
+
+    if (
+        case2 < 0 || case2 > 9 ||
+        case3 < 0 || case3 > 9 ||
+        case4 < 0 || case4 > 9
+    ) {
+        resultElement.innerText =
+            "Initial case values must be integers between 0 and 9.";
+
         return;
-      }
+    }
 
-      const key = `${case1}_${case2}_${case3}_${case4}`;
 
-      try {
-        const response = await fetch("./pmo_comparison.json", { cache: 'no-store' });
+    const key = `${case1}_${case2}_${case3}_${case4}`;
+
+
+    try {
+
+        const response = await fetch(
+            "./pmo_comparison.json",
+            { cache: "no-store" }
+        );
+
+
         if (!response.ok) {
-          throw new Error(`Unable to load pmo_comparison.json: ${response.statusText}`);
+            throw new Error(
+                `Unable to load pmo_comparison.json: ${response.statusText}`
+            );
         }
+
 
         const data = await response.json();
-        const entry = data.results ? data.results[key] : undefined;
+
+
+        const entry =
+            data.results ? data.results[key] : undefined;
+
 
         if (!entry) {
-          const available = data && data.results ? Object.keys(data.results).slice(0, 5).join(', ') : 'none';
-          resultElement.innerText = `No PMO comparison entry found for initial cases (${case1}, ${case2}, ${case3}, ${case4}).\n` +
-            `Loaded results count: ${data && data.results ? Object.keys(data.results).length : 0}\n` +
-            `Sample keys: ${available}`;
-          return;
+
+            const available =
+                data && data.results
+                    ? Object.keys(data.results)
+                        .slice(0, 5)
+                        .join(", ")
+                    : "none";
+
+
+            resultElement.innerText =
+                `No PMO comparison entry found for initial cases ` +
+                `(${case1}, ${case2}, ${case3}, ${case4}).\n` +
+                `Loaded results count: ${
+                    data && data.results
+                        ? Object.keys(data.results).length
+                        : 0
+                }\n` +
+                `Sample keys: ${available}`;
+
+            return;
         }
 
-        const analytic = entry.analytic;
-        const mlGb = entry.ml_gb;
-        const mlRf = entry.ml_rf;
-        const trajectoryMatching = entry.trajectory_matching;
 
-        const labels = [
-          "Analytic",
-          "ML Gradient Boosting",
-          "ML Random Forest",
-          "Trajectory Matching"
-        ];
-        const values = [analytic, mlGb, mlRf, trajectoryMatching].map(v => v === null ? NaN : v);
+        // PMO values
+        const analytic = entry.analytic;
+
+        const mlRf = entry.ml_rf;
+
+        const trajectoryMatching =
+            entry.trajectory_matching;
+
+
+        // Display numerical results
+        resultElement.innerText =
+            `Initial cases: (${case1}, ${case2}, ${case3}, ${case4})\n` +
+            `Analytic PMO: ${
+                analytic !== null
+                    ? analytic.toFixed(6)
+                    : "N/A"
+            }\n` +
+            `ML Random Forest PMO: ${
+                mlRf !== null
+                    ? mlRf.toFixed(6)
+                    : "N/A"
+            }\n` +
+            `Trajectory Matching PMO: ${
+                trajectoryMatching !== null
+                    ? trajectoryMatching.toFixed(6)
+                    : "N/A"
+            }`;
+
+</code>
+        // -----------------------------
+        // 1. LINE GRAPH
+        // -----------------------------
+
+        renderCasesChart(
+            [case1, case2, case3, case4]
+        );
+
+
+        // -----------------------------
+        // 2. VERTICAL BAR GRAPH
+        // -----------------------------
+
+        renderPMOChart(
+            [analytic, mlRf, trajectoryMatching]
+        );
+
+    }
+
+
+    catch (error) {
 
         resultElement.innerText =
-          `Initial cases: (${case1}, ${case2}, ${case3}, ${case4})\n` +
-          `Analytic PMO: ${analytic !== null ? analytic.toFixed(6) : "N/A"}\n` +
-          `ML Gradient Boosting PMO: ${mlGb !== null ? mlGb.toFixed(6) : "N/A"}\n` +
-          `ML Random Forest PMO: ${mlRf !== null ? mlRf.toFixed(6) : "N/A"}\n` +
-          `Trajectory Matching PMO: ${trajectoryMatching !== null ? trajectoryMatching.toFixed(6) : "N/A"}`;
+            "Error loading PMO comparison data: " +
+            error.message;
 
-        renderChart(labels, values);
-      } catch (error) {
-        resultElement.innerText = "Error loading PMO comparison data: " + error.message;
-      }
     }
 
-    function renderChart(labels, values) {
-      const container = document.getElementById("chartContainer");
-      container.innerHTML = "";
+}
 
-      labels.forEach((label, idx) => {
-        const value = values[idx];
-        const bar = document.createElement("div");
-        bar.style.margin = "12px 0";
 
-        const labelRow = document.createElement("div");
-        labelRow.style.display = "flex";
-        labelRow.style.justifyContent = "space-between";
-        labelRow.style.alignItems = "center";
+// =====================================
+// LINE GRAPH
+// =====================================
 
-        const labelEl = document.createElement("div");
-        labelEl.innerText = label;
-        labelEl.style.fontWeight = "600";
+function renderCasesChart(cases) {
 
-        const valueEl = document.createElement("div");
-        valueEl.innerText = Number.isFinite(value) ? value.toFixed(6) : "N/A";
-        valueEl.style.fontSize = "0.95rem";
+    const ctx = document.getElementById("casesChart");
 
-        labelRow.appendChild(labelEl);
-        labelRow.appendChild(valueEl);
-
-        const barOuter = document.createElement("div");
-        barOuter.style.background = "#ececec";
-        barOuter.style.borderRadius = "6px";
-        barOuter.style.overflow = "hidden";
-        barOuter.style.height = "24px";
-        barOuter.style.marginTop = "8px";
-        barOuter.style.position = "relative";
-
-        const barInner = document.createElement("div");
-        barInner.style.height = "100%";
-        barInner.style.width = `${Number.isFinite(value) ? Math.max(0, Math.min(value, 1)) * 100 : 0}%`;
-        barInner.style.background = "#4C8BF5";
-        barInner.style.transition = "width 0.2s ease";
-
-        barOuter.appendChild(barInner);
-        bar.appendChild(labelRow);
-        bar.appendChild(barOuter);
-        container.appendChild(bar);
-      });
+    if (casesChart !== null) {
+        casesChart.destroy();
     }
-  </script>
+
+    casesChart = new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+            labels: [
+                "Week 1",
+                "Week 2",
+                "Week 3",
+                "Week 4"
+            ],
+
+            datasets: [{
+                label: "Initial Cases",
+
+                data: cases,
+
+                /// Green line
+borderColor: "#1D7A73",
+borderWidth: 4,
+
+// White circles with green borders
+pointRadius: 7,
+pointHoverRadius: 9,
+pointBackgroundColor: "#FFFFFF",
+pointBorderColor: "#1D7A73",
+pointBorderWidth: 3,
+
+                // Slightly rounded line
+                tension: 0.25,
+
+                fill: false
+            }]
+        },
+
+        options: {
+            responsive: true,
+
+            plugins: {
+                title: {
+                    display: true,
+                    text: "Initial Cases by Week"
+                },
+
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+
+                    border: {
+                        display: false
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Week"
+                    }
+                },
+
+                y: {
+                    beginAtZero: true,
+
+                    grid: {
+                        display: false
+                    },
+
+                    border: {
+                        display: false
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Initial Case Count"
+                    },
+
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+// =====================================
+// VERTICAL PMO BAR GRAPH
+// =====================================
+
+function renderPMOChart(values) {
+
+    const ctx =
+        document.getElementById("pmoChart");
+
+
+    // Destroy previous chart
+    if (pmoChart !== null) {
+        pmoChart.destroy();
+    }
+
+
+    pmoChart = new Chart(ctx, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "Analytic",
+                "ML Random Forest",
+                "Trajectory Matching"
+            ],
+
+            datasets: [
+
+                {
+                    label: "PMO Probability",
+
+                    data: values.map(value =>
+                        value === null
+                            ? NaN
+                            : value
+                    ),
+
+                    {
+    label: "PMO Probability",
+
+    data: values.map(value =>
+        value === null
+            ? NaN
+            : value
+    ),
+
+    backgroundColor: "#183153",
+    borderColor: "#081A33",
+    borderWidth: 1
+}
+                }
+
+            ]
+
+        },
+
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                title: {
+
+                    display: true,
+
+                    text:
+                        "PMO Probability Comparison"
+
+                },
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+
+            scales: {
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text: "Method"
+
+                    }
+
+                },
+
+                y: {
+
+                    beginAtZero: true,
+
+                    max: 1,
+
+                    title: {
+
+                        display: true,
+
+                        text: "PMO Probability"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+</script>
+
+    </section>
+  </main>
 
 </body>
-</html>
