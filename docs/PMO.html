@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<!-- NEED TO LINK TO PMO CALCULATOR TAB -->
-
 <html>
 <head>
   <meta charset="utf-8">
@@ -9,25 +7,17 @@
 <body>
 
   <h2>PMO Comparison</h2>
-  <p>Enter the initial case counts for weeks 2–4, with week 1 fixed at <code>1</code>, to look up the PMO probability estimates.</p>
+  <p>Choose the number of weeks to compare (2 or 3), with week 1 fixed at <code>1</code>.</p>
 
-  <label>Initial case 1:</label>
-  <span id="case1" style="font-weight:600; margin-left:8px;">1</span>
-  <br><br>
+  <label for="weeksSelect">Number of weeks:</label>
+  <select id="weeksSelect" onchange="updateWeekInputs()">
+    <option value="2">2 weeks</option>
+    <option value="3">3 weeks</option>
+  </select>
 
-  <label>Initial case 2:</label>
-  <input type="number" id="case2" value="0" step="1" min="0" max="9">
-  <br><br>
+  <div id="inputContainer" style="margin-top:20px;"></div>
 
-  <label>Initial case 3:</label>
-  <input type="number" id="case3" value="0" step="1" min="0" max="9">
-  <br><br>
-
-  <label>Initial case 4:</label>
-  <input type="number" id="case4" value="0" step="1" min="0" max="9">
-  <br><br>
-
-  <button onclick="lookupPMO()">Get PMO probability</button>
+  <button onclick="lookupPMO()" style="margin-top:16px;">Get PMO probability</button>
 
   <h3>Result:</h3>
   <pre id="result"></pre>
@@ -35,34 +25,58 @@
   <div id="chartContainer" style="margin-top:20px; max-width:420px;"></div>
 
   <script>
+    function buildWeekInputs() {
+      const weeks = Number(document.getElementById('weeksSelect').value);
+      const container = document.getElementById('inputContainer');
+      container.innerHTML = '';
+
+      const fixedLabel = document.createElement('div');
+      fixedLabel.innerHTML = '<label>Initial case 1:</label> <span style="font-weight:600; margin-left:8px;">1</span>';
+      fixedLabel.style.marginBottom = '12px';
+      container.appendChild(fixedLabel);
+
+      for (let week = 2; week <= weeks; week++) {
+        const row = document.createElement('div');
+        row.style.marginBottom = '12px';
+        row.innerHTML = `
+          <label for="case${week}">Initial case ${week}:</label>
+          <input type="number" id="case${week}" value="0" step="1" min="0" max="9">
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function updateWeekInputs() {
+      buildWeekInputs();
+      document.getElementById('result').innerText = '';
+      document.getElementById('chartContainer').innerHTML = '';
+    }
+
     async function lookupPMO() {
-      const case1 = parseInt(document.getElementById("case1").textContent, 10);
-      const case2 = parseInt(document.getElementById("case2").value, 10);
-      const case3 = parseInt(document.getElementById("case3").value, 10);
-      const case4 = parseInt(document.getElementById("case4").value, 10);
-      const resultElement = document.getElementById("result");
+      const weeks = Number(document.getElementById('weeksSelect').value);
+      const values = [1];
+      const resultElement = document.getElementById('result');
 
-      if (isNaN(case2) || isNaN(case3) || isNaN(case4)) {
-        resultElement.innerText = "Please enter valid integers for weeks 2, 3, and 4.";
-        return;
+      for (let week = 2; week <= weeks; week++) {
+        const value = parseInt(document.getElementById(`case${week}`).value, 10);
+        if (isNaN(value)) {
+          resultElement.innerText = `Please enter a valid integer for week ${week}.`;
+          return;
+        }
+        if (value < 0 || value > 9) {
+          resultElement.innerText = `Initial case values must be integers between 0 and 9 for weeks 2..${weeks}.`;
+          return;
+        }
+        values.push(value);
       }
 
-      if (case1 !== 1) {
-        resultElement.innerText = "The first initial case value must be 1 for this PMO comparison dataset.";
-        return;
-      }
-
-      if (case2 < 0 || case2 > 9 || case3 < 0 || case3 > 9 || case4 < 0 || case4 > 9) {
-        resultElement.innerText = "Initial case values must be integers between 0 and 9.";
-        return;
-      }
-
-      const key = `${case1}_${case2}_${case3}_${case4}`;
+      const key = `${weeks}w_${values.join('_')}`;
+      resultElement.innerText = `Looking up key: ${key}`;
 
       try {
-        const response = await fetch("./pmo_comparison.json", { cache: 'no-store' });
+        const response = await fetch('./prediction_grid_comparison.json', { cache: 'no-store' });
         if (!response.ok) {
-          throw new Error(`Unable to load pmo_comparison.json: ${response.statusText}`);
+          throw new Error(`Unable to load prediction_grid_comparison.json: ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -70,76 +84,77 @@
 
         if (!entry) {
           const available = data && data.results ? Object.keys(data.results).slice(0, 5).join(', ') : 'none';
-          resultElement.innerText = `No PMO comparison entry found for initial cases (${case1}, ${case2}, ${case3}, ${case4}).\n` +
+          resultElement.innerText = `No PMO comparison entry found for initial cases (${values.join(', ')}).\n` +
             `Loaded results count: ${data && data.results ? Object.keys(data.results).length : 0}\n` +
             `Sample keys: ${available}`;
           return;
         }
 
         const analytic = entry.analytic;
-        const mlGb = entry.ml_gb;
         const mlRf = entry.ml_rf;
         const trajectoryMatching = entry.trajectory_matching;
 
         const labels = [
           "Analytic",
-          "ML Gradient Boosting",
           "ML Random Forest",
-          "Trajectory Matching"
+          ...(trajectoryMatching === undefined ? [] : ["Trajectory Matching"])
         ];
-        const values = [analytic, mlGb, mlRf, trajectoryMatching].map(v => v === null ? NaN : v);
+        const valuesForChart = [
+          analytic,
+          mlRf,
+          ...(trajectoryMatching === undefined ? [] : [trajectoryMatching])
+        ].map(v => (v === null || v === undefined) ? NaN : v);
 
         resultElement.innerText =
-          `Initial cases: (${case1}, ${case2}, ${case3}, ${case4})\n` +
+          `Initial cases: (${values.join(', ')})\n` +
           `Analytic PMO: ${analytic !== null ? analytic.toFixed(6) : "N/A"}\n` +
-          `ML Gradient Boosting PMO: ${mlGb !== null ? mlGb.toFixed(6) : "N/A"}\n` +
-          `ML Random Forest PMO: ${mlRf !== null ? mlRf.toFixed(6) : "N/A"}\n` +
-          `Trajectory Matching PMO: ${trajectoryMatching !== null ? trajectoryMatching.toFixed(6) : "N/A"}`;
+          `ML Random Forest PMO: ${mlRf !== null ? mlRf.toFixed(6) : "N/A"}` +
+          (trajectoryMatching === undefined
+            ? "\nTrajectory Matching PMO: not available in the current RF-only comparison dataset."
+            : `\nTrajectory Matching PMO: ${trajectoryMatching !== null ? trajectoryMatching.toFixed(6) : "N/A"}`);
 
-        renderChart(labels, values);
+        renderChart(labels, valuesForChart);
       } catch (error) {
         resultElement.innerText = "Error loading PMO comparison data: " + error.message;
       }
     }
 
     function renderChart(labels, values) {
-      const container = document.getElementById("chartContainer");
-      container.innerHTML = "";
+      const container = document.getElementById('chartContainer');
+      container.innerHTML = '';
 
       labels.forEach((label, idx) => {
         const value = values[idx];
-        const bar = document.createElement("div");
-        bar.style.margin = "12px 0";
+        const bar = document.createElement('div');
+        bar.style.margin = '12px 0';
 
-        const labelRow = document.createElement("div");
-        labelRow.style.display = "flex";
-        labelRow.style.justifyContent = "space-between";
-        labelRow.style.alignItems = "center";
+        const labelRow = document.createElement('div');
+        labelRow.style.display = 'flex';
+        labelRow.style.justifyContent = 'space-between';
+        labelRow.style.alignItems = 'center';
 
-        const labelEl = document.createElement("div");
+        const labelEl = document.createElement('div');
         labelEl.innerText = label;
-        labelEl.style.fontWeight = "600";
+        labelEl.style.fontWeight = '600';
 
-        const valueEl = document.createElement("div");
-        valueEl.innerText = Number.isFinite(value) ? value.toFixed(6) : "N/A";
-        valueEl.style.fontSize = "0.95rem";
+        const valueEl = document.createElement('div');
+        valueEl.innerText = Number.isFinite(value) ? value.toFixed(6) : 'N/A';
+        valueEl.style.fontSize = '0.95rem';
 
         labelRow.appendChild(labelEl);
         labelRow.appendChild(valueEl);
 
-        const barOuter = document.createElement("div");
-        barOuter.style.background = "#ececec";
-        barOuter.style.borderRadius = "6px";
-        barOuter.style.overflow = "hidden";
-        barOuter.style.height = "24px";
-        barOuter.style.marginTop = "8px";
-        barOuter.style.position = "relative";
+        const barOuter = document.createElement('div');
+        barOuter.style.background = '#ececec';
+        barOuter.style.borderRadius = '6px';
+        barOuter.style.overflow = 'hidden';
+        barOuter.style.height = '24px';
+        barOuter.style.marginTop = '8px';
 
-        const barInner = document.createElement("div");
-        barInner.style.height = "100%";
+        const barInner = document.createElement('div');
+        barInner.style.height = '100%';
         barInner.style.width = `${Number.isFinite(value) ? Math.max(0, Math.min(value, 1)) * 100 : 0}%`;
-        barInner.style.background = "#4C8BF5";
-        barInner.style.transition = "width 0.2s ease";
+        barInner.style.background = '#4C8BF5';
 
         barOuter.appendChild(barInner);
         bar.appendChild(labelRow);
@@ -147,6 +162,8 @@
         container.appendChild(bar);
       });
     }
+
+    buildWeekInputs();
   </script>
 
 </body>
