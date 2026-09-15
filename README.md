@@ -1,13 +1,13 @@
 # outbreak-probabilities
 
-This branch (`package`) is used to maintain the PyPI package hosted [here](https://test.pypi.org/project/outbreak-probabilities/1.0.1/). 
+This branch (`package`) maintains the PyPI package hosted [here](https://test.pypi.org/project/outbreak-probabilities/1.0.1/). 
 
-Simulation and analysis tools for estimating the probability of a major outbreak (PMO) from early case counts, using three independent methods: an analytic branching-process solution, trajectory matching against simulated data, and trained machine-learning classifiers.
+The package includes simulation and analysis tools for estimating the probability of a major outbreak (PMO) from early case counts, using three independent methods: an analytic branching-process solution, trajectory matching against simulated data, and trained machine-learning classifiers.
 
 ## Installation
 
 ```
-pip install outbreak-probabilities
+pip install -i https://test.pypi.org/simple/ outbreak-probabilities==1.0.1
 ```
 
 ## Quick start
