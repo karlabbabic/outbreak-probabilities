@@ -30,6 +30,16 @@ import joblib
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # ---- User-editable defaults ----
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
@@ -406,16 +416,19 @@ def make_combined_plot(
         ys_step = np.array(ys_list, dtype=float)
 
     # ---------------- PLOTTING ----------------
-    fig, ax = plt.subplots(figsize=(11, 6))
+    # widen the canvas and pin the axes to the original (3.3, 2.5) size via subplots_adjust,
+    # so the plot itself doesn't shrink to make room for the legend sitting outside it
+    fig, ax = plt.subplots(figsize=(4.8, 2.5))
+    fig.subplots_adjust(right=0.65)
 
     # ML curves
     for m, col in zip(model_names, (COL_GB, COL_RF)):
         y = np.array([v if v is not None else np.nan for v in ml_results[m]])
-        ax.plot(ml_x, y, label=f"{m} predicted PMO = {y[-1]:.5f}", color=col, linewidth=2.5)
+        ax.plot(ml_x, y, label=f"{m} predicted PMO = {y[-1]:.5f}", color=col, linewidth=1.2)
 
-    # analytic (horizontal)
+    # analytic (horizontal) - kept at default alpha (not brightened) so the other curves stand out against it
     if np.isfinite(analytic_val):
-        ax.axhline(analytic_val, color=COL_ANALYTIC, linestyle="--", linewidth=2.0, label=f"Analytic PMO = {analytic_val:.5f}")
+        ax.axhline(analytic_val, color=COL_ANALYTIC, linestyle="--", linewidth=1.2, label=f"Analytic PMO = {analytic_val:.5f}")
         band_low = max(0.0, analytic_val - 0.05)
         band_high = min(1.0, analytic_val + 0.05)
         ax.fill_between(ml_x, band_low, band_high, color=COL_ANALYTIC, alpha=0.08)
@@ -423,7 +436,7 @@ def make_combined_plot(
 
 
     # trajectory-mapping step and mapped points
-    ax.plot(xs_step[2:], ys_step[2:], color=COL_PMO, linewidth=1.8, drawstyle="steps-post",
+    ax.plot(xs_step[2:], ys_step[2:], color=COL_PMO, linewidth=1.0, drawstyle="steps-post",
             label=f"Trajectory-mapping PMO = {ys_step[-1]:.5f}", zorder=3, alpha=0.8)
     # ax.plot(ml_x, ml_pmo_by_size, color=COL_PMO, linewidth=1.1, linestyle="--", alpha=0.9, label="PMO (mapped to ML x)", zorder=2)
 
@@ -433,7 +446,7 @@ def make_combined_plot(
 
     # scatter event points (visible)
     if mapped_event_x.size:
-        ax.scatter(mapped_event_x, event_cum, s=5, color=COL_PMO, edgecolors="none", zorder=1, alpha=0.2)
+        ax.scatter(mapped_event_x, event_cum, s=5, color=COL_PMO, edgecolors="none", zorder=1, alpha=0.5)
 
     ax.set_xlabel("Number of simulations (log scale)")
     ax.set_ylabel("PMO")
@@ -441,10 +454,7 @@ def make_combined_plot(
     ax.set_xlim(x_min, x_max)
     ax.set_xscale('log')
     ax.set_ylim(-0.02, 1.02)
-    ax.grid(alpha=0.18, linestyle="--")
-    ax.legend(frameon=False, fontsize=9, loc="upper right")
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
+    ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1))
     ax.grid(alpha=0.25, which="major", linestyle="--")
 
     out_path = Path(out_png)

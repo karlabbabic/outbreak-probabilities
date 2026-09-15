@@ -19,6 +19,16 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # relative import for intra-package usage
 from .trajectory import trajectory_match_pmo
@@ -37,7 +47,7 @@ OUT_PNG: str = "figs/pmo_vs_r.png"
 SAMPLE_STRATEGY: str = "random"
 SAMPLE_SIZE: Optional[int] = 200
 MAX_PLOT: Optional[int] = None
-FIGSIZE: Tuple[int, int] = (8, 5)
+FIGSIZE: Tuple[float, float] = (3.3, 2.5)
 
 LINEWIDTH: float = 2.0
 MARKERSIZE: float = 4.0
@@ -295,7 +305,7 @@ def plot_pmo_vs_r(
     ax.grid(alpha=0.25, which="major", linestyle="--")
 
     # compact legend
-    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    ax.legend(frameon=False, loc="upper right")
 
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=300, bbox_inches="tight")
@@ -454,7 +464,7 @@ def plot_pmo_over_full_index(
     ax.grid(alpha=0.25, which="major", linestyle="--")
 
     # show legend (only for main lines)
-    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    ax.legend(frameon=False, loc="upper right")
 
     out_png_full = Path(out_png).with_name(Path(out_png).stem + "_full_index.png")
     Path(out_png_full).parent.mkdir(parents=True, exist_ok=True)
@@ -474,7 +484,7 @@ def run_pmo_vs_r_refractor(
     sample_strategy: str = SAMPLE_STRATEGY,
     sample_size: Optional[int] = SAMPLE_SIZE,
     sort_by: str = "sample_order",
-    figsize: Tuple[int, int] = FIGSIZE,
+    figsize: Optional[Tuple[int, int]] = FIGSIZE,
     random_seed: Optional[int] = 42,
     full_index: bool = False,
     show_final_pmo: bool = False, # disable horizontal line of running pmo
@@ -491,6 +501,7 @@ def run_pmo_vs_r_refractor(
     - If full_index is True: x-axis is 1..N_total and updates only at matched sim IDs.
       returns (out_png_path, events_df) where events_df lists sim_id, PMO, event_order, cum_pmo
     """
+    figsize = figsize if figsize is not None else FIGSIZE
     res = load_matches(sim_csv=sim_csv, observed=observed, header_rows=header_rows, week_prefix=week_prefix)
     n_matches = int(res.get("n_matches", 0))
     if n_matches == 0:

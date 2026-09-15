@@ -11,6 +11,16 @@ import joblib
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 warnings.filterwarnings(
     "ignore",
@@ -85,7 +95,7 @@ def plot_convergence(model_dir: Path = MODEL_DIR, plot_dir: Path = DEFAULT_PLOT_
         plt.ylabel("Predicted Outbreak Probability")
         plt.ylim(0, 1.13)
         plt.legend()
-        plt.grid(color='lightgrey', linestyle='--', linewidth=0.3)
+        plt.grid(alpha=0.25, which="major", linestyle="--")
         plot_path = plot_dir / f"Convergence_Sample_{sample}_GB_RF.png"
         plt.savefig(plot_path)
         print(f"Saved: {plot_path}")

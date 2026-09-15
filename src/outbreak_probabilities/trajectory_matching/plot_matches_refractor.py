@@ -23,6 +23,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, AutoMinorLocator
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # relative import for intra-package usage
 from .trajectory import trajectory_match_pmo
@@ -38,7 +48,7 @@ OUT_PNG: str = "figs/matched_trajectories.png"
 SAMPLE_STRATEGY: str = "highest_peak"
 SAMPLE_SIZE: Optional[int] = 200
 MAX_PLOT: Optional[int] = 200
-FIGSIZE: Tuple[int, int] = (9, 6)
+FIGSIZE: Tuple[float, float] = (3.3, 2.5)
 BLUE: str = "tab:blue"
 GRAY: str = "dimgray"
 ALPHA: float = 0.6
@@ -212,35 +222,12 @@ def plot_matches(
         f"Strategy used: {SAMPLE_STRATEGY}"
     )
 
-    ax.legend(frameon=False, fontsize=9, loc="upper left")
-
-    # keep the same spine visibility behavior as the original
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.spines['left'].set_visible(False)
+    ax.legend(frameon=False, loc="upper left")
 
     # ensure formatter behavior matches original intent
     plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)
 
-    ax.grid(
-        which="major",
-        color="0.65",      # gray
-        linewidth=1.2,
-        alpha=0.6
-    )
-
-    # Minor ticks halfway between majors (but hidden)
-    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
-    ax.yaxis.set_minor_locator(AutoMinorLocator(2))
-
-    # Minor gridlines: lighter gray, thinner
-    ax.grid(
-        which="minor",
-        color="0.85",      # lighter gray
-        linewidth=0.6,
-        alpha=0.8
-    )
+    ax.grid(alpha=0.25, which="major", linestyle="--")
 
     # save
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
@@ -258,7 +245,7 @@ def run_plot_matches(
     sample_strategy: str = SAMPLE_STRATEGY,
     sample_size: Optional[int] = SAMPLE_SIZE,
     max_plot: Optional[int] = MAX_PLOT,
-    figsize: Tuple[int, int] = FIGSIZE,
+    figsize: Optional[Tuple[int, int]] = FIGSIZE,
 ):
     """
     Top-level function to be called from the runner.
@@ -337,7 +324,7 @@ def run_plot_matches(
         major_threshold=major_threshold,
         observed=observed,
         out_png=out_png,
-        figsize=figsize,
+        figsize=figsize if figsize is not None else FIGSIZE,
     )
 
     # Save indices + sampled dataframe for later reuse.

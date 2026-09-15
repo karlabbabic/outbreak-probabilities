@@ -400,7 +400,7 @@ def main():
             sample_strategy=args.sample_strategy,
             sample_size=args.sample_size,
             sort_by=args.sort_by,
-            figsize=figsize if figsize is not None else None,
+            figsize=figsize,
             random_seed=args.random_seed,
             full_index=args.full_index,
             show_final_pmo=args.show_final_pmo,

@@ -19,6 +19,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import joblib
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # Try to import helpers from trajectory module; fallback to local copies (as before)
 _USE_REMOTE = False
@@ -430,7 +440,10 @@ def make_comparison_plot(
         # ----------------
     # Plotting + save + metadata + return
     # ----------------
-    fig, ax = plt.subplots(figsize=(11, 6))
+    # widen the canvas and pin the axes to the original (3.3, 2.5) size via subplots_adjust,
+    # so the plot itself doesn't shrink to make room for the legend sitting outside it
+    fig, ax = plt.subplots(figsize=(4.8, 2.5))
+    fig.subplots_adjust(right=0.65)
     # ML curves
     for m, col in zip(model_names, (COL_GB, COL_RF)):
         y = np.array([v if v is not None else np.nan for v in ml_results[m]])
@@ -463,8 +476,8 @@ def make_comparison_plot(
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(-0.02, 1.02)
     ax.set_xscale('log')
-    ax.grid(alpha=0.18, linestyle="--")
-    ax.legend(frameon=False, fontsize=9, loc="upper right")
+    ax.grid(alpha=0.25, which="major", linestyle="--")
+    ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1))
 
     Path(out_png).parent.mkdir(parents=True, exist_ok=True)
     fig.tight_layout()

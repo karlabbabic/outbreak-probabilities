@@ -38,6 +38,16 @@ import matplotlib
 # If running headless (CI), use Agg
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # try to use tqdm for nicer progress bars, otherwise fallback to prints
 try:

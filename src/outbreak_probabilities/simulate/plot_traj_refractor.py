@@ -8,6 +8,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
+import scienceplots  # noqa: F401
+
+plt.style.use(["science", "nature", "no-latex"])
+# consistent look across all package plots: open box (no top/right spine or ticks)
+plt.rcParams.update({
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "xtick.top": False,
+    "ytick.right": False,
+})
 
 # ---------- IO and helpers ----------
 
@@ -109,7 +119,7 @@ def fast_plot_trajectories(
     overlay_mean: bool = True,
     overlay_quantiles: Optional[Tuple[float, float]] = (0.10, 0.90),
     random_seed: Optional[int] = 42,
-    figsize: Tuple[int,int] = (10,6),
+    figsize: Tuple[float,float] = (3.3,2.5),
 ):
     """
     Fast plotting of many trajectories:
@@ -184,10 +194,10 @@ def fast_plot_trajectories(
     ax.set_title(f"Weekly trajectories (cutoff ≥ {major_threshold}) — plotted {len(sel_idx)} of {n_total}")
     ax.set_xticks(np.arange(1, len(week_cols) + 1))
     ax.set_xlim(1 - 0.5, len(week_cols) + 0.5)
-    ax.grid(alpha=0.25)
-    ax.legend(loc="upper left", fontsize="small")
+    ax.grid(alpha=0.25, which="major", linestyle="--")
+    ax.legend(loc="upper left")
     Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(save_path, dpi=150, bbox_inches="tight")
+    fig.savefig(save_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"Saved fast trajectories plot to {save_path}")
 
@@ -195,7 +205,7 @@ def fast_plot_trajectories(
 
 def plot_pmo_vs_R(df: pd.DataFrame, n_bins: int = 20, save_path: str = "figs/pmo_vs_r.png"):
     binned = compute_binned_pmo(df, n_bins=n_bins)
-    plt.figure(figsize=(8,5))
+    plt.figure(figsize=(3.3,2.5))
     # jitter raw points slightly on the y-axis for visibility
     jitter = (np.random.rand(len(df)) - 0.5) * 0.02
     plt.scatter(df["R_draw"], df["PMO"] + jitter, alpha=0.25, s=18, label="raw outcomes")
@@ -204,10 +214,10 @@ def plot_pmo_vs_R(df: pd.DataFrame, n_bins: int = 20, save_path: str = "figs/pmo
     plt.ylabel("Probability of Major Outbreak (PMO)")
     plt.title("PMO vs R")
     plt.ylim(-0.05, 1.05)
-    plt.grid(alpha=0.3)
+    plt.grid(alpha=0.25, which="major", linestyle="--")
     plt.legend()
     Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(save_path, dpi=150)
+    plt.savefig(save_path, dpi=300)
     plt.close()
     print(f"Saved PMO plot to {save_path}")
 
