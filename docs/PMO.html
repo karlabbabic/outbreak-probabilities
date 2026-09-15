@@ -727,8 +727,7 @@
       <select id="weekSelect" onchange="updateWeekInputs()">
         <option value="1">1 week</option>
         <option value="2">2 weeks</option>
-        <option value="3">3 weeks</option>
-        <option value="4" selected>4 weeks</option>
+        <option value="3" selected>3 weeks</option>
       </select>
     </div>
   </div>
@@ -814,10 +813,10 @@ async function lookupPMO() {
         return;
     }
 
-    // The comparison dataset is keyed to four weekly positions.
-    // When fewer weeks are selected, unused positions are padded with 0.
-    const paddedCases = [cases[0], cases[1] ?? 0, cases[2] ?? 0, cases[3] ?? 0];
-    const key = paddedCases.join("_");
+    // The comparison dataset is keyed by the chosen weekly profile length.
+    // For the PMO comparison JSON, only weeks 1-3 are available.
+    const selectedCases = cases.slice(0, numberOfWeeks);
+    const key = `${numberOfWeeks}w_${selectedCases.join("_")}`;
     resultElement.innerText = "Loading PMO comparison...";
     resultCard.classList.add("is-visible");
 
@@ -844,7 +843,7 @@ async function lookupPMO() {
         const trajectoryMatching = entry.trajectory_matching;
 
         resultElement.innerText =
-            `Initial cases: (${paddedCases.join(", ")})\n` +
+            `Initial cases: (${selectedCases.join(", ")})\n` +
             `Analytic PMO: ${analytic !== null ? analytic.toFixed(6) : "N/A"}\n` +
             `ML Random Forest PMO: ${mlRf !== null ? mlRf.toFixed(6) : "N/A"}\n` +
             `Trajectory Matching PMO: ${trajectoryMatching !== null ? trajectoryMatching.toFixed(6) : "N/A"}`;
