@@ -5,10 +5,17 @@ dynamic = ["version"]
 description = "Simulation and analysis tools for outbreak probabilities"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = ["numpy>=2.0","pandas>=2.0","scipy>=1.0","pytest>=8.0","flake8>=7.0"]
+dependencies = ["numpy>=2.0","pandas>=2.0","scipy>=1.0","matplotlib>=3.5","joblib>=1.0","scikit-learn>=1.0","pytest>=8.0","flake8>=7.0"]
 authors = [
     { name = "Aniekeme George, Gemma Marshall, Oliver Staples, Rayne Alexander, Salma Amin" }
 ]
+
+# CLI commands installed alongside the package
+[project.scripts]
+outbreak = "outbreak_probabilities.runner:main"
+outbreak-predict = "outbreak_probabilities.predict:main"
+outbreak-pmo-error-grid = "outbreak_probabilities.trajectory_matching.pmo_error_grid:main"
+outbreak-benchmark = "outbreak_probabilities.simulate.benchmark:run_benchmarks"
 
 # Creates temporary local environment when running python -m build
 [build-system]

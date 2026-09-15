@@ -101,7 +101,7 @@ def main(argv=None):
     parser.add_argument("--out", type=str, default="data/test_simulations.csv", help="Output CSV path")
     args = parser.parse_args(argv)
 
-    cfg = SimConfig(N=args.N, seed=args.seed, out_path=args.out, use_tempfile=args.use_tempfile)
+    cfg = SimConfig(N=args.N, seed=args.seed, out_path=args.out)
     simulate_batch(cfg)
     
 if __name__ == "__main__":

@@ -10,8 +10,8 @@ import time
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from calculate_serial_weights import compute_serial_weights
-from batch_processing import generate_batch
+from .calculate_serial_weights import compute_serial_weights
+from .batch_processing import generate_batch
 
 def run_benchmarks():
     # Serial weights for Ebola are calculated once

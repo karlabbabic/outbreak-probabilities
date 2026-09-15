@@ -32,10 +32,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # ---- User-editable defaults ----
-BASE_DIR = Path(__file__).resolve().parents[3]
-MODEL_DIR = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "Model_SIM"
-OUT_DIR = BASE_DIR / "src" / "outbreak_probabilities" / "compare"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+PACKAGE_DIR = Path(__file__).resolve().parent.parent
+MODEL_DIR = PACKAGE_DIR / "machine_learning" / "Model_SIM"
+OUT_DIR = Path(__file__).resolve().parent
+DEFAULT_SIM_CSV = "data/test_simulations.csv"
 
 # training sizes (x axis)
 DATA_SIZES = [500 * i for i in range(1, 70)]
@@ -472,10 +472,10 @@ def make_combined_plot(
     return str(out_png), meta
 
 # ---------------- quick-run if called as script ----------------
-if __name__ == "__main__":
+def main():
     # Edit these two as needed: path to FULL sim CSV and initials to iterate
-    SIM_CSV_PATH = str(Path(BASE_DIR) / "data" / "test_simulations.csv")  # <-- set to your full sim CSV
-    INITIALS = [(1,4,0)]
+    SIM_CSV_PATH = DEFAULT_SIM_CSV  # <-- set to your full sim CSV
+    INITIALS = [(1, 4, 0)]
 
     for INITIAL in INITIALS:
         OUT = str(OUT_DIR / f"comparison_initial_{'_'.join(map(str, INITIAL))}.png")
@@ -494,3 +494,7 @@ if __name__ == "__main__":
             print("Failed for initial", INITIAL, ":", exc)
             traceback.print_exc()
             raise
+
+
+if __name__ == "__main__":
+    main()

@@ -1,92 +1,87 @@
 import json
 from datetime import datetime
 from pathlib import Path
-import joblib
 import argparse
+import joblib
 import numpy as np
-import pandas as pd 
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 
-# Set Path
-BASE_DIR = Path(__file__).resolve().parents[3]
-data_path = BASE_DIR / "data" / "test_simulations.csv"
-model_dir = BASE_DIR / "src" / "outbreak_probabilities" / "machine_learning" / "models_5weeks"
-model_dir.mkdir(parents=True, exist_ok=True)
-
-# load data
-data = pd.read_csv(data_path)
-
-# remove first two rows
-data = data.iloc[2:].reset_index(drop=True)
-data.columns = data.iloc[0]
-data = data.iloc[1:].reset_index(drop=True)
-
-data = data[["week_1", "week_2", "week_3","week_4", "week_5", "PMO"]]
-X = data[["week_1", "week_2", "week_3", "week_4", "week_5"]].astype(float)
-y = data["PMO"].astype(int)
-
-# define models
-models = {
-    "RF": RandomForestClassifier(
-        n_estimators=100,
-        max_depth=10,
-        random_state=42,
-        n_jobs=-1,
-    ),
-    
-}
+N_WEEKS = 5
+FEATURE_NAMES = [f"week_{i + 1}" for i in range(N_WEEKS)]
+DEFAULT_DATA_PATH = "data/test_simulations.csv"
+MODEL_DIR = Path(__file__).resolve().parent / "models_5weeks"
 
 
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+def load_training_data(data_path):
+    data = pd.read_csv(data_path)
+    # remove first two metadata rows and promote the real header
+    data = data.iloc[2:].reset_index(drop=True)
+    data.columns = data.iloc[0]
+    data = data.iloc[1:].reset_index(drop=True)
+
+    data = data[FEATURE_NAMES + ["PMO"]]
+    X = data[FEATURE_NAMES].astype(float)
+    y = data["PMO"].astype(int)
+    return X, y
 
 
-feature_names = list(X.columns)  
-n_weeks = len(feature_names)
+def train(data_path: str = DEFAULT_DATA_PATH, model_dir: Path = MODEL_DIR):
+    model_dir = Path(model_dir)
+    model_dir.mkdir(parents=True, exist_ok=True)
 
+    X, y = load_training_data(data_path)
 
-# train and save
-for model_name, clf in models.items():
-    print(f"\nTraining model on full dataset: {model_name}")
-    clf.fit(X_scaled, y)
-
-    stem = f"ML_{n_weeks}weeks_{model_name}"
-    model_path = model_dir / f"{stem}.pkl"
-    scaler_path = model_dir / f"{stem}_scaler.pkl"
-    meta_json_path = model_dir / f"{stem}.json"
-    meta_jbl_path = model_dir / f"{stem}_meta.pkl"
-
-    # save model and scaler
-    joblib.dump(clf, model_path, compress=3)
-    joblib.dump(scaler, scaler_path, compress=3)
-
-    
-    meta = {
-        "model_name": model_name,
-        "n_weeks": n_weeks,
-        "feature_names": feature_names,
-        "saved_at": datetime.utcnow().isoformat() + "Z",
-        "hyperparams": clf.get_params(),
-        "notes": "Trained on test_simulations.csv",
+    models = {
+        "RF": RandomForestClassifier(
+            n_estimators=100,
+            max_depth=10,
+            random_state=42,
+            n_jobs=-1,
+        ),
     }
-    # write JSON and a joblib copy
-    with open(meta_json_path, "w") as fh:
-        json.dump(meta, fh, indent=2)
-    joblib.dump(meta, meta_jbl_path, compress=3)
 
-    print(f"Saved: {model_path.name}, {scaler_path.name}, {meta_json_path.name}")
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
 
-print("\nAll models trained and saved.")
+    for model_name, clf in models.items():
+        print(f"\nTraining model on full dataset: {model_name}")
+        clf.fit(X_scaled, y)
 
-# Prediction helper
+        stem = f"ML_{N_WEEKS}weeks_{model_name}"
+        model_path = model_dir / f"{stem}.pkl"
+        scaler_path = model_dir / f"{stem}_scaler.pkl"
+        meta_json_path = model_dir / f"{stem}.json"
+        meta_jbl_path = model_dir / f"{stem}_meta.pkl"
 
-def predict_pmo(model_name: str, week_1: float, week_2: float, week_3:float, week_4:float, week_5,threshold: float = 0.5):
+        joblib.dump(clf, model_path, compress=3)
+        joblib.dump(scaler, scaler_path, compress=3)
+
+        meta = {
+            "model_name": model_name,
+            "n_weeks": N_WEEKS,
+            "feature_names": FEATURE_NAMES,
+            "saved_at": datetime.utcnow().isoformat() + "Z",
+            "hyperparams": clf.get_params(),
+            "notes": "Trained on test_simulations.csv",
+        }
+        with open(meta_json_path, "w") as fh:
+            json.dump(meta, fh, indent=2)
+        joblib.dump(meta, meta_jbl_path, compress=3)
+
+        print(f"Saved: {model_path.name}, {scaler_path.name}, {meta_json_path.name}")
+
+    print("\nAll models trained and saved.")
+
+
+def predict_pmo(model_name: str, week_1: float, week_2: float, week_3: float, week_4: float, week_5: float, threshold: float = 0.5, model_dir: Path = MODEL_DIR):
     """
     Load model and scaler for model_name (e.g. "RF") and predict PMO probability + class + label.
     Returns dict with keys: model, probability, PMO (0/1), predicted_label ("major"/"minor")
     """
-    stem = f"ML_{n_weeks}weeks_{model_name}"
+    model_dir = Path(model_dir)
+    stem = f"ML_{N_WEEKS}weeks_{model_name}"
     model_path = model_dir / f"{stem}.pkl"
     scaler_path = model_dir / f"{stem}_scaler.pkl"
 
@@ -101,9 +96,7 @@ def predict_pmo(model_name: str, week_1: float, week_2: float, week_3:float, wee
     X_new = np.array([[float(week_1), float(week_2), float(week_3), float(week_4), float(week_5)]])
     X_new_scaled = scaler.transform(X_new)
 
-
     proba = model.predict_proba(X_new_scaled)[:, 1][0]
-  
 
     pred = int(proba >= threshold)
     pred_label = "major" if pred == 1 else "minor"
@@ -114,3 +107,16 @@ def predict_pmo(model_name: str, week_1: float, week_2: float, week_3:float, wee
         "PMO": pred,
         "predicted_label": pred_label,
     }
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="Train RF PMO classifier on 5-week-ahead simulated data.")
+    parser.add_argument("--data", type=str, default=DEFAULT_DATA_PATH, help=f"Input simulations CSV (default: {DEFAULT_DATA_PATH})")
+    parser.add_argument("--model-dir", type=str, default=str(MODEL_DIR), help="Directory to write trained models (default: package's models_5weeks directory)")
+    args = parser.parse_args(argv)
+
+    train(data_path=args.data, model_dir=Path(args.model_dir))
+
+
+if __name__ == "__main__":
+    main()

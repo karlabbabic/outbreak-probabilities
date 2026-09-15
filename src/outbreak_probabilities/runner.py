@@ -156,7 +156,7 @@ def main():
     )
 
     # ---------- match ----------
-    match_p = sub.add_parser("match")
+    match_p = sub.add_parser("match", help="Find and plot trajectories matching an observed sequence")
     match_p.add_argument(
         "--sim-csv",
         default="data/test_simulations.csv",
