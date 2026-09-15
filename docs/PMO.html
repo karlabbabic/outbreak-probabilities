@@ -822,8 +822,8 @@ async function lookupPMO() {
     resultCard.classList.add("is-visible");
 
     try {
-        const response = await fetch("./pmo_comparison.json", { cache: "no-store" });
-        if (!response.ok) throw new Error(`Unable to load pmo_comparison.json: ${response.statusText}`);
+        const response = await fetch("./prediction_grid_comparison.json", { cache: "no-store" });
+        if (!response.ok) throw new Error(`Unable to load prediction_grid_comparison.json: ${response.statusText}`);
 
         const data = await response.json();
         const entry = data.results ? data.results[key] : undefined;
