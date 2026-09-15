@@ -293,6 +293,66 @@
     border-radius: 4px;
   }
 
+
+  /* Approaches dropdown */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    font: inherit;
+    cursor: pointer;
+    margin: 0;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 220px;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-soft);
+    z-index: 1000;
+  }
+
+  .dropdown-menu a {
+    display: block;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .dropdown-menu a:hover,
+  .dropdown-menu a:focus-visible {
+    background: var(--soft);
+    color: var(--primary);
+    outline: none;
+  }
+
+  .dropdown:hover .dropdown-menu,
+  .dropdown:focus-within .dropdown-menu,
+  .dropdown.open .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown:hover .dropdown-btn,
+  .dropdown:focus-within .dropdown-btn {
+    background: var(--soft);
+    border-color: #c6d3df;
+    transform: translateY(-2px);
+  }
+
   @media (max-width: 860px) {
     .grid {
       grid-template-columns: 1fr;
@@ -353,7 +413,6 @@
     margin: 0;
     color: rgba(29, 17, 89, 0.8);
 }
-  }
 </style>
  
 </head>
@@ -361,17 +420,32 @@
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <div>
+      <a class="brand"  aria-label="PMO Tools home">
         <div class="site-brand">PMO Tools</div>
         <div class="site-tagline">Predicting the future.</div>
-      </div>
+      </a>
     </div>
 
     <nav class="site-nav" aria-label="Primary">
       <a href="index.html" class="navblock">Home</a>
-      <a href="approaches.html" class="navblock active">Approaches</a>
-      <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
-      <a href="trajapproach.html" class="navblock">Trajectory Approach</a>
+
+      <div class="dropdown">
+    <button
+      class="navblock dropdown-btn"
+      type="button"
+      aria-haspopup="true"
+      aria-expanded="false">
+      Approaches ▾
+    </button>
+
+        <div class="dropdown-menu">
+          <a href="approaches.html">Approaches</a>
+          <a href="Analyticalmeth.html">Analytical</a>
+          <a href="Trajectorymeth.html">Trajectory</a>
+          <a href="ML.html">Machine Learning</a>
+        </div>
+      </div>
+
       <a href="PMO.html" class="navblock">PMO Comparison</a>
       <a href="Additional.html" class="navblock">Additional Resources</a>
     </nav>
@@ -483,3 +557,53 @@ observations. </p>
   </section>
 </main>
 
+
+  <script>
+    (function () {
+      const dropdowns = document.querySelectorAll('.dropdown');
+
+      dropdowns.forEach(function (dropdown) {
+        const button = dropdown.querySelector('.dropdown-btn');
+        if (!button) return;
+
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+
+          const willOpen = !dropdown.classList.contains('open');
+
+          dropdowns.forEach(function (other) {
+            other.classList.remove('open');
+            const otherButton = other.querySelector('.dropdown-btn');
+            if (otherButton) {
+              otherButton.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          dropdown.classList.toggle('open', willOpen);
+          button.setAttribute('aria-expanded', String(willOpen));
+        });
+
+        dropdown.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+            button.focus();
+          }
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.dropdown')) {
+          dropdowns.forEach(function (dropdown) {
+            dropdown.classList.remove('open');
+            const button = dropdown.querySelector('.dropdown-btn');
+            if (button) {
+              button.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

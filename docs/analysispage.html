@@ -1,7 +1,4 @@
-
 <!DOCTYPE html>
-
-<!DOCTYPE html> 
 
 <html lang="en">
 <head>
@@ -12,244 +9,224 @@
   <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 
-  <style>
-    :root {
+<style>
+  :root {
+    /* Core palette */
+    --bg: #002147;              /* Oxford blue */
+    --bg-2: #ffffff;           /* Deep navy */
+    --panel: #f4f6f9;          /* Light grey */
+    --panel-strong: #ffffff;   /* White */
+    --primary: #1d7a73;        /* Green accent */
+    --primary-hover: #165f5a;  /* Green hover */
+    --text: #183153;           /* Dark blue text */
+    --text-dark: #081a33;      /* Extra-deep blue */
+    --text-inverse: #f8fbff;   /* Near-white text */
+    --muted: #617287;          /* Muted slate */
+    --border: #d8e2eb;        /* Soft border */
+    --radius: 18px;
 
-      --bg: #f4f6f9;
-      --panel: #ffffff;
-      --primary: #1d7a73;
-      --primary-hover: #165f5a;
-      --accent: #edf7f6;
-      --text: #22354d;
-      --muted: #667788;
-      --border: #d8e1ea;
-      --radius: 18px;
-      --title-bg: linear-gradient(135deg, #edf3fb, #f8fbff);
-      --nav-bg: rgba(255, 255, 255, 0.88);
-      --slider-track: #d7e3ea;
-      --slider-fill: #1d7a73;
-    }
+    /* UI surfaces */
+    --title-bg: linear-gradient(135deg, #ffffff, #f4f6f9);
+    --nav-bg: rgba(0, 33, 71, 0.756);
+    --soft: #eef4f8;
+    --soft-2: #e6f3f1;
 
-    * {
-      box-sizing: border-box;
-    }
+    /* Shadows */
+    --shadow: 0 15px 40px rgba(2, 14, 30, 0.18);
+    --shadow-soft: 0 8px 20px rgba(2, 14, 30, 0.08);
+  }
 
-      --bg: #f7f7f8;
-      --panel: #ffffff;
-      --border: #d9d9e3;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --radius: 10px;
-    }
+  * {
+    box-sizing: border-box;
+  }
 
-    * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    line-height: 1.6;
+    padding-bottom: 60px;
+  }
 
+  .site-header {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.18);
+  }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 20px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-      background: linear-gradient(180deg, #f7f9fc 0%, #eef3f8 100%);
-      color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 60px;
-    }
+  .site-brand {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-inverse);
+    letter-spacing: -0.02em;
+  }
 
-    .site-header {
-      width: 100%;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: var(--nav-bg);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #e5eaf0;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-    }
+  .site-tagline {
+    margin-top: 6px;
+    font-size: 16px;
+    color: rgba(248, 251, 255, 0.78);
+  }
 
-    .header-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 18px 20px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  .site-nav {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    padding: 0 20px 18px;
+    flex-wrap: wrap;
+  }
 
-    .site-brand {
-      font-size: 34px;
-      font-weight: 700;
-      color: #183153;
-      letter-spacing: -0.02em;
-    }
+  .navblock {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 12px 24px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(2, 14, 30, 0.10);
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
 
-    .site-tagline {
-      margin-top: 6px;
-      font-size: 16px;
-      color: var(--muted);
-    }
+  .navblock:hover,
+  .navblock:focus-visible {
+    background: var(--soft);
+    border-color: #c6d3df;
+    transform: translateY(-2px);
+    outline: none;
+  }
 
-    .site-nav {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      padding: 0 20px 18px;
-      flex-wrap: wrap;
-    }
+  .navblock.active {
+    background: var(--soft-2);
+    color: var(--primary);
+    border-color: rgba(29, 122, 115, 0.25);
+  }
 
-    .navblock {
-      display: inline-block;
-      background: #ffffff;
-      padding: 12px 24px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      text-decoration: none;
-      color: #23354c;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
-    }
+  main {
+    max-width: 1100px;
+    margin: 28px auto 0;
+    padding: 0 20px;
+  }
 
-    .navblock:hover,
-    .navblock:focus-visible {
-      background: #eef7f8;
-      transform: translateY(-2px);
-      outline: none;
-    }
+  .app-card {
+    background: var(--panel-strong);
+    padding: 40px;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
 
-    .navblock.active {
-      background: #e8f5f5;
-      color: #1d7a73;
-    }
+  .title-banner {
+    background: var(--title-bg);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 26px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+  }
 
-    main {
-      max-width: 1100px;
-      margin: 28px auto 0;
-      padding: 0 20px;
-      font-family: inherit;
-    }
+  .title-banner h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
 
-    .app-card {
-      background: white;
-      padding: 40px;
-      border-radius: 22px;
-      border: 1px solid var(--border);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-    }
+  .title-banner p {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 900px;
+  }
 
-    .title-banner {
-      background: var(--title-bg);
-      border-radius: 18px;
-      padding: 24px;
-      margin-bottom: 25px;
-      border: 1px solid var(--border);
-      box-shadow: 0 8px 20px rgba(15, 35, 70, 0.05);
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+    margin-top: 22px;
+  }
 
-    .title-banner h1 {
-      margin: 0;
-      font-size: 46px;
-      color: #17345b;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-    }
+  .section-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(2, 14, 30, 0.05);
+  }
 
-    .intro {
-      margin-top: 12px;
-      margin-bottom: 24px;
-      color: var(--muted);
-      max-width: 900px;
-      font-size: 18px;
+  .section-card h2 {
+    margin: 0 0 12px;
+    font-size: 1.35rem;
+    color: var(--text);
+    border-bottom: 2px solid #dee6ee;
+    padding-bottom: 8px;
+  }
 
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-    }
+  .section-card h3 {
+    margin: 18px 0 10px;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
 
-    main {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
+  p {
+    margin: 0 0 12px;
+  }
 
-    .app-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    }
+  .muted {
+    color: var(--muted);
+  }
 
-    h1 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-size: 2rem;
-      line-height: 1.2;
-    }
+  .formula {
+    background: #f8fbff;
+    border: 1px solid #dde6ef;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    color: #ffffff;
+    margin: 12px 0;
+  }
 
-    .intro {
-      margin-top: 0;
-      margin-bottom: 24px;
-      color: var(--muted);
+  .highlight {
+    background: #edf7f6;
+    border-left: 4px solid var(--primary);
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin: 14px 0;
+  }
 
-    }
+  .content-list {
+    margin: 0;
+    padding-left: 20px;
+  }
 
-    .control-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+  .content-list li {
+    margin: 8px 0;
+  }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-
-    label {
-      font-weight: 600;
-      color: #1f2937;
-    }
-=======
-    label { font-weight: 600; }
-
-
-    input[type="range"] {
-      width: 100%;
-      cursor: pointer;
-
-      accent-color: var(--primary);
-=======
-
-    }
-
-    .range-value {
-      font-size: 0.95rem;
-      color: var(--muted);
-    }
-
-    textarea,
-    output {
-      width: 100%;
-      border: 1px solid var(--border);
-
-      border-radius: 12px;
-=======
-      border-radius: var(--radius);
-
-      padding: 12px;
-      font: inherit;
-      background: #fff;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 76px;
-    }
+  .link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+  }
 
     button {
       background: var(--primary);
@@ -293,120 +270,240 @@
 
     }
 
-    .output-section {
-      margin-top: 28px;
-      display: grid;
+  .small-box {
+    background: #fafcff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .small-box strong {
+    color: var(--text);
+  }
+
+  footer {
+    margin-top: 24px;
+    text-align: center;
+    color: rgba(248, 251, 255, 0.72);
+    font-size: 0.95rem;
+  }
+
+  code {
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+
+
+  /* PMO calculator controls */
+  .control-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 22px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 650;
+    color: var(--text);
+  }
+
+  .week-selector {
+    width: 100%;
+    padding: 12px 42px 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(2, 14, 30, 0.06);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .week-selector:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(29, 122, 115, 0.12);
+  }
+
+  .range-input {
+    width: 100%;
+    accent-color: var(--primary);
+  }
+
+  .range-value {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    resize: vertical;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(29, 122, 115, 0.12);
+  }
+
+  #compute-pmo-button {
+    margin-top: 4px;
+  }
+
+  .output-section {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .output-section output {
+    display: block;
+    min-height: 48px;
+    padding: 12px 14px;
+    background: #f8fbff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+  }
+
+  .plot-container {
+    width: 100%;
+    min-height: 360px;
+    margin-top: 10px;
+    padding: 16px;
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #pmo-plot-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  #pmo-plot-placeholder {
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .notes {
+    margin-top: 24px;
+    padding: 18px 20px;
+    background: var(--soft);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+  }
+
+  @media (max-width: 860px) {
+    .grid {
       grid-template-columns: 1fr;
-      gap: 20px;
+    }
+  }
 
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
+  @media (max-width: 720px) {
+    .header-inner {
+      padding-top: 14px;
+      padding-bottom: 10px;
     }
 
-    .output-section h2 {
-      margin: 0;
-      color: #0f2346;
-      font-size: 1.45rem;
-      border-bottom: 2px solid #dbe3ea;
-      padding-bottom: 8px;
-
+    .site-brand {
+      font-size: 24px;
     }
 
-    #pmo-result-output {
-      min-height: 96px;
-      white-space: pre-wrap;
-      display: block;
-      color: var(--text);
+    .app-card {
+      padding: 22px;
     }
 
-    .plot-container {
-      border: 1px dashed var(--border);
-
-      border-radius: 14px;
-
-      border-radius: var(--radius);
-
-      min-height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fafafa;
-      overflow: hidden;
-    }
-    .highlight {
-      background: #edf7f6;
-      border-left: 4px solid var(--primary);
-      padding: 14px 16px;
-      border-radius: 12px;
-      margin: 14px 0;
-    }
-    #pmo-plot-image {
-      max-width: 100%;
-      height: auto;
-      display: none;
+    .title-banner h1 {
+      font-size: 1.7rem;
     }
 
-    #pmo-plot-placeholder {
-      color: var(--muted);
-      text-align: center;
-      padding: 20px;
+    .title-banner p {
+      font-size: 0.98rem;
     }
+    .site-footer {
+    background: var(--nav-bg);   /* Same colour as the PMO Tools header */
+    color: var(--text-inverse);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    margin-top: 50px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+}
 
-    .notes {
-      margin-top: 28px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
+.footer-left,
+.footer-right {
+    width: 120px;
+}
 
-    code {
-      background: #eef2ff;
-      color: #3730a3;
-      padding: 2px 5px;
-      border-radius: 4px;
-    }
+.footer-left img,
+.footer-right img {
+    max-width: 100%;
+    height: 70px;
+    object-fit: contain;
+}
 
-    @media (max-width: 720px) {
+.footer-centre {
+    flex: 1;
+    text-align: center;
+    font-size: 0.95rem;
+}
 
-      .header-inner {
-        padding-top: 14px;
-        padding-bottom: 10px;
-      }
+.footer-centre p {
+    margin: 0;
+    color: rgba(29, 17, 89, 0.8);
+}
+  }
 
-      .site-brand {
-        font-size: 24px;
-      }
+  <nav class="site-nav" aria-label="Primary">
 
-      .control-row {
-        grid-template-columns: 1fr;
-      }
+  <div class="dropdown">
+    <button class="navblock dropdown-btn" type="button">
+      Approaches ▾
+    </button>
 
-      main {
-        margin-top: 18px;
-      }
+    <div class="dropdown-content">
+      <a href="Analytical.html">Analytical</a>
+      <a href="Trajectorymeth.html">Trajectory</a>
+      <a href="ML.html">Machine Learning</a>
+    </div>
+  </div>
 
-      .app-card {
-        padding: 22px;
-      }
+  <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+  <a href="Analysispage.html" class="navblock active">PMO calculator</a>
+  <a href="PMO.html" class="navblock">PMO Comparison</a>
+  <a href="Additional.html" class="navblock">Additional Resources</a>
 
-      .title-banner {
-        padding: 18px;
-      }
+</nav>
+</style>
 
-      .title-banner h1 {
-        font-size: 1.6rem;
-      }
-
-      .intro {
-        font-size: 16px;
-      }
-=======
-      .control-row { grid-template-columns: 1fr; }
-      main { margin: 24px auto; }
-      .app-card { padding: 20px; }
-    }
-  </style>
 </head>
 
 <body>
@@ -417,46 +514,63 @@
         <div class="site-tagline">Predicting the future.</div>
       </div>
     </div>
+<nav class="site-nav" aria-label="Primary">
 
-    <nav class="site-nav" aria-label="Primary">
-      <a href="index.html" class="navblock">Home</a>
-      <a href="calculator.html" class="navblock active">PMO Calculator</a>
-      <a href="approaches.html" class="navblock">Approaches</a>
-    </nav>
+  <div class="dropdown">
+    <button class="navblock dropdown-btn" type="button">
+      Approaches ▾
+    </button>
+
+    <div class="dropdown-content">
+      <a href="Analytical.html">Analytical</a>
+      <a href="Trajectorymeth.html">Trajectory</a>
+      <a href="ML.html">Machine Learning</a>
+    </div>
+  </div>
+
+  <a href="Analyticalmeth.html" class="navblock">Analytical method</a>
+  <a href="Analysispage.html" class="navblock active">PMO calculator</a>
+  <a href="PMO.html" class="navblock">PMO Comparison</a>
+  <a href="Additional.html" class="navblock">Additional Resources</a>
+
+</nav>
   </header>
 
   <main>
     <section class="app-card" aria-labelledby="app-title">
       <div class="title-banner">
         <h1 id="app-title">PMO calculator — weekly early data</h1>
-        <p> The following page provides a PMO calculator based on the analytical approach. </p>
+        <p>The following page provides a PMO calculator based on the analytical approach outligned within the approaches section or in the analytical in depth description pages.</p>
       </div>
-  <main>
-    <section class="app-card" aria-labelledby="app-title">
-      <p class="intro" id="app-description">
-        <h2>Instructions </h2>
-        <p>
-          Enter how many weeks you will provide and paste the observed counts as
-        comma-separated integers. Example: <code>1,2,0</code> for weeks 1..3.</div>
-      </p>
+
+      <section aria-labelledby="instructions-title">
+        <h2 id="instructions-title">Instructions</h2>
+        <section class="highlight">
+          <p><strong>Note:</strong> This calculator is designed for early outbreak data, typically within the first 1–8 weeks of an outbreak.</p>
+        </section>
+     
 
       <form id="pmo-form">
         <div class="control-row">
           <div class="field">
             <label for="n-weeks-slider">Number of weeks</label>
-            <input
+            <select
               id="n-weeks-slider"
               name="n_weeks"
-              type="range"
-              min="1"
-              max="12"
-              step="1"
-              value="3"
+              class="week-selector"
               py-input="update_n_weeks_value"
-            />
+            >
+              <option value="1">1 week</option>
+              <option value="2">2 weeks</option>
+              <option value="3" selected>3 weeks</option>
+              <option value="4">4 weeks</option>
+              <option value="5">5 weeks</option>
+              <option value="6">6 weeks</option>
+              <option value="7">7 weeks</option>
+              <option value="8">8 weeks</option>
+            </select>
             <div class="range-value">
-              Selected:
-              <span id="n-weeks-value">3</span>
+              Selected: <span id="n-weeks-value">3</span>
             </div>
           </div>
 
@@ -464,6 +578,7 @@
             <label for="r-grid-slider">R-grid points</label>
             <input
               id="r-grid-slider"
+              class="range-input"
               name="nR"
               type="range"
               min="500"
@@ -515,10 +630,10 @@
           <div id="pmo-plot-container" class="plot-container">
             <img
               id="pmo-plot-image"
-              alt="PMO conditional on R and posterior density plot"
+              "
             />
             <div id="pmo-plot-placeholder">
-              Plot will appear here after computation.
+              
             </div>
           </div>
         </div>
@@ -534,7 +649,5 @@
     </section>
   </main>
 
-  <script type="py" src="./analyticalcalc.py" config="./pyscript.json"></script>
+  <script type="py" src="../src/outbreak_probabilities/analytic/analyticalcalc.py" config="./pyscript.json"></script>
 </body>
-
-</html>
