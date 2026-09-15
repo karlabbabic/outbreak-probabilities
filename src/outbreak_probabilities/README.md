@@ -16,6 +16,7 @@ It holds the following folders:
 
 ```
 pip install outbreak-probabilities
+pip install -i https://test.pypi.org/simple/ outbreak-probabilities
 ```
 
 or, for local development from a checkout of this repo:
