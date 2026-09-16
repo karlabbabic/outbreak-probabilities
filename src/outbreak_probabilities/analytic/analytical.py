@@ -275,13 +275,13 @@ def compute_pmo(event=None):
             R_min=R_MIN,
             R_max=R_MAX,
         )
-
+    
         print("PMO =", PMO_val)
-        set_text("pmo-value-output", str(PMO_val))
+        set_text("pmo-value-output", f"{PMO_val:.3f}")
 
         result_text = (
             f"Observed sequence: {counts}\n"
-            f"Estimated PMO integrated over R in [{R_MIN:g}, {R_MAX:g}] = {PMO_val:.6f}\n"
+            f"Estimated PMO integrated over R in [{R_MIN:g}, {R_MAX:g}] = {PMO_val:.3f}\n"
             f"Number of weeks: {n_weeks}\n"
             f"R-grid points: {nR}"
         )
