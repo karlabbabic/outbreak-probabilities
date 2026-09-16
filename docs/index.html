@@ -166,7 +166,7 @@
 
     .intro-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3 minmax(0, 1fr));
       gap: 12px;
       margin-top: 4px;
     }
@@ -735,7 +735,7 @@
     <div class="dropdown-menu">
       <a href="approaches.html">Approaches</a>
       <a href="Analyticalmeth.html">Analytical</a>
-      <a href="Trajectorymeth.html">Trajectory</a>
+      <a href="trajapproach.html">Trajectory</a>
       <a href="ML.html">Machine Learning</a>
     </div>
 
@@ -784,14 +784,14 @@
             <div class="week-header">
               <div>
                 <h2 id="weeks-title" class="section-heading">Number of weeks</h2>
-                <p class="helper">Choose between 1 and 3 weeks.</p>
+                <p class="helper">Choose between 1 and 8 weeks.</p>
               </div>
-              <output id="n-weeks-value" class="week-value" aria-live="polite">3 weeks</output>
+              <output id="n-weeks-value" class="week-value" aria-live="polite">8 weeks</output>
             </div>
-            <label class="sr-only" for="n-weeks-slider">Number of weeks, from 1 to 3</label>
+            <label class="sr-only" for="n-weeks-slider">Number of weeks, from 1 to 8</label>
             <div class="slider-wrap">
-              <input id="n-weeks-slider" name="n_weeks" class="week-slider" type="range" min="1" max="3" step="1" value="3" aria-describedby="weeks-help" />
-              <div class="slider-labels" aria-hidden="true"><span>1</span><span>3</span></div>
+              <input id="n-weeks-slider" name="n_weeks" class="week-slider" type="range" min="1" max="8" step="1" value="8" aria-describedby="weeks-help" />
+              <div class="slider-labels" aria-hidden="true"><span>1</span><span>8</span></div>
             </div>
             <p id="weeks-help" class="slider-hint">Drag the slider or use the left and right arrow keys. Each step changes the selection by one week.</p>
           </section>
@@ -815,7 +815,7 @@
               >1,2,0</textarea>
               <div class="counts-example" aria-hidden="true">Example: 1, 2, 0</div>
             </div>
-            <p id="counts-help" class="helper">Enter one non-negative case count for each week, in order. For 3 weeks, enter <strong>1, 2, 0</strong>.</p>
+            <p id="counts-help" class="helper">Enter one non-negative case count for each week, in order. For 8 weeks, enter <strong>1, 2, 0</strong>.</p>
           </div>
 
           <div class="compute-row">
