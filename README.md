@@ -6,7 +6,7 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
   <summary>Table of Contents</summary>
 
   <ol>
-    <li><a href="#to-do">To-Do</a></li>
+    <li><a href="#installation">Installation</a></li>
     <li>
       <a href="#set-up">Set-up</a>
       <ul>
@@ -27,13 +27,21 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
 </details>
 
 <!-- explicit headings with ids to ensure anchors always work -->
-<h2 id="to-do">To-Do</h2>
+<h2 id="installation">Installation</h2>
 
-- Simulate – done  
-- Analytic – upload the cell in rough-work collab to GitHub without the sliders (input params)  
-- ML – done
-- Write unit tests (ask Matthew) to cover as many lines as you can
-- Notebook has all 
+Install the package from TestPyPI:
+
+```
+pip install -i https://test.pypi.org/simple/ outbreak-probabilities==1.0.1
+```
+
+For full documentation of every CLI command, its options, and worked examples — including how to run a simulation — see [`src/outbreak_probabilities/README.md`](src/outbreak_probabilities/README.md). The README in each sub-package folder (`simulate`, `analytic`, `trajectory_matching`, `machine_learning`) documents that method in more detail:
+
+- [`src/outbreak_probabilities/simulate/README.md`](src/outbreak_probabilities/simulate/README.md) — simulating trajectories
+- [`src/outbreak_probabilities/analytic/README.md`](src/outbreak_probabilities/analytic/README.md) — the analytic solution
+- [`src/outbreak_probabilities/trajectory_matching/README.md`](src/outbreak_probabilities/trajectory_matching/README.md) — trajectory matching
+- [`src/outbreak_probabilities/machine_learning/README.md`](src/outbreak_probabilities/machine_learning/README.md) — the machine-learning models
+
 <h2 id="set-up">Set-up</h2>
 
 <h3 id="continuous-integration">Continuous Integration</h3>
