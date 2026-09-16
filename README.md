@@ -6,6 +6,7 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
   <summary>Table of Contents</summary>
 
   <ol>
+    <li><a href="#project-site">Project Site</a></li>
     <li><a href="#installation">Installation</a></li>
     <li>
       <a href="#set-up">Set-up</a>
@@ -27,6 +28,10 @@ DTC Sandpit Challenge: methods for estimating the probability of a major outbrea
 </details>
 
 <!-- explicit headings with ids to ensure anchors always work -->
+<h2 id="project-site">Project Site</h2>
+
+For an overview of the project and an interactive calculator, visit the GitHub Pages site: https://karlabbabic.github.io/outbreak-probabilities/
+
 <h2 id="installation">Installation</h2>
 
 Install the package from TestPyPI:
@@ -35,7 +40,7 @@ Install the package from TestPyPI:
 pip install -i https://test.pypi.org/simple/ outbreak-probabilities==1.0.1
 ```
 
-For full documentation of every CLI command, its options, and worked examples and how to run a simulation, see [`src/outbreak_probabilities/README.md`](src/outbreak_probabilities/README.md). The README in each sub-package folder (`simulate`, `analytic`, `trajectory_matching`, `machine_learning`) documents that method in more detail:
+For full documentation of every CLI command, its options, and worked examples see [`src/outbreak_probabilities/README.md`](src/outbreak_probabilities/README.md). The README in each sub-package folder (`simulate`, `analytic`, `trajectory_matching`, `machine_learning`) documents that method in more detail:
 
 - [`src/outbreak_probabilities/simulate/README.md`](src/outbreak_probabilities/simulate/README.md) — simulating trajectories
 - [`src/outbreak_probabilities/analytic/README.md`](src/outbreak_probabilities/analytic/README.md) — the analytic solution
@@ -69,7 +74,7 @@ For full documentation of every CLI command, its options, and worked examples an
 <h3 id="method-1-analytic-solution">Method 1: Analytic Solution</h3>
 
 **Input:**  
-- the first `k` days' worth of simulated infection data from `simulated_cases.csv`  
+- the first `k` days worth of simulated infection data from `simulated_cases.csv`  
 - estimated range for the reproduction number
 
 **Output:**  
@@ -79,7 +84,7 @@ For full documentation of every CLI command, its options, and worked examples an
 - Overall outbreak probability: `(conditional probability) × (outbreak probability given reproduction number)`
 
 **What to do:**  
-1. Numerically compute the integral for the serial interval distribution. 
+1. Numerically compute the integral for the serial interval distribution  
 2. Compute the expected number of new cases
 
 <h3 id="method-2-trajectory-matching">Method 2: Trajectory Matching</h3>
