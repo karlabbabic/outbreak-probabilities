@@ -488,8 +488,8 @@
 
         <h3>Output</h3>
         <ul class="content-list">
-          <li>Conditional probability <code>P([I1, I2, I3] | R)</code></li>
-          <li>Outbreak probability given first three cases <code>P(PMO | [I1, I2, I3])</code></li>
+          <li>Conditional probability <code>P({I1, I2, I3} | R)</code></li>
+          <li>Outbreak probability given first three cases <code>P(PMO | {I1, I2, I3})</code></li>
           <li>Outbreak probability given reproduction number <code>P(PMO | R)</code></li>
           <li>Overall outbreak probability</li>
         </ul>
@@ -542,8 +542,8 @@ Overall outbreak probability = conditional probability × outbreak probability g
         <p>
           This approach uses a trained model to learn the relationship between early case
           patterns and the probability of a major outbreak.
-          here the first three weeksof incidence [I1 I2 I3] are taken as predictors and the outcome (major or minor outbreak) as the response. We
-train random forest classifiers, with the trainingset size ranging from 1 up to 1,000,000
+          Here the first three weeks of incidence, {I1, I2, I3}, are taken as predictors and the outcome (major or minor outbreak) as the response. We
+train random forest classifiers, with the training set size ranging from 1 up to 1,000,000
 observations. </p>
         </div>
 

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PMO Tools — Machine Learning</title>
+  <style>
+    :root {
+      --bg: #002147;
+      --bg-2: #ffffff;
+      --panel: #f4f6f9;
+      --panel-strong: #ffffff;
+      --primary: #1d7a73;
+      --primary-hover: #165f5a;
+      --text: #183153;
+      --text-dark: #081a33;
+      --text-inverse: #f8fbff;
+      --muted: #617287;
+      --border: #d8e2eb;
+      --radius: 18px;
+      --nav-bg: rgba(0, 33, 71, 0.756);
+      --soft: #eef4f8;
+      --soft-2: #e6f3f1;
+      --shadow: 0 15px 40px rgba(2, 14, 30, 0.18);
+      --shadow-soft: 0 8px 20px rgba(2, 14, 30, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    a { color: inherit; }
+
+    .site-header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      min-width: 0;
+    }
+
+    .site-brand {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--text-inverse);
+      letter-spacing: -0.02em;
+    }
+
+    .site-tagline {
+      margin-top: 6px;
+      font-size: 16px;
+      color: rgba(248, 251, 255, 0.78);
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      padding: 0 20px 18px;
+      flex-wrap: wrap;
+    }
+
+    .navblock,
+    .dropdown-btn {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(2, 14, 30, 0.10);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .navblock:hover,
+    .dropdown-btn:hover,
+    .navblock:focus-visible,
+    .dropdown-btn:focus-visible {
+      background: var(--soft);
+      border-color: #c6d3df;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .navblock.active {
+      background: var(--soft-2);
+      color: var(--primary);
+      border-color: rgba(29, 122, 115, 0.25);
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 220px;
+      padding: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(2, 14, 30, 0.08);
+      z-index: 1000;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu a:hover,
+    .dropdown-menu a:focus-visible {
+      background: #eef4f8;
+      color: var(--primary);
+      outline: none;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu,
+    .dropdown.open .dropdown-menu {
+      display: block;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      padding: 0 20px;
+    }
+
+    .app-card {
+      background: var(--panel-strong);
+      padding: 40px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .title-banner {
+      background: linear-gradient(135deg, #ffffff, #f4f6f9);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 26px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .title-banner h1 {
+      margin: 0;
+      font-size: 2.4rem;
+      color: var(--text);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .title-banner p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      margin-top: 22px;
+    }
+
+    .section-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 20px rgba(2, 14, 30, 0.05);
+    }
+
+    .section-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      color: var(--text);
+      border-bottom: 2px solid #dee6ee;
+      padding-bottom: 8px;
+    }
+
+    .section-card h3 {
+      margin: 18px 0 10px;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    ul {
+      margin: 0 0 12px 18px;
+      padding-left: 16px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .formula {
+      background: #f8fbff;
+      border: 1px solid #dde6ef;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      color: #1d3557;
+      margin: 12px 0;
+    }
+
+    .highlight {
+      background: #edf7f6;
+      border-left: 4px solid var(--primary);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin: 14px 0;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      margin-top: 18px;
+    }
+
+    .image-card {
+      background: #fafcff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(2, 14, 30, 0.04);
+      max-width: 980px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .image-card img {
+      display: block;
+      width: 100%;
+      max-width: 920px;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #dfe7ef;
+      background: white;
+      margin: 0 auto;
+    }
+
+    .figure-title {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .image-card figcaption {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .button-link {
+      display: inline-block;
+      text-decoration: none;
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .button-link:hover,
+    .button-link:focus-visible {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        padding-top: 14px;
+        padding-bottom: 10px;
+      }
+
+      .site-brand {
+        font-size: 24px;
+      }
+
+      .app-card {
+        padding: 22px;
+      }
+
+      .title-banner h1 {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="PMO Tools home">
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </a>
+    </div>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="index.html" class="navblock">Home</a>
+
+      <div class="dropdown open">
+        <button class="navblock dropdown-btn" type="button" aria-haspopup="true" aria-expanded="true">
+          Approaches ▾
+        </button>
+        <div class="dropdown-menu">
+          <a href="approaches.html">Approaches</a>
+          <a href="Analyticalmeth.html">Analytical</a>
+          <a href="Trajectorymeth.html">Trajectory</a>
+          <a href="ML.html" class="active">Machine Learning</a>
+        </div>
+      </div>
+
+      <a href="PMO.html" class="navblock">PMO Comparison</a>
+      <a href="Additional.html" class="navblock">Additional Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="ml-title">
+      <div class="title-banner">
+        <h1 id="ml-title">Machine Learning approach</h1>
+        <p>
+          This approach learns the relationship between early outbreak patterns and the probability of a major outbreak.
+          The primary model is trained on the full simulated dataset and then used to predict outbreak risk from the initial case counts.
+        </p>
+      </div>
+
+      <section class="section-card" aria-labelledby="overview-title">
+        <h2 id="overview-title">Overview</h2>
+        <p>
+          The numbers of cases in each of first T weeks of the outbreak are used as predictors, while the outcome is whether the trajectory becomes a major outbreak.
+          The model is trained on the full simulated dataset and used to estimate outbreak probability from the observed early case pattern.
+        </p>
+
+        <div class="highlight">
+          The machine learning model is designed to approximate the same outbreak probability that is computed analytically and through trajectory matching, but from observed early data alone.
+        </div>
+
+        <h3>Input</h3>
+        <ul>
+          <li>Observed early weekly case counts, for example <code>{1, 2, 0}</code> or <code>{1, 3, 1}</code></li>
+          <li>Trained model(s) built from simulated outbreak trajectories</li>
+          <li>Standardised feature vectors that match the training pipeline</li>
+        </ul>
+
+        <h3>Output</h3>
+        <ul>
+          <li>Predicted probability of a major outbreak</li>
+          <li>Comparison against the analytical solution</li>
+          <li>Model convergence as the number of training simulations increases</li>
+        </ul>
+      </section>
+
+      <section class="section-card" aria-labelledby="convergence-title" style="margin-top: 24px;">
+        <h2 id="convergence-title">Convergence against the analytical solution</h2>
+        <p>
+          These figures show how the model behaves when it is trained on a range of dataset sizes, helping us assess how quickly the predictions converge toward the analytical outbreak probability.
+          Each example compares the model output against the analytical benchmark for a given early case pattern.
+        </p>
+
+        <div class="image-grid">
+          <figure class="image-card">
+            <div class="figure-title">Convergence for sample {1, 2, 0}</div>
+            <img src="102convergance.png" alt="Convergence plot for sample {1, 2, 0}" />
+            <figcaption>Sample {1, 2, 0}</figcaption>
+          </figure>
+
+          <figure class="image-card">
+            <div class="figure-title">Convergence for sample {1, 1, 0}</div>
+            <img src="110convergance.png" alt="Convergence plot for sample {1, 1, 0}" />
+            <figcaption>Sample {1, 1, 0}</figcaption>
+          </figure>
+
+          <figure class="image-card">
+            <div class="figure-title">Convergence for sample {1, 0, 0}</div>
+            <img src="111convergance.png" alt="Convergence plot for sample {1, 0, 0}" />
+            <figcaption>Sample {1, 0, 0}</figcaption>
+          </figure>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const dropdowns = document.querySelectorAll('.dropdown');
+
+      dropdowns.forEach(function (dropdown) {
+        const button = dropdown.querySelector('.dropdown-btn');
+        if (!button) return;
+
+        button.addEventListener('click', function (event) {
+          event.stopPropagation();
+
+          const willOpen = !dropdown.classList.contains('open');
+
+          dropdowns.forEach(function (other) {
+            other.classList.remove('open');
+            const otherButton = other.querySelector('.dropdown-btn');
+            if (otherButton) {
+              otherButton.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          dropdown.classList.toggle('open', willOpen);
+          button.setAttribute('aria-expanded', String(willOpen));
+        });
+
+        dropdown.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            dropdown.classList.remove('open');
+            button.setAttribute('aria-expanded', 'false');
+            button.focus();
+          }
+        });
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.dropdown')) {
+          dropdowns.forEach(function (dropdown) {
+            dropdown.classList.remove('open');
+            const button = dropdown.querySelector('.dropdown-btn');
+            if (button) {
+              button.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
