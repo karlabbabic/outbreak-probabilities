@@ -68,7 +68,7 @@ def set_button_busy(is_busy):
         button.textContent = "Computing..." if is_busy else "Compute PMO"
 
 
-def weekly_w(max_weeks=50, mean=MEAN_SI_DAYS, sd=SD_SI_DAYS):
+def weekly_w(max_weeks=10, mean=MEAN_SI_DAYS, sd=SD_SI_DAYS):
     shape = (mean / sd) ** 2
     scale = sd ** 2 / mean
 
