@@ -68,9 +68,9 @@ def main():
     sim_p.add_argument(
         "--max-weeks",
         type=int,
-        default=50,
+        default=100,
         metavar="WEEKS",
-        help="Simulation length in weeks (default: 50)",
+        help="Simulation length in weeks (default: 100)",
     )
     sim_p.add_argument(
         "--write-weeks",
