@@ -277,7 +277,7 @@ def compute_pmo(event=None):
         )
 
         print("PMO =", PMO_val)
-        set_text("pmo-value-output", str(PMO_val))
+        set_text("pmo-value-output", f"{PMO_val:.3f}")
 
         result_text = (
             f"Observed sequence: {counts}\n"

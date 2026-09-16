@@ -705,6 +705,22 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
+    .input-error {
+    margin: 10px 0 0;
+    padding: 12px 14px;
+    border: 1px solid #d88b8b;
+    border-left: 4px solid #b42318;
+    border-radius: 10px;
+    background: #fff4f2;
+    color: #8a1c13;
+    font-size: .92rem;
+    font-weight: 650;
+}
+
+.counts-entry textarea.input-invalid {
+    border-color: #b42318;
+    outline: 3px solid rgba(180, 35, 24, 0.12);
+}
   </style>
 </head>
 <body>
@@ -790,7 +806,7 @@
             </div>
             <label class="sr-only" for="n-weeks-slider">Number of weeks, from 1 to 8</label>
             <div class="slider-wrap">
-              <input id="n-weeks-slider" name="n_weeks" class="week-slider" type="range" min="1" max="8" step="1" value="8" aria-describedby="weeks-help" />
+              <input id="n-weeks-slider" name="n_weeks" class="week-slider" type="range" min="1" max="8" step="1" value="3"aria-describedby="weeks-help" />
               <div class="slider-labels" aria-hidden="true"><span>1</span><span>8</span></div>
             </div>
             <p id="weeks-help" class="slider-hint">Drag the slider or use the left and right arrow keys. Each step changes the selection by one week.</p>
@@ -817,7 +833,12 @@
             </div>
             <p id="counts-help" class="helper">Enter one non-negative case count for each week, in order. For 8 weeks, enter <strong>1, 2, 0</strong>.</p>
           </div>
-
+<p id="counts-error"
+   class="input-error"
+   role="alert"
+   aria-live="assertive"
+   hidden>
+</p>
           <div class="compute-row">
             <button id="compute-pmo-button" type="button" py-click="compute_pmo">Compute PMO</button>
           </div>
