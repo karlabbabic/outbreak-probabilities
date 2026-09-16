@@ -1,16 +1,16 @@
-This directory is the source of the package `outbreak_probabilities`.
+This directory contains the `outbreak_probabilities` package.
 
 It holds the following folders:
 
-`simulate`: simulate synthetic data using epidemiological model
+`simulate`: simulates synthetic data using an epidemiological model
 
 `analytic`: computes the analytic solution for the outbreak probability based on initial cases 
 
 `trajectory_matching`: selects trajectories based on identical matching to given observed data
 
-`machine_learning`: trains a ML model to classify trajectories on their outbreak probabilities
+`machine_learning`: trains an ML model to classify trajectories by their outbreak probabilities
 
-So far, there is CLI commands to simulate, plot, trajectory match, compare the PMO from trajectory matching and the analytic solution, predict using any of the ML models trained. Run these commands in the terminal. 
+So far, there are CLI commands to simulate, plot, trajectory match, compare the PMO from trajectory matching with the analytic solution, and predict using any trained ML model. Run these commands in the terminal. 
 
 In general, they are in the form `PYTHONPATH=src python -m outbreak_probabilities.runner [simulate,plot,match_trajectory,pmo_vs_r]`. This is so that when we turn this project into a package, it will be easy to transfer the commands, where we should be able to run it like `outbreak-probabilities [simulate,plot,match_trajectory,pmo_vs_r]`.
 
@@ -18,7 +18,7 @@ In general, they are in the form `PYTHONPATH=src python -m outbreak_probabilitie
 
 **1. Simulate**
 `PYTHONPATH=src python -m outbreak_probabilities.runner simulate`
-This generates synthetic outbreak data. The default settings are 1000 outbreaks with R drawn uniformly from 0, 10. 
+This generates synthetic outbreak data. By default, it generates 1000 outbreaks, with R drawn uniformly from 0 to 10. 
 
 Examples of extra options:
 `PYTHONPATH=src python -m outbreak_probabilities.runner simulate --N 100000 --seed 42 --out data/test_simulations_1M.csv`
@@ -26,7 +26,7 @@ Examples of extra options:
 **2. Plot**
 
 `PYTHONPATH=src python -m outbreak_probabilities.runner plot`
-This will plot the trajectories in some outbreak data. This is more for testing and checking to see that the paths are generatd.
+This plots trajectories from outbreak data. This is mainly for testing and checking that the paths are generated.
 
 Examples of extra options:
 PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simulations.csv --sample-strategy random
@@ -34,7 +34,7 @@ PYTHONPATH=src python -m outbreak_probabilities.runner plot --csv data/test_simu
 **3. Match trajectories**
 
 `PYTHONPATH=src python -m outbreak_probabilities.runner match`
-This will find all outbreaks with a specified initial condition (by default 1,2,3; where week 1 has 1 case, week 2 has 2 cases, week 3 has 3 cases) and extracts them.
+This finds all outbreaks with a specified initial condition (by default 1,2,3; where week 1 has 1 case, week 2 has 2 cases, and week 3 has 3 cases) and extracts them.
 
 Examples of extra options:
 `PYTHONPATH=src python -m outbreak_probabilities.runner match --initial-cases 1,2,0 --sample-strategy random --sample-size 10000`
@@ -50,13 +50,11 @@ Examples of extra options:
 
 `PYTHONPATH=src python -m outbreak_probabilities.runner pmo_vs_r --initial-cases 1,0`
 
-**5. List all available Machinge Leaning models**
+**5. List all available Machine Learning models**
 
 `PYTHONPATH=src python -m outbreak_probabilities.predict --list`
 
-
 **6. Predict PMO and probability using number of cases and model type (3 weeks of data)**
-
    
 `PYTHONPATH=src python -m outbreak_probabilities.predict --weeks 2 --model RF --week 2.1 --week 1.4`
 
