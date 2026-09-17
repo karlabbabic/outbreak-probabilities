@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Approach | PMO Tools</title>
+  <style>
+    :root { 
+      --bg: #002147;
+      --bg-2: #ffffff;
+      --panel-strong: #ffffff;
+      --primary: #1d7a73;
+      --primary-hover: #165f5a;
+      --text: #183153;
+      --text-dark: #081a33;
+      --text-inverse: #f8fbff;
+      --muted: #617287;
+      --border: #d8e2eb;
+      --nav-bg: rgba(0, 33, 71, 0.82);
+      --soft: #eef4f8;
+      --soft-2: #e6f3f1;
+      --title-bg: linear-gradient(135deg, #ffffff 0%, #f4f6f9 100%);
+      --accent-bg: linear-gradient(135deg, #edf7f6 0%, #f7fbfa 100%);
+      --shadow: 0 15px 40px rgba(2, 14, 30, 0.16);
+      --shadow-soft: 0 8px 20px rgba(2, 14, 30, 0.07);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0 300px, var(--bg-2) 760px);
+      color: var(--text);
+      line-height: 1.65;
+      padding-bottom: 40px;
+    }
+
+    a { color: inherit; }
+
+    .site-header {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.18);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 18px 20px 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand {
+      text-decoration: none;
+    }
+
+    .site-brand {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--text-inverse);
+      letter-spacing: -0.02em;
+    }
+
+    .site-tagline {
+      margin-top: 4px;
+      font-size: 15px;
+      color: rgba(248, 251, 255, 0.78);
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      padding: 0 20px 18px;
+      flex-wrap: wrap;
+    }
+
+    .navblock {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 650;
+      box-shadow: 0 4px 12px rgba(2, 14, 30, 0.10);
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .navblock:hover,
+    .navblock:focus-visible {
+      background: var(--soft);
+      border-color: #c6d3df;
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .navblock.active {
+      background: var(--soft-2);
+      color: var(--primary);
+      border-color: rgba(29, 122, 115, 0.25);
+    }
+
+    .dropdown { position: relative; display: inline-block; }
+
+    .dropdown-btn {
+      appearance: none;
+      -webkit-appearance: none;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 220px;
+      padding: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .dropdown-menu a:hover,
+    .dropdown-menu a:focus-visible {
+      background: var(--soft);
+      color: var(--primary);
+      outline: none;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu { display: block; }
+
+    .dropdown:hover .dropdown-btn,
+    .dropdown:focus-within .dropdown-btn {
+      background: var(--soft);
+      border-color: #c6d3df;
+      transform: translateY(-2px);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 32px auto 0;
+      padding: 0 20px;
+    }
+
+    .app-card {
+      background: var(--panel-strong);
+      padding: 34px;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .title-banner {
+      position: relative;
+      overflow: hidden;
+      background: var(--title-bg);
+      border-radius: 18px;
+      padding: 28px 30px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .title-banner::after {
+      content: "";
+      position: absolute;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      right: -45px;
+      top: -48px;
+      background: rgba(29, 122, 115, 0.08);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .title-banner h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 2.55rem);
+      color: var(--text);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+
+    .title-banner p {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1.03rem;
+      max-width: 900px;
+    }
+
+    .intro {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.figure-card {
+  height: 100%;
+}
+
+.figure-card img {
+  width: 100%;
+  display: block;
+}
+    .section-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .section-card.accent {
+      background: var(--accent-bg);
+      border-color: rgba(29, 122, 115, 0.18);
+    }
+
+    .section-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.32rem;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .section-card > p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+
+    .section-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+    }
+
+    .steps {
+      list-style: none;
+      margin: 18px 0 0;
+      padding: 0;
+      counter-reset: trajectory-step;
+      display: grid;
+      gap: 12px;
+    }
+
+    .steps li {
+      position: relative;
+      counter-increment: trajectory-step;
+      padding: 14px 14px 14px 54px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: #fbfdff;
+      color: var(--text);
+    }
+
+    .steps li::before {
+      content: counter(trajectory-step);
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--soft-2);
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .callout {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--primary);
+      border-radius: 12px;
+      background: #edf7f6;
+      color: var(--text);
+    }
+
+    .callout strong { color: var(--text-dark); }
+
+    .figure-card {
+      padding: 18px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .figure-card figure { margin: 0; }
+
+    .figure-card img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: #f8fbff;
+    }
+
+    .figure-card figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .footer {
+      max-width: 1100px;
+      margin: 18px auto 0;
+      padding: 0 20px;
+      color: rgba(255, 255, 255, 0.74);
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 860px) {
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      body { background: linear-gradient(180deg, var(--bg) 0 260px, var(--bg-2) 640px); }
+      .site-nav { gap: 10px; }
+      .header-inner { padding-top: 14px; }
+      .site-brand { font-size: 26px; }
+      .app-card { padding: 22px; }
+      .title-banner { padding: 22px; }
+      .dropdown-menu { left: 0; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="PMO Tools home">
+        <div class="site-brand">PMO Tools</div>
+        <div class="site-tagline">Predicting the future.</div>
+      </a>
+    </div>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="index.html" class="navblock">Home</a>
+
+      <div class="dropdown">
+        <button class="navblock dropdown-btn active" type="button" aria-haspopup="true" aria-expanded="false">
+          Approaches ▾
+        </button>
+        <div class="dropdown-menu">
+          <a href="approaches.html">Approaches</a>
+          <a href="Analyticalmeth.html">Analytical</a>
+          <a href="trajapproach.html">Trajectory</a>
+          <a href="ML.html">Machine Learning</a>
+        </div>
+      </div>
+
+      <a href="PMO.html" class="navblock">PMO Comparison</a>
+      <a href="Additional.html" class="navblock">Additional Resources</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="app-card" aria-labelledby="trajectory-title">
+      <div class="title-banner">
+        <span class="eyebrow">Approach</span>
+        <h1 id="trajectory-title">Trajectory Approach</h1>
+        <p>
+          The model is based on a large number of simulated outbreaks and requires the use of the renewal equation models. Values of <i>R</i><sub>0</sub> and <i>I</i><sub>1</sub> used are sampled from their priors.
+        </p>
+      </div>
+
+      <p class="intro">
+        In our analyses with complete reporting, we assume that the value of Incidence week 1 is known so that the prior is a point mass, but when we consider under-reporting we use a Poisson distributed prior for <i>I</i><sub>1</sub>.
+      </p>
+
+      <div class="content-grid">
+        <article class="section-card">
+          <span class="section-label">Method</span>
+          <h2>Trajectory matching</h2>
+          <br>
+          <p>
+            The trajectory model is based on a large number of simulated outbreaks and requires the use of the renewal equation models. Values of <i>R</i><sub>0</sub> and <i>I</i><sub>1</sub> used are sampled from their priors. In our analyses with complete reporting, we assume that the value of <i>I</i><sub>1</sub> is known so that the prior is a point mass, but when we consider under-reporting we use a Poisson distributed prior for <i>I</i><sub>1</sub>.
+          </p>
+<br>
+          <div class="callout">
+            <strong>Key idea:</strong> The trajectory matching method involves identifying simulated outbreaks (from the training dataset) with early disease incidence matching the dataset and calculating the proportion of matching simulations in which a major outbreak went on to occur
+          </div>
+          <br>
+           <p>Given an
+observed input sequence of early case counts (e.g. [1, 2, 0] for the first three weeks), we retain only those simulations
+whose incidence in the first three weeks exactly matches the input.</p>
+        </article>
+        <aside class="figure-card">
+          <figure>
+            <img src="trajapproachimage.png" alt="Diagram illustrating the trajectory approach">
+            <figcaption>Trajectory approach overview</figcaption>
+          </figure>
+        </aside>
+      </div>
+
+      <section class="section-card accent" style="margin-top:20px;">
+        <span class="section-label">Workflow</span>
+        <h2>The trajectory model can be broken down into the following steps</h2>
+
+        <ol class="steps">
+          <li>Sample a value of <i>R</i><sub>0</sub> from its prior distribution.</li>
+          <li>Sample a value of <i>I</i><sub>1</sub> from its prior distribution.</li>
+          <li>Simulate an outbreak using the renewal equation model.</li>
+          <li>Repeat steps 1–3 a large number of times to generate simulated outbreaks.</li>
+          <li>For each simulated outbreak, calculate the probability of a major outbreak given the number of infections in the first few weeks.</li>
+          <li>Average the probabilities across all simulated outbreaks to obtain an overall estimate of the probability of a major outbreak.</li>
+        </ol>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    PMO Tools · Trajectory Approach
+  </footer>
+</body>
+</html>

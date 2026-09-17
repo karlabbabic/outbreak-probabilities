@@ -205,3 +205,21 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Don't ignore top level tests foler
+!/tests/
+
+# Ignore data files and image files
+*.csv
+!simulated_cases_and_serial_interval_and_weights.csv
+*.png
+*.jpg
+
+!docs/trajapproachimage.png
+
+compare_empirical_vs_analytic.py
+debug_pmo_selection.py
+data/test.py
+src/outbreak_probabilities/simulate/serial_interval.py
+src/outbreak_probabilities/simulate/serial_weights_io.py
+
